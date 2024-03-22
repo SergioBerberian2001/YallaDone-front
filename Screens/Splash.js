@@ -6,12 +6,13 @@ import {
 	ImageBackground,
 	TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import Logo from "../Components/Logo";
 
 const Splash = ({ navigation, route } ) => {
 	const width = 280;
 	const height = 35;
+	const [isSigningUp,setIsSigningUp] = useState(false)
 
 	const navigateToSignup = () => {
 		navigation.navigate("Signup");

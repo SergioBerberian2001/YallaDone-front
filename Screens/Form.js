@@ -13,7 +13,7 @@ import Logo from "../Components/Logo";
 
 const redColor="#FD2121";
 
-const Signup = () => {
+const Form = () => {
 	const width = 280;
 	const height = 35;
 	const [error, setError] = useState("");
@@ -182,7 +182,7 @@ const Signup = () => {
 	);
 };
 
-export default Signup;
+export default Form;
 
 const styles = StyleSheet.create({
 	background: {

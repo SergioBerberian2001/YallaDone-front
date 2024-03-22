@@ -9,14 +9,15 @@ import * as SplashScreen from "expo-splash-screen";
 import Splash from "./Screens/Splash";
 import Signup from "./Screens/Signup";
 import Login from "./Screens/Login";
+import Form from "./Screens/Form";
 
 const Stack = createNativeStackNavigator();
 
-SplashScreen.preventAutoHideAsync();
+// SplashScreen.preventAutoHideAsync();
 
 export default function App() {
 	const [fontsLoaded, fontError] = useFonts({
-		SF: require("./assets/fonts/SF-pro-regular.otf"),
+		"SF": require("./assets/fonts/SF-pro-regular.otf"),
 		"SF-bold": require("./assets/fonts/SF-pro-bold.otf"),
 		"SF-medium": require("./assets/fonts/SF-pro-medium.otf"),
 	});
@@ -42,6 +43,17 @@ export default function App() {
 					component={Splash}
 					options={{
 						title: "Splash Screen",
+						headerStyle: {
+							backgroundColor: "#000000",
+						},
+						headerTintColor: "#fff",
+					}}
+				/>
+				<Stack.Screen
+					name="Form"
+					component={Form}
+					options={{
+						title: "Form",
 						headerStyle: {
 							backgroundColor: "#000000",
 						},
