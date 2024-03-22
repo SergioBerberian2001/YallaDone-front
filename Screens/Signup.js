@@ -7,16 +7,20 @@ import {
 	TouchableWithoutFeedback,
 	Keyboard,
 	TouchableOpacity,
+	Modal,
 } from "react-native";
 import React, { useState } from "react";
-import Logo from "../Components/Logo";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Swipeable from "react-native-gesture-handler/Swipeable";
 
-const redColor="#FD2121";
+
+const redColor = "#FD2121";
 
 const Signup = () => {
 	const width = 280;
 	const height = 35;
 	const [error, setError] = useState("");
+	const [modalVisible, setModalVisible] = useState(false);
 	const [user, setUser] = useState({
 		id: "",
 		firstName: "",
@@ -72,6 +76,10 @@ const Signup = () => {
 		return message;
 	};
 
+	const ToggleModal = () => {
+		setModalVisible(!modalVisible);
+	};
+
 	const handleSignup = () => {
 		if (handleError(user) === "") {
 			setUser({
@@ -86,98 +94,99 @@ const Signup = () => {
 
 	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-			<ImageBackground
-				source={require("../assets/images/splash-bg.jpg")}
-				style={styles.background}
-			>
-				<View style={styles.logoView}>
-					<Logo width={width} height={height} />
+			<View>
+				<View style={styles.formView}>
+					<Text style={styles.errorText}>{error}</Text>
+					<TextInput
+						placeholder="Email"
+						placeholderTextColor="rgba(60,60,67,0.3)"
+						style={styles.textInput}
+						onChangeText={(value) => onUpdateField("email", value)}
+						value={user.email}
+					/>
+					<TextInput
+						placeholder="Phone Number"
+						placeholderTextColor="rgba(60,60,67,0.3)"
+						style={styles.textInput}
+						onChangeText={(value) => onUpdateField("phoneNumber", value)}
+						value={user.phoneNumber}
+						keyboardType="numeric"
+					/>
+					<TextInput
+						secureTextEntry
+						placeholder="Password"
+						placeholderTextColor="rgba(60,60,67,0.3)"
+						style={styles.textInput}
+						onChangeText={(value) => onUpdateField("password", value)}
+						value={user.password}
+					/>
+					<TextInput
+						secureTextEntry
+						placeholder="Confirm Password"
+						placeholderTextColor="rgba(60,60,67,0.3)"
+						style={styles.textInput}
+						onChangeText={(value) => onUpdateField("confirmPass", value)}
+						value={user.confirmPass}
+					/>
 				</View>
-				<View style={styles.container}>
-					<View style={styles.swapMainContainer}>
+				<TouchableOpacity style={styles.signupButton} onPress={ToggleModal}>
+					<Text style={styles.signupText}>Signup</Text>
+				</TouchableOpacity>
+				<View>
+					<View style={styles.radioView}>
 						<TouchableOpacity
-							style={styles.swapContainerRegister}
-							onPress={() => changeForm(true)}
-						>
-							<Text style={styles.swapText}>Register</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.swapContainerLogin}>
-							<Text style={styles.swapText}>Login</Text>
-						</TouchableOpacity>
+							style={[
+								styles.radiobutton,
+								acceptTerms && styles.radioButtonSelected,
+							]}
+							onPress={handleToggleAcceptTerms}
+						/>
+						<Text style={styles.radioText}>
+							I accept the term of service and the privacy policy
+						</Text>
 					</View>
-					<View style={styles.formView}>
-						<Text style={styles.errorText}>{error}</Text>
-						<TextInput
-							placeholder="Email"
-							placeholderTextColor="rgba(60,60,67,0.3)"
-							style={styles.textInput}
-							onChangeText={(value) => onUpdateField("email", value)}
-							value={user.email}
+					<View style={styles.radioView}>
+						<TouchableOpacity
+							style={[
+								styles.radiobutton,
+								receiveEmails && styles.radioButtonSelected,
+							]}
+							onPress={handleToggleReceiveEmails}
 						/>
-						<TextInput
-							placeholder="Phone Number"
-							placeholderTextColor="rgba(60,60,67,0.3)"
-							style={styles.textInput}
-							onChangeText={(value) => onUpdateField("phoneNumber", value)}
-							value={user.phoneNumber}
-							keyboardType="numeric"
-						/>
-						<TextInput
-							secureTextEntry
-							placeholder="Password"
-							placeholderTextColor="rgba(60,60,67,0.3)"
-							style={styles.textInput}
-							onChangeText={(value) => onUpdateField("password", value)}
-							value={user.password}
-						/>
-						<TextInput
-							secureTextEntry
-							placeholder="Confirm Password"
-							placeholderTextColor="rgba(60,60,67,0.3)"
-							style={styles.textInput}
-							onChangeText={(value) => onUpdateField("confirmPass", value)}
-							value={user.confirmPass}
-						/>
+						<Text style={styles.radioText}>
+							I would like to receive emails about news and events
+						</Text>
 					</View>
-					<TouchableOpacity style={styles.signupButton} onPress={handleSignup}>
-						<Text style={styles.signupText}>Signup</Text>
-					</TouchableOpacity>
-					<View>
-						<View style={styles.radioView}>
-							<TouchableOpacity
-								style={[
-									styles.radiobutton,
-									acceptTerms && styles.radioButtonSelected,
-								]}
-								onPress={handleToggleAcceptTerms}
-							/>
-							<Text style={styles.radioText}>
-								I accept the term of service and the privacy policy
-							</Text>
-						</View>
-						<View style={styles.radioView}>
-							<TouchableOpacity
-								style={[
-									styles.radiobutton,
-									receiveEmails && styles.radioButtonSelected,
-								]}
-								onPress={handleToggleReceiveEmails}
-							/>
-							<Text style={styles.radioText}>
-								I would like to receive emails about news and events
-							</Text>
-						</View>
-						<View style={styles.loginView}>
-							<Text style={styles.loginMainText}>
-								Already have an account?{" "}
-							</Text>
-							<TouchableOpacity style={styles.loginTouchable}>
-								<Text style={styles.loginText}>Login</Text>
-							</TouchableOpacity>
-						</View>
+					<View style={styles.loginView}>
+						<Text style={styles.loginMainText}>Already have an account? </Text>
+						<TouchableOpacity style={styles.loginTouchable}>
+							<Text style={styles.loginText}>Login</Text>
+						</TouchableOpacity>
 					</View>
 				</View>
-			</ImageBackground>
+				<Modal
+					animationType="slide"
+					transparent={true}
+					visible={modalVisible}
+					onRequestClose={() => {
+						Alert.alert("Modal has been closed.");
+						ToggleModal();
+					}}
+				>
+					<GestureHandlerRootView style={styles.centeredView}>
+					
+						<Swipeable onSwipeableClose={ToggleModal}>
+							<TouchableOpacity style={styles.swipe}>
+								<Text>------</Text>
+							</TouchableOpacity>
+						
+
+						<TouchableOpacity style={styles.signupButton} onPress={ToggleModal}>
+							<Text style={styles.signupText}>Signup</Text>
+						</TouchableOpacity></Swipeable>
+					</GestureHandlerRootView>
+				</Modal>
+			</View>
 		</TouchableWithoutFeedback>
 	);
 };
@@ -185,16 +194,6 @@ const Signup = () => {
 export default Signup;
 
 const styles = StyleSheet.create({
-	background: {
-		flex: 1,
-		width: "100%",
-		opacity: 1,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	logoView: {
-		marginVertical: 64,
-	},
 	textInput: {
 		width: "100%",
 		fontSize: 16,
@@ -212,43 +211,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		paddingHorizontal: 8,
 	},
-	swapMainContainer: {
-		flexDirection: "row",
-		height: 38,
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: "rgba(0,0,0,0.2)",
-		borderRadius: 10,
-		padding: 2,
-		marginHorizontal: 8,
-		marginBottom: 32,
-	},
-	swapContainerRegister: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: "rgba(0, 0, 0,0)",
-		borderRadius: 8,
-		height: "100%",
-		marginHorizontal: 1,
-	},
-	swapContainerLogin: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: "#F2F2F7",
-		borderRadius: 8,
-		height: "100%",
-		marginHorizontal: 1,
-	},
-	swapText: {
-		color: "black",
-		fontFamily: "SF-medium",
-		fontSize: 16,
-	},
-	container: {
-		width: "100%",
-	},
+
 	signupButton: {
 		flexDirection: "row",
 		justifyContent: "center",
@@ -289,7 +252,7 @@ const styles = StyleSheet.create({
 	},
 	radioButtonSelected: {
 		backgroundColor: redColor,
-	  },
+	},
 	loginView: {
 		flexDirection: "row",
 		width: "100%",
@@ -317,5 +280,20 @@ const styles = StyleSheet.create({
 		color: "#DD2121",
 		fontFamily: "SF",
 		// fontSize:,
+	},
+	centeredView: {
+		height: "90%",
+		width: "100%",
+		backgroundColor: "#F2F2F7",
+		position: "absolute",
+		bottom: 0,
+		padding: 10,
+		// justifyContent: "center",
+		alignItems: "center",
+	},
+	swipe: {
+		backgroundColor: "blue",
+		width: 300,
+		height: 40,
 	},
 });

@@ -12,16 +12,19 @@ import Logo from "../Components/Logo";
 const Splash = ({ navigation, route } ) => {
 	const width = 280;
 	const height = 35;
-	const [isSigningUp,setIsSigningUp] = useState(false)
+	// const [isSigningUp,setIsSigningUp] = useState(false)
 
 	const navigateToSignup = () => {
-		setIsSigningUp(true),
-		navigation.navigate("Form");
+		// setIsSigningUp(true),
+		// navigation.navigate("Form");
+		navigation.navigate("Form", { isCreating: true });
+
 	};
 
 	const navigateToLogin = () => {
-		setIsSigningUp(false),
-		navigation.navigate("Form");
+		// setIsSigningUp(false),
+		// navigation.navigate("Form");
+		navigation.navigate("Form", { isCreating: false });
 	};
 
 
