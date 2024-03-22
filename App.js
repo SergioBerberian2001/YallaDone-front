@@ -10,10 +10,11 @@ import Splash from "./Screens/Splash";
 import Signup from "./Screens/Signup";
 import Login from "./Screens/Login";
 import Form from "./Screens/Form";
+import Onboarding from "./Screens/Onboarding";
 
 const Stack = createNativeStackNavigator();
 
-// SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
 	const [fontsLoaded, fontError] = useFonts({
@@ -43,6 +44,17 @@ export default function App() {
 					component={Splash}
 					options={{
 						title: "Splash Screen",
+						headerStyle: {
+							backgroundColor: "#000000",
+						},
+						headerTintColor: "#fff",
+					}}
+				/>
+				<Stack.Screen
+					name="Onboarding"
+					component={Onboarding}
+					options={{
+						title: "Onboarding Screen",
 						headerStyle: {
 							backgroundColor: "#000000",
 						},

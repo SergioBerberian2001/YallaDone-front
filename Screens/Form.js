@@ -44,6 +44,13 @@ const Form = ({ navigation, route }) => {
 		setIsSigningUp(false);
 	};
 
+	const navigateToOnboarding = () => {
+		// setIsSigningUp(true),
+		// navigation.navigate("Form");
+		navigation.navigate("Onboarding");
+
+	};
+
 	const handleSignup = () => {
 		if (handleError(user) === "") {
 			setUser({
@@ -95,7 +102,7 @@ const Form = ({ navigation, route }) => {
 						</TouchableOpacity>
 					</View>
                     }
-					{isSigningUp ? <Signup /> : <Login />}
+					{isSigningUp ? <Signup onNavigate={navigateToOnboarding}/> : <Login onNavigate={navigateToOnboarding}/>}
 				</View>
 			</ImageBackground>
 		</TouchableWithoutFeedback>

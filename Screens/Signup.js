@@ -10,15 +10,15 @@ import {
 	Modal,
 } from "react-native";
 import React, { useState } from "react";
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-
 
 const redColor = "#FD2121";
 
-const Signup = () => {
+const Signup = (props) => {
 	const width = 280;
 	const height = 35;
+	const {onNavigate} = props
 	const [error, setError] = useState("");
 	const [modalVisible, setModalVisible] = useState(false);
 	const [user, setUser] = useState({
@@ -28,7 +28,9 @@ const Signup = () => {
 		email: "",
 		password: "",
 		confirmPass: "",
-		birthday: "",
+		birthday:"",
+		birthmonth:"",
+		birthyear:"",
 		phoneNumber: "",
 	});
 	const [acceptTerms, setAcceptTerms] = useState(false);
@@ -63,7 +65,19 @@ const Signup = () => {
 				"Password must contain at least 8 characters with one capital letter and one number";
 		} else if (userError.password !== userError.confirmPass) {
 			message = "Passwords don't match";
-		} else if (userError.lastName.length === 0) {
+		} else if(acceptTerms == false){
+			message = "You must accept the Terms and Conditions";
+		}
+		setError(message);
+		return message;
+	};
+
+	const handleErrorModal = (userError) => {
+		let message = "";
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+		if (userError.lastName.length === 0) {
 			message = "Last name can't be empty";
 		} else if (userError.lastName.length >= 20) {
 			message = "Last name must be shorter than 20 characters";
@@ -80,15 +94,29 @@ const Signup = () => {
 		setModalVisible(!modalVisible);
 	};
 
-	const handleSignup = () => {
+	
+
+	const handleSignupFirst = () => {
 		if (handleError(user) === "") {
+			setError("");
+		}
+		ToggleModal();
+	};
+
+	
+	const handleSignupSecond = () => {
+		if (handleErrorModal(user) === "") {
 			setUser({
 				id: "",
 				email: "",
 				password: "",
 				confirmPass: "",
+				firstName:"",
+				lastName:"",
 			});
 			setError("");
+			ToggleModal();
+			onNavigate();
 		}
 	};
 
@@ -129,7 +157,7 @@ const Signup = () => {
 						value={user.confirmPass}
 					/>
 				</View>
-				<TouchableOpacity style={styles.signupButton} onPress={ToggleModal}>
+				<TouchableOpacity style={styles.signupButton} onPress={handleSignupFirst}>
 					<Text style={styles.signupText}>Signup</Text>
 				</TouchableOpacity>
 				<View>
@@ -173,18 +201,73 @@ const Signup = () => {
 						ToggleModal();
 					}}
 				>
+					<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
 					<GestureHandlerRootView style={styles.centeredView}>
-					
-						<Swipeable onSwipeableClose={ToggleModal}>
+						<Swipeable
+							onSwipeableClose={ToggleModal}
+							style={styles.centeredView}
+						>
 							<TouchableOpacity style={styles.swipe}>
 								<Text>------</Text>
 							</TouchableOpacity>
-						
-
-						<TouchableOpacity style={styles.signupButton} onPress={ToggleModal}>
-							<Text style={styles.signupText}>Signup</Text>
-						</TouchableOpacity></Swipeable>
+							<Text style={styles.modalText}>Please give us your name:</Text>
+							<TextInput
+								placeholder="First Name"
+								placeholderTextColor="rgba(60,60,67,0.3)"
+								style={styles.textInput}
+								onChangeText={(value) => onUpdateField("firstName", value)}
+								value={user.firstName}
+							/>
+							<TextInput
+								placeholder="Last Name"
+								placeholderTextColor="rgba(60,60,67,0.3)"
+								style={styles.textInput}
+								onChangeText={(value) => onUpdateField("lastName", value)}
+								value={user.lastName}
+							/>
+							<Text style={styles.modalText}>Birthday:</Text>
+							<View style={styles.dateView}>
+								<View style={styles.dateChild}>
+									<TextInput
+										placeholder="DD"
+										placeholderTextColor="rgba(60,60,67,0.3)"
+										style={styles.textInput}
+										onChangeText={(value) => onUpdateField("birthday", value)}
+										value={user.birthday}
+										keyboardType="numeric"
+									/>
+								</View>
+								<View>
+									<TextInput
+										placeholder="MM"
+										placeholderTextColor="rgba(60,60,67,0.3)"
+										style={styles.textInput}
+										onChangeText={(value) => onUpdateField("birth.month", value)}
+										value={user.birthmonth}
+										keyboardType="numeric"
+									/>
+								</View>
+								<View>
+									<TextInput
+										placeholder="YYYY"
+										placeholderTextColor="rgba(60,60,67,0.3)"
+										style={styles.textInput}
+										onChangeText={(value) => onUpdateField("birthyear", value)}
+										value={user.birthyear}
+										keyboardType="numeric"
+									/>
+								</View>
+							</View>
+							<Text style={styles.errorText}>{error}</Text>
+							<TouchableOpacity
+								style={styles.signupButton}
+								onPress={handleSignupSecond}
+							>
+								<Text style={styles.signupText}>Signup</Text>
+							</TouchableOpacity>
+						</Swipeable>
 					</GestureHandlerRootView>
+					</TouchableWithoutFeedback>
 				</Modal>
 			</View>
 		</TouchableWithoutFeedback>
@@ -202,6 +285,7 @@ const styles = StyleSheet.create({
 		marginVertical: 8,
 		padding: 14,
 		backgroundColor: "rgba(242,242,247,0.9)",
+		// backgroundColor: "lightgreen",
 		fontFamily: "SF",
 	},
 	formView: {
@@ -284,16 +368,33 @@ const styles = StyleSheet.create({
 	centeredView: {
 		height: "90%",
 		width: "100%",
-		backgroundColor: "#F2F2F7",
+		backgroundColor: "#FFFFFF",
 		position: "absolute",
 		bottom: 0,
 		padding: 10,
+		borderTopLeftRadius: 20,
+		borderTopRightRadius: 20,
+
 		// justifyContent: "center",
-		alignItems: "center",
+		// alignItems: "center",
 	},
 	swipe: {
 		backgroundColor: "blue",
-		width: 300,
+		width: "100%",
 		height: 40,
+	},
+	dateView:{
+		width:"100%",
+		flexDirection:"row",
+		justifyContent:"space-around"
+	},
+	dateChild:{
+		
+	},
+	modalText:{
+			color: "black",
+			fontFamily: "SF",
+			fontSize: 16,
+			margin:8,
 	},
 });
