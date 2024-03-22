@@ -15,11 +15,13 @@ const Splash = ({ navigation, route } ) => {
 	const [isSigningUp,setIsSigningUp] = useState(false)
 
 	const navigateToSignup = () => {
-		navigation.navigate("Signup");
+		setIsSigningUp(true),
+		navigation.navigate("Form");
 	};
 
 	const navigateToLogin = () => {
-		navigation.navigate("Login");
+		setIsSigningUp(false),
+		navigation.navigate("Form");
 	};
 
 
