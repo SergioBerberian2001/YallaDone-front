@@ -113,5 +113,4 @@ const styles = StyleSheet.create({
 	sfBold: {
 		fontFamily: "SF-bold",
 	},
-	
 });

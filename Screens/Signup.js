@@ -18,7 +18,7 @@ const redColor = "#FD2121";
 const Signup = (props) => {
 	const width = 280;
 	const height = 35;
-	const {onNavigate} = props
+	const { onNavigate } = props;
 	const [error, setError] = useState("");
 	const [modalVisible, setModalVisible] = useState(false);
 	const [user, setUser] = useState({
@@ -28,9 +28,9 @@ const Signup = (props) => {
 		email: "",
 		password: "",
 		confirmPass: "",
-		birthday:"",
-		birthmonth:"",
-		birthyear:"",
+		birthday: "",
+		birthmonth: "",
+		birthyear: "",
 		phoneNumber: "",
 	});
 	const [acceptTerms, setAcceptTerms] = useState(false);
@@ -65,7 +65,7 @@ const Signup = (props) => {
 				"Password must contain at least 8 characters with one capital letter and one number";
 		} else if (userError.password !== userError.confirmPass) {
 			message = "Passwords don't match";
-		} else if(acceptTerms == false){
+		} else if (acceptTerms == false) {
 			message = "You must accept the Terms and Conditions";
 		}
 		setError(message);
@@ -76,15 +76,14 @@ const Signup = (props) => {
 		let message = "";
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
-
-		if (userError.lastName.length === 0) {
-			message = "Last name can't be empty";
-		} else if (userError.lastName.length >= 20) {
-			message = "Last name must be shorter than 20 characters";
-		} else if (userError.firstName.length === 0) {
+		if (userError.firstName.length === 0) {
 			message = "First name can't be empty";
+		} else if (userError.lastName.length === 0) {
+			message = "Last name can't be empty";
 		} else if (userError.firstName.length >= 20) {
 			message = "First name must be shorter than 20 characters";
+		} else if (userError.lastName.length >= 20) {
+			message = "Last name must be shorter than 20 characters";
 		}
 		setError(message);
 		return message;
@@ -94,16 +93,13 @@ const Signup = (props) => {
 		setModalVisible(!modalVisible);
 	};
 
-	
-
 	const handleSignupFirst = () => {
 		if (handleError(user) === "") {
 			setError("");
+			ToggleModal();
 		}
-		ToggleModal();
 	};
 
-	
 	const handleSignupSecond = () => {
 		if (handleErrorModal(user) === "") {
 			setUser({
@@ -111,8 +107,8 @@ const Signup = (props) => {
 				email: "",
 				password: "",
 				confirmPass: "",
-				firstName:"",
-				lastName:"",
+				firstName: "",
+				lastName: "",
 			});
 			setError("");
 			ToggleModal();
@@ -157,7 +153,10 @@ const Signup = (props) => {
 						value={user.confirmPass}
 					/>
 				</View>
-				<TouchableOpacity style={styles.signupButton} onPress={handleSignupFirst}>
+				<TouchableOpacity
+					style={styles.signupButton}
+					onPress={handleSignupFirst}
+				>
 					<Text style={styles.signupText}>Signup</Text>
 				</TouchableOpacity>
 				<View>
@@ -201,72 +200,79 @@ const Signup = (props) => {
 						ToggleModal();
 					}}
 				>
-					<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-					<GestureHandlerRootView style={styles.centeredView}>
-						<Swipeable
-							onSwipeableClose={ToggleModal}
-							style={styles.centeredView}
-						>
-							<TouchableOpacity style={styles.swipe}>
-								<Text>------</Text>
-							</TouchableOpacity>
-							<Text style={styles.modalText}>Please give us your name:</Text>
-							<TextInput
-								placeholder="First Name"
-								placeholderTextColor="rgba(60,60,67,0.3)"
-								style={styles.textInput}
-								onChangeText={(value) => onUpdateField("firstName", value)}
-								value={user.firstName}
-							/>
-							<TextInput
-								placeholder="Last Name"
-								placeholderTextColor="rgba(60,60,67,0.3)"
-								style={styles.textInput}
-								onChangeText={(value) => onUpdateField("lastName", value)}
-								value={user.lastName}
-							/>
-							<Text style={styles.modalText}>Birthday:</Text>
-							<View style={styles.dateView}>
-								<View style={styles.dateChild}>
-									<TextInput
-										placeholder="DD"
-										placeholderTextColor="rgba(60,60,67,0.3)"
-										style={styles.textInput}
-										onChangeText={(value) => onUpdateField("birthday", value)}
-										value={user.birthday}
-										keyboardType="numeric"
-									/>
-								</View>
-								<View>
-									<TextInput
-										placeholder="MM"
-										placeholderTextColor="rgba(60,60,67,0.3)"
-										style={styles.textInput}
-										onChangeText={(value) => onUpdateField("birth.month", value)}
-										value={user.birthmonth}
-										keyboardType="numeric"
-									/>
-								</View>
-								<View>
-									<TextInput
-										placeholder="YYYY"
-										placeholderTextColor="rgba(60,60,67,0.3)"
-										style={styles.textInput}
-										onChangeText={(value) => onUpdateField("birthyear", value)}
-										value={user.birthyear}
-										keyboardType="numeric"
-									/>
-								</View>
-							</View>
-							<Text style={styles.errorText}>{error}</Text>
-							<TouchableOpacity
-								style={styles.signupButton}
-								onPress={handleSignupSecond}
+					<TouchableWithoutFeedback
+						onPress={Keyboard.dismiss}
+						accessible={false}
+					>
+						<GestureHandlerRootView style={styles.centeredView}>
+							<Swipeable
+								onSwipeableClose={ToggleModal}
+								style={styles.centeredView}
 							>
-								<Text style={styles.signupText}>Signup</Text>
-							</TouchableOpacity>
-						</Swipeable>
-					</GestureHandlerRootView>
+								{/* <TouchableOpacity style={styles.swipe}>
+								<Text>------</Text>
+							</TouchableOpacity> */}
+								<Text style={styles.modalText}>Please give us your name:</Text>
+								<TextInput
+									placeholder="First Name"
+									placeholderTextColor="rgba(60,60,67,0.3)"
+									style={styles.textInput}
+									onChangeText={(value) => onUpdateField("firstName", value)}
+									value={user.firstName}
+								/>
+								<TextInput
+									placeholder="Last Name"
+									placeholderTextColor="rgba(60,60,67,0.3)"
+									style={styles.textInput}
+									onChangeText={(value) => onUpdateField("lastName", value)}
+									value={user.lastName}
+								/>
+								<Text style={styles.modalText}>Birthday:</Text>
+								<View style={styles.dateView}>
+									<View style={styles.dateChild}>
+										<TextInput
+											placeholder="DD"
+											placeholderTextColor="rgba(60,60,67,0.3)"
+											style={styles.textInput}
+											onChangeText={(value) => onUpdateField("birthday", value)}
+											value={user.birthday}
+											keyboardType="numeric"
+										/>
+									</View>
+									<View>
+										<TextInput
+											placeholder="MM"
+											placeholderTextColor="rgba(60,60,67,0.3)"
+											style={styles.textInput}
+											onChangeText={(value) =>
+												onUpdateField("birthmonth", value)
+											}
+											value={user.birthmonth}
+											keyboardType="numeric"
+										/>
+									</View>
+									<View>
+										<TextInput
+											placeholder="YYYY"
+											placeholderTextColor="rgba(60,60,67,0.3)"
+											style={styles.textInput}
+											onChangeText={(value) =>
+												onUpdateField("birthyear", value)
+											}
+											value={user.birthyear}
+											keyboardType="numeric"
+										/>
+									</View>
+								</View>
+								<Text style={styles.errorText}>{error}</Text>
+								<TouchableOpacity
+									style={styles.signupButton}
+									onPress={handleSignupSecond}
+								>
+									<Text style={styles.signupText}>Signup</Text>
+								</TouchableOpacity>
+							</Swipeable>
+						</GestureHandlerRootView>
 					</TouchableWithoutFeedback>
 				</Modal>
 			</View>
@@ -383,18 +389,17 @@ const styles = StyleSheet.create({
 		width: "100%",
 		height: 40,
 	},
-	dateView:{
-		width:"100%",
-		flexDirection:"row",
-		justifyContent:"space-around"
+	dateView: {
+		width: "100%",
+		flexDirection: "row",
+		justifyContent: "space-around",
 	},
-	dateChild:{
-		
-	},
-	modalText:{
-			color: "black",
-			fontFamily: "SF",
-			fontSize: 16,
-			margin:8,
+	dateChild: {},
+	modalText: {
+		color: "black",
+		fontFamily: "SF",
+		fontSize: 16,
+		margin: 8,
+		fontSize: 16,
 	},
 });
