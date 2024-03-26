@@ -12,12 +12,9 @@ import {
 import React, { useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-
-const redColor = "#FD2121";
+import myColors from "../myColors";
 
 const Login = (props) => {
-	const width = 280;
-	const height = 35;
 	const {onNavigate} = props
 	const [error, setError] = useState("");
 	const [user, setUser] = useState({
@@ -57,7 +54,7 @@ const Login = (props) => {
 	};
 	
 
-	const handleSignin = () => {
+	const handleSignin = () => {onNavigate();
 		if (handleError(user) === "") {
       setUser({
 				id: "",
@@ -68,7 +65,7 @@ const Login = (props) => {
 				lastName:"",
 			});
 			setError("");
-			onNavigate();
+			
 		}
 	};
 
@@ -122,7 +119,7 @@ const styles = StyleSheet.create({
 		marginHorizontal: 8,
 		marginVertical: 8,
 		padding: 14,
-		backgroundColor: "rgba(242,242,247,0.9)",
+		backgroundColor: myColors.dirtyWhite90,
 		// backgroundColor: "lightgreen",
 		fontFamily: "SF",
 	},
@@ -139,7 +136,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "rgba(242,242,247,1)",
+		backgroundColor: myColors.dirtyWhite,
 		borderRadius: 10,
 		padding: 14,
 		marginHorizontal: 8,
@@ -151,7 +148,7 @@ const styles = StyleSheet.create({
 	},
 	signupText: {
 		fontFamily: "SF-bold",
-		color: "#2F3D7E",
+		color: myColors.blue,
 		fontSize: 18,
 	},
 	
@@ -171,7 +168,7 @@ const styles = StyleSheet.create({
 	},
 	loginTouchable: {
 		borderBottomWidth: 1,
-		borderBottomColor: "#F2F2F7",
+		borderBottomColor: myColors.dirtyWhite,
 	},
 	loginText: {
 		color: "white",

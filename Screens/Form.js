@@ -12,8 +12,7 @@ import React, { useEffect, useState } from "react";
 import Logo from "../Components/Logo";
 import Signup from "./Signup";
 import Login from "./Login";
-
-const redColor = "#FD2121";
+import myColors from "../myColors";
 
 const Form = ({ navigation, route }) => {
 	const width = 280;
@@ -128,7 +127,7 @@ const styles = StyleSheet.create({
 		height: 38,
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "rgba(0,0,0,0.2)",
+		backgroundColor: myColors.blue,
 		borderRadius: 10,
 		padding: 2,
 		marginHorizontal: 8,
@@ -138,7 +137,7 @@ const styles = StyleSheet.create({
         flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "#F2F2F7",
+		backgroundColor: "rgba(255,255,255,0.4)",
 		borderRadius: 8,
 		height: "100%",
 		marginHorizontal: 1,
@@ -153,7 +152,7 @@ const styles = StyleSheet.create({
 		marginHorizontal: 1,
 	},
 	swapText: {
-		color: "black",
+		color: myColors.dirtyWhite,
 		fontFamily: "SF-medium",
 		fontSize: 16,
 	},

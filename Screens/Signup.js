@@ -2,23 +2,25 @@ import {
 	StyleSheet,
 	Text,
 	View,
-	ImageBackground,
 	TextInput,
 	TouchableWithoutFeedback,
 	Keyboard,
 	TouchableOpacity,
 	Modal,
+	Pressable,
+	Platform,
 } from "react-native";
 import React, { useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-
-const redColor = "#FD2121";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import myColors from "../myColors";
 
 const Signup = (props) => {
-	const width = 280;
-	const height = 35;
 	const { onNavigate } = props;
+	const [dateOfBirth, setDateOfBirth] = useState("");
+	const [date, setDate] = useState(new Date());
+	const [showPicker, setShowPicker] = useState(false);
 	const [error, setError] = useState("");
 	const [modalVisible, setModalVisible] = useState(false);
 	const [user, setUser] = useState({
@@ -29,8 +31,6 @@ const Signup = (props) => {
 		password: "",
 		confirmPass: "",
 		birthday: "",
-		birthmonth: "",
-		birthyear: "",
 		phoneNumber: "",
 	});
 	const [acceptTerms, setAcceptTerms] = useState(false);
@@ -93,6 +93,29 @@ const Signup = (props) => {
 		setModalVisible(!modalVisible);
 	};
 
+	const toggleDatePicker = () => {
+		setShowPicker(!showPicker);
+	};
+
+	const onDateChange = ({ type }, selectedDate) => {
+		if (type == "set") {
+			const currentDate = selectedDate;
+			setDate(currentDate);
+			if (Platform.OS === "android") {
+				toggleDatePicker();
+				setDateOfBirth(currentDate.toDateString());
+				user.birthday == currentDate.toDateString();
+			}
+		} else {
+			toggleDatePicker();
+		}
+	};
+
+	const confirmIOSDate = () => {
+		setDateOfBirth(date.toDateString());
+		setUser.birthday == date.toDateString();
+		toggleDatePicker();
+	};
 	const handleSignupFirst = () => {
 		if (handleError(user) === "") {
 			setError("");
@@ -102,14 +125,15 @@ const Signup = (props) => {
 
 	const handleSignupSecond = () => {
 		if (handleErrorModal(user) === "") {
-			setUser({
-				id: "",
-				email: "",
-				password: "",
-				confirmPass: "",
-				firstName: "",
-				lastName: "",
-			});
+			console.log(user);
+			// setUser({
+			// 	id: "",
+			// 	email: "",
+			// 	password: "",
+			// 	confirmPass: "",
+			// 	firstName: "",
+			// 	lastName: "",
+			// });
 			setError("");
 			ToggleModal();
 			onNavigate();
@@ -227,43 +251,47 @@ const Signup = (props) => {
 									onChangeText={(value) => onUpdateField("lastName", value)}
 									value={user.lastName}
 								/>
-								<Text style={styles.modalText}>Birthday:</Text>
-								<View style={styles.dateView}>
-									<View style={styles.dateChild}>
-										<TextInput
-											placeholder="DD"
-											placeholderTextColor="rgba(60,60,67,0.3)"
-											style={styles.textInput}
-											onChangeText={(value) => onUpdateField("birthday", value)}
-											value={user.birthday}
-											keyboardType="numeric"
-										/>
+								<Text style={styles.modalText}>Date Of Birth:</Text>
+								{showPicker && (
+									<DateTimePicker
+										mode="date"
+										display="spinner"
+										value={date}
+										onChange={onDateChange}
+										style={styles.datePicker}
+									/>
+								)}
+								{showPicker && Platform.OS === "ios" && (
+									<View style={styles.dateButtonsView}>
+										<TouchableOpacity
+											onPress={toggleDatePicker}
+											style={styles.dateCancelButton}
+										>
+											<Text style={styles.dateCancelText}>Cancel</Text>
+										</TouchableOpacity>
+										<TouchableOpacity
+											onPress={confirmIOSDate}
+											style={styles.dateConfirmButton}
+										>
+											<Text style={styles.dateConfirmText}>Confirm</Text>
+										</TouchableOpacity>
 									</View>
-									<View>
+								)}
+
+								{!showPicker && (
+									<Pressable onPress={toggleDatePicker}>
 										<TextInput
-											placeholder="MM"
-											placeholderTextColor="rgba(60,60,67,0.3)"
 											style={styles.textInput}
-											onChangeText={(value) =>
-												onUpdateField("birthmonth", value)
-											}
-											value={user.birthmonth}
-											keyboardType="numeric"
-										/>
-									</View>
-									<View>
-										<TextInput
-											placeholder="YYYY"
+											placeholder="Birthday"
+											value={dateOfBirth}
+											onChangeText={setDateOfBirth}
 											placeholderTextColor="rgba(60,60,67,0.3)"
-											style={styles.textInput}
-											onChangeText={(value) =>
-												onUpdateField("birthyear", value)
-											}
-											value={user.birthyear}
-											keyboardType="numeric"
-										/>
-									</View>
-								</View>
+											editable={false}
+											onPressIn={toggleDatePicker}
+										></TextInput>
+									</Pressable>
+								)}
+
 								<Text style={styles.errorText}>{error}</Text>
 								<TouchableOpacity
 									style={styles.signupButton}
@@ -286,11 +314,10 @@ const styles = StyleSheet.create({
 	textInput: {
 		width: "100%",
 		fontSize: 16,
-		borderRadius: 5,
-		marginHorizontal: 8,
+		borderRadius: 8,
 		marginVertical: 8,
 		padding: 14,
-		backgroundColor: "rgba(242,242,247,0.9)",
+		backgroundColor: myColors.dirtyWhite90,
 		// backgroundColor: "lightgreen",
 		fontFamily: "SF",
 	},
@@ -306,7 +333,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "rgba(242,242,247,1)",
+		backgroundColor: myColors.dirtyWhite,
 		borderRadius: 10,
 		padding: 14,
 		marginHorizontal: 8,
@@ -318,7 +345,7 @@ const styles = StyleSheet.create({
 	},
 	signupText: {
 		fontFamily: "SF-bold",
-		color: "#2F3D7E",
+		color: myColors.blue,
 		fontSize: 18,
 	},
 	radioView: {
@@ -329,19 +356,19 @@ const styles = StyleSheet.create({
 	radiobutton: {
 		width: 20,
 		height: 20,
-		backgroundColor: "#F2F2F7",
+		backgroundColor: myColors.dirtyWhite,
 		marginRight: 8,
 		borderWidth: 2,
 		borderRadius: 16,
-		borderColor: "#F2F2F7",
+		borderColor: myColors.dirtyWhite,
 	},
 	radioText: {
-		color: "white",
+		color: myColors.white,
 		fontFamily: "SF",
 		fontSize: 16,
 	},
 	radioButtonSelected: {
-		backgroundColor: redColor,
+		backgroundColor: myColors.red,
 	},
 	loginView: {
 		flexDirection: "row",
@@ -352,17 +379,17 @@ const styles = StyleSheet.create({
 		height: 20,
 	},
 	loginMainText: {
-		color: "white",
+		color: myColors.white,
 		fontFamily: "SF",
 		height: "100%",
 		fontSize: 16,
 	},
 	loginTouchable: {
 		borderBottomWidth: 1,
-		borderBottomColor: "#F2F2F7",
+		borderBottomColor: myColors.dirtyWhite,
 	},
 	loginText: {
-		color: "white",
+		color: myColors.white,
 		fontFamily: "SF",
 		fontSize: 16,
 	},
@@ -374,7 +401,7 @@ const styles = StyleSheet.create({
 	centeredView: {
 		height: "90%",
 		width: "100%",
-		backgroundColor: "#FFFFFF",
+		backgroundColor: myColors.white,
 		position: "absolute",
 		bottom: 0,
 		padding: 10,
@@ -394,12 +421,58 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-around",
 	},
-	dateChild: {},
+
 	modalText: {
 		color: "black",
-		fontFamily: "SF",
+		fontFamily: "SF-medium",
 		fontSize: 16,
 		margin: 8,
 		fontSize: 16,
+	},
+	datePicker: {
+		color: "black",
+		backgroundColor: "rgba(47,61,126,0.8)",
+		borderRadius: 20,
+	},
+	dateButtonsView: {
+		flexDirection: "row",
+		justifyContent: "space-around",
+		padding: 8,
+	},
+	dateCancelButton: {
+		backgroundColor: myColors.blue,
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+		borderRadius: 10,
+		padding: 14,
+		marginHorizontal: 8,
+		width: "40%",
+		shadowColor: "#000000",
+		shadowOpacity: 0.5,
+		shadowRadius: 5,
+		shadowOffset: { width: 3, height: 3 },
+	},
+	dateCancelText: {
+		color: myColors.white,
+		fontFamily: "SF",
+	},
+	dateConfirmButton: {
+		backgroundColor: myColors.blue,
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+		borderRadius: 10,
+		padding: 14,
+		width: "40%",
+		marginHorizontal: 8,
+		shadowColor: "#000000",
+		shadowOpacity: 0.5,
+		shadowRadius: 5,
+		shadowOffset: { width: 3, height: 3 },
+	},
+	dateConfirmText: {
+		color: myColors.white,
+		fontFamily: "SF",
 	},
 });

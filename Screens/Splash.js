@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import Logo from "../Components/Logo";
+import myColors from "../myColors";
 
 const Splash = ({ navigation, route } ) => {
 	const width = 280;

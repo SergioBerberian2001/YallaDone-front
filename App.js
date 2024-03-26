@@ -11,8 +11,12 @@ import Signup from "./Screens/Signup";
 import Login from "./Screens/Login";
 import Form from "./Screens/Form";
 import Onboarding from "./Screens/Onboarding";
+import Home from "./Screens/Home";
 
 const Stack = createNativeStackNavigator();
+
+
+  
 
 SplashScreen.preventAutoHideAsync();
 
@@ -88,6 +92,17 @@ export default function App() {
 					component={Login}
 					options={{
 						title: "Login",
+						headerStyle: {
+							backgroundColor: "#000000",
+						},
+						headerTintColor: "#fff",
+					}}
+				/>
+				<Stack.Screen
+					name="Home"
+					component={Home}
+					options={{
+						title: "Home Screen",
 						headerStyle: {
 							backgroundColor: "#000000",
 						},
