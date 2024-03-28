@@ -11,8 +11,6 @@ import {
 	Platform,
 } from "react-native";
 import React, { useState } from "react";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import Swipeable from "react-native-gesture-handler/Swipeable";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import myColors from "../myColors";
 
@@ -229,9 +227,6 @@ const Signup = (props) => {
 						accessible={false}
 					>
 						<View style={styles.centeredView}>
-							{/* <TouchableOpacity style={styles.swipe}>
-								<Text>------</Text>
-							</TouchableOpacity> */}
 							<Text style={styles.modalText}>Please give us your name:</Text>
 							<TextInput
 								placeholder="First Name"
