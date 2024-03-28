@@ -117,9 +117,9 @@ const Signup = (props) => {
 		toggleDatePicker();
 	};
 	const handleSignupFirst = () => {
+		ToggleModal();
 		if (handleError(user) === "") {
 			setError("");
-			ToggleModal();
 		}
 	};
 
@@ -228,79 +228,74 @@ const Signup = (props) => {
 						onPress={Keyboard.dismiss}
 						accessible={false}
 					>
-						<GestureHandlerRootView style={styles.centeredView}>
-							<Swipeable
-								onSwipeableClose={ToggleModal}
-								style={styles.centeredView}
-							>
-								{/* <TouchableOpacity style={styles.swipe}>
+						<View style={styles.centeredView}>
+							{/* <TouchableOpacity style={styles.swipe}>
 								<Text>------</Text>
 							</TouchableOpacity> */}
-								<Text style={styles.modalText}>Please give us your name:</Text>
-								<TextInput
-									placeholder="First Name"
-									placeholderTextColor="rgba(60,60,67,0.3)"
-									style={styles.textInput}
-									onChangeText={(value) => onUpdateField("firstName", value)}
-									value={user.firstName}
+							<Text style={styles.modalText}>Please give us your name:</Text>
+							<TextInput
+								placeholder="First Name"
+								placeholderTextColor="rgba(60,60,67,0.3)"
+								style={styles.textInput}
+								onChangeText={(value) => onUpdateField("firstName", value)}
+								value={user.firstName}
+							/>
+							<TextInput
+								placeholder="Last Name"
+								placeholderTextColor="rgba(60,60,67,0.3)"
+								style={styles.textInput}
+								onChangeText={(value) => onUpdateField("lastName", value)}
+								value={user.lastName}
+							/>
+							<Text style={styles.modalText}>Date Of Birth:</Text>
+							{showPicker && (
+								<DateTimePicker
+									mode="date"
+									display="spinner"
+									value={date}
+									onChange={onDateChange}
+									style={styles.datePicker}
 								/>
-								<TextInput
-									placeholder="Last Name"
-									placeholderTextColor="rgba(60,60,67,0.3)"
-									style={styles.textInput}
-									onChangeText={(value) => onUpdateField("lastName", value)}
-									value={user.lastName}
-								/>
-								<Text style={styles.modalText}>Date Of Birth:</Text>
-								{showPicker && (
-									<DateTimePicker
-										mode="date"
-										display="spinner"
-										value={date}
-										onChange={onDateChange}
-										style={styles.datePicker}
-									/>
-								)}
-								{showPicker && Platform.OS === "ios" && (
-									<View style={styles.dateButtonsView}>
-										<TouchableOpacity
-											onPress={toggleDatePicker}
-											style={styles.dateCancelButton}
-										>
-											<Text style={styles.dateCancelText}>Cancel</Text>
-										</TouchableOpacity>
-										<TouchableOpacity
-											onPress={confirmIOSDate}
-											style={styles.dateConfirmButton}
-										>
-											<Text style={styles.dateConfirmText}>Confirm</Text>
-										</TouchableOpacity>
-									</View>
-								)}
+							)}
+							{showPicker && Platform.OS === "ios" && (
+								<View style={styles.dateButtonsView}>
+									<TouchableOpacity
+										onPress={toggleDatePicker}
+										style={styles.dateCancelButton}
+									>
+										<Text style={styles.dateCancelText}>Cancel</Text>
+									</TouchableOpacity>
+									<TouchableOpacity
+										onPress={confirmIOSDate}
+										style={styles.dateConfirmButton}
+									>
+										<Text style={styles.dateConfirmText}>Confirm</Text>
+									</TouchableOpacity>
+								</View>
+							)}
 
-								{!showPicker && (
-									<Pressable onPress={toggleDatePicker}>
-										<TextInput
-											style={styles.textInput}
-											placeholder="Birthday"
-											value={dateOfBirth}
-											onChangeText={setDateOfBirth}
-											placeholderTextColor="rgba(60,60,67,0.3)"
-											editable={false}
-											onPressIn={toggleDatePicker}
-										></TextInput>
-									</Pressable>
-								)}
+							{!showPicker && (
+								<Pressable onPress={toggleDatePicker}>
+									<TextInput
+										style={styles.textInput}
+										placeholder="Birthday"
+										value={dateOfBirth}
+										onChangeText={setDateOfBirth}
+										placeholderTextColor="rgba(60,60,67,0.3)"
+										editable={false}
+										onPressIn={toggleDatePicker}
+									></TextInput>
+								</Pressable>
+							)}
 
-								<Text style={styles.errorText}>{error}</Text>
-								<TouchableOpacity
-									style={styles.signupButton}
-									onPress={handleSignupSecond}
-								>
-									<Text style={styles.signupText}>Signup</Text>
-								</TouchableOpacity>
-							</Swipeable>
-						</GestureHandlerRootView>
+							<Text style={styles.errorText}>{error}</Text>
+							<TouchableOpacity
+								style={styles.signupButton}
+								onPress={handleSignupSecond}
+							>
+								<Text style={styles.signupText}>Signup</Text>
+							</TouchableOpacity>
+						</View>
 					</TouchableWithoutFeedback>
 				</Modal>
 			</View>
