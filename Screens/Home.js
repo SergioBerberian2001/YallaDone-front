@@ -13,10 +13,14 @@ import { React, useState } from "react";
 import { MaterialCommunityIcons } from "react-native-vector-icons";
 import myColors from "../myColors";
 import ServiceHome from "../Components/ServiceHome";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import NotificationsSheet from "../Components/NotificationsSheet";
+
 
 const windowWidth = Dimensions.get("window").width;
 const Home = () => {
 	const [activeItemIndex, setActiveItemIndex] = useState(0);
+	const [showNotifications, setShowNotifications] = useState(false);
 	const carousel = [
 		{ id: 0, image: require("../assets/images/carousel.jpeg") },
 		{ id: 1, image: require("../assets/images/carousel.jpeg") },
@@ -105,6 +109,10 @@ const Home = () => {
 		},
 	]);
 
+	const toggleNotifications = () => {
+		setShowNotifications(!showNotifications);
+	};
+
 	function filterByCategory(data, category) {
 		return data.filter((item) => item.category === category);
 	}
@@ -118,163 +126,176 @@ const Home = () => {
 	};
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<ScrollView style={styles.container}>
-				<View style={styles.topView}>
-					<MaterialCommunityIcons name="menu" color={myColors.blue} size={32} />
-					<MaterialCommunityIcons name="bell" color={myColors.blue} size={32} />
-				</View>
-				<View style={styles.carouselView}>
-					<FlatList
-						style={styles.carousel}
-						horizontal
-						data={carousel}
-						keyExtractor={(item) => item.id.toString()}
-						renderItem={({ item }) => (
-							<View style={styles.carouselImageView}>
-								<Image source={item.image} style={styles.carouselImage} />
+		<GestureHandlerRootView style={styles.container}>
+			<SafeAreaView style={styles.container}>
+				<ScrollView style={styles.container}>
+					<View style={styles.topView}>
+						<MaterialCommunityIcons
+							name="menu"
+							color={myColors.blue}
+							size={32}
+						/>
+						<TouchableOpacity onPress={toggleNotifications}>
+							<MaterialCommunityIcons
+								name="bell"
+								color={myColors.blue}
+								size={32}
+							/>
+						</TouchableOpacity>
+					</View>
+					<View style={styles.carouselView}>
+						<FlatList
+							style={styles.carousel}
+							horizontal
+							data={carousel}
+							keyExtractor={(item) => item.id.toString()}
+							renderItem={({ item }) => (
+								<View style={styles.carouselImageView}>
+									<Image source={item.image} style={styles.carouselImage} />
+								</View>
+							)}
+							snapToInterval={windowWidth} // Replace with actual item width
+							decelerationRate="fast"
+							showsHorizontalScrollIndicator={false}
+							onMomentumScrollEnd={(event) => {
+								const currentIndex =
+									event.nativeEvent.contentOffset.x / windowWidth;
+								setActiveItemIndex(Math.floor(currentIndex));
+							}}
+						/>
+						<View style={styles.dotsContainer}>
+							{carousel.map((_, index) => (
+								<View
+									key={index}
+									style={[
+										styles.dot,
+										index === activeItemIndex && styles.activeDot,
+									]}
+								/>
+							))}
+						</View>
+					</View>
+					<View style={styles.emergencyView}>
+						<TouchableOpacity style={styles.emergencyButton}>
+							<Text style={styles.emergencyText}>Emergency Services</Text>
+						</TouchableOpacity>
+					</View>
+					<View style={styles.serviceView}>
+						<View style={styles.serviceTopView}>
+							<Text style={styles.serviceText}>Car Services</Text>
+							<View style={styles.serviceTopView}>
+								<Text style={styles.serviceText}>See More</Text>
+								<MaterialCommunityIcons
+									name="arrow-right"
+									color={myColors.blue}
+									size={18}
+								/>
 							</View>
-						)}
-						snapToInterval={windowWidth} // Replace with actual item width
-						decelerationRate="fast"
-						showsHorizontalScrollIndicator={false}
-						onMomentumScrollEnd={(event) => {
-							const currentIndex =
-								event.nativeEvent.contentOffset.x / windowWidth;
-							setActiveItemIndex(Math.floor(currentIndex));
-						}}
-					/>
-					<View style={styles.dotsContainer}>
-						{carousel.map((_, index) => (
-							<View
-								key={index}
-								style={[
-									styles.dot,
-									index === activeItemIndex && styles.activeDot,
-								]}
-							/>
-						))}
-					</View>
-				</View>
-				<View style={styles.emergencyView}>
-					<TouchableOpacity style={styles.emergencyButton}>
-						<Text style={styles.emergencyText}>Emergency Services</Text>
-					</TouchableOpacity>
-				</View>
-				<View style={styles.serviceView}>
-					<View style={styles.serviceTopView}>
-						<Text style={styles.serviceText}>Car Services</Text>
-						<View style={styles.serviceTopView}>
-							<Text style={styles.serviceText}>See More</Text>
-							<MaterialCommunityIcons
-								name="arrow-right"
-								color={myColors.blue}
-								size={18}
+						</View>
+						<View style={styles.service}>
+							<FlatList
+								style={styles.carousel}
+								horizontal
+								showsHorizontalScrollIndicator={false}
+								data={filterByCategory(services, "Car")}
+								keyExtractor={(item) => item.service_id.toString()}
+								renderItem={({ item }) => (
+									<ServiceHome
+										service={item}
+										onToggleFavorite={onToggleFavorite}
+									/>
+								)}
 							/>
 						</View>
 					</View>
-					<View style={styles.service}>
-						<FlatList
-							style={styles.carousel}
-							horizontal
-							showsHorizontalScrollIndicator={false}
-							data={filterByCategory(services, "Car")}
-							keyExtractor={(item) => item.service_id.toString()}
-							renderItem={({ item }) => (
-								<ServiceHome
-									service={item}
-									onToggleFavorite={onToggleFavorite}
-								/>
-							)}
-						/>
-					</View>
-				</View>
-				<View style={styles.serviceView}>
-					<View style={styles.serviceTopView}>
-						<Text style={styles.serviceText}>Transportation Services</Text>
+					<View style={styles.serviceView}>
 						<View style={styles.serviceTopView}>
-							<Text style={styles.serviceText}>See More</Text>
-							<MaterialCommunityIcons
-								name="arrow-right"
-								color={myColors.blue}
-								size={18}
+							<Text style={styles.serviceText}>Transportation Services</Text>
+							<View style={styles.serviceTopView}>
+								<Text style={styles.serviceText}>See More</Text>
+								<MaterialCommunityIcons
+									name="arrow-right"
+									color={myColors.blue}
+									size={18}
+								/>
+							</View>
+						</View>
+						<View style={styles.service}>
+							<FlatList
+								style={styles.carousel}
+								horizontal
+								showsHorizontalScrollIndicator={false}
+								data={filterByCategory(services, "Transportation")}
+								keyExtractor={(item) => item.service_id.toString()}
+								renderItem={({ item }) => (
+									<ServiceHome
+										service={item}
+										onToggleFavorite={onToggleFavorite}
+									/>
+								)}
 							/>
 						</View>
 					</View>
-					<View style={styles.service}>
-						<FlatList
-							style={styles.carousel}
-							horizontal
-							showsHorizontalScrollIndicator={false}
-							data={filterByCategory(services, "Transportation")}
-							keyExtractor={(item) => item.service_id.toString()}
-							renderItem={({ item }) => (
-								<ServiceHome
-									service={item}
-									onToggleFavorite={onToggleFavorite}
-								/>
-							)}
-						/>
-					</View>
-				</View>
-				<View style={styles.serviceView}>
-					<View style={styles.serviceTopView}>
-						<Text style={styles.serviceText}>Paperwork Services</Text>
+					<View style={styles.serviceView}>
 						<View style={styles.serviceTopView}>
-							<Text style={styles.serviceText}>See More</Text>
-							<MaterialCommunityIcons
-								name="arrow-right"
-								color={myColors.blue}
-								size={18}
+							<Text style={styles.serviceText}>Paperwork Services</Text>
+							<View style={styles.serviceTopView}>
+								<Text style={styles.serviceText}>See More</Text>
+								<MaterialCommunityIcons
+									name="arrow-right"
+									color={myColors.blue}
+									size={18}
+								/>
+							</View>
+						</View>
+						<View style={styles.service}>
+							<FlatList
+								style={styles.carousel}
+								horizontal
+								showsHorizontalScrollIndicator={false}
+								data={filterByCategory(services, "Paperwork")}
+								keyExtractor={(item) => item.service_id.toString()}
+								renderItem={({ item }) => (
+									<ServiceHome
+										service={item}
+										onToggleFavorite={onToggleFavorite}
+									/>
+								)}
 							/>
 						</View>
 					</View>
-					<View style={styles.service}>
-						<FlatList
-							style={styles.carousel}
-							horizontal
-							showsHorizontalScrollIndicator={false}
-							data={filterByCategory(services, "Paperwork")}
-							keyExtractor={(item) => item.service_id.toString()}
-							renderItem={({ item }) => (
-								<ServiceHome
-									service={item}
-									onToggleFavorite={onToggleFavorite}
-								/>
-							)}
-						/>
-					</View>
-				</View>
-				<View style={styles.serviceView}>
-					<View style={styles.serviceTopView}>
-						<Text style={styles.serviceText}>Delivery Services</Text>
+					<View style={styles.serviceView}>
 						<View style={styles.serviceTopView}>
-							<Text style={styles.serviceText}>See More</Text>
-							<MaterialCommunityIcons
-								name="arrow-right"
-								color={myColors.blue}
-								size={18}
+							<Text style={styles.serviceText}>Delivery Services</Text>
+							<View style={styles.serviceTopView}>
+								<Text style={styles.serviceText}>See More</Text>
+								<MaterialCommunityIcons
+									name="arrow-right"
+									color={myColors.blue}
+									size={18}
+								/>
+							</View>
+						</View>
+						<View style={styles.service}>
+							<FlatList
+								style={styles.carousel}
+								horizontal
+								showsHorizontalScrollIndicator={false}
+								data={filterByCategory(services, "Delivery")}
+								keyExtractor={(item) => item.service_id.toString()}
+								renderItem={({ item }) => (
+									<ServiceHome
+										service={item}
+										onToggleFavorite={onToggleFavorite}
+									/>
+								)}
 							/>
 						</View>
 					</View>
-					<View style={styles.service}>
-						<FlatList
-							style={styles.carousel}
-							horizontal
-							showsHorizontalScrollIndicator={false}
-							data={filterByCategory(services, "Delivery")}
-							keyExtractor={(item) => item.service_id.toString()}
-							renderItem={({ item }) => (
-								<ServiceHome
-									service={item}
-									onToggleFavorite={onToggleFavorite}
-								/>
-							)}
-						/>
-					</View>
-				</View>
-			</ScrollView>
-		</SafeAreaView>
+				</ScrollView>
+			</SafeAreaView>
+			{ showNotifications && <NotificationsSheet onToggle={toggleNotifications}/>}
+		</GestureHandlerRootView>
 	);
 };
 
