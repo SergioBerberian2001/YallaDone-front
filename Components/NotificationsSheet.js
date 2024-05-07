@@ -8,6 +8,7 @@ import Animated, {
 	withTiming,
 	call,
 } from "react-native-reanimated";
+import myColors from "../myColors";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const MAX_TRANSLATE_Y = -SCREEN_HEIGHT + 50;
@@ -35,9 +36,7 @@ const NotificationsSheet = (props) => {
 			} else
 					if (translateY.value > -SCREEN_HEIGHT / 3) {
 						translateY.value = withSpring(0, { damping: 50 });
-                        // setTimeout(() => {
-                        //     toggleSheet();
-                        //   }, 2000);
+                        
 					}
 			
 		});
@@ -67,7 +66,7 @@ const styles = StyleSheet.create({
 	bottmSheetCont: {
 		height: SCREEN_HEIGHT,
 		width: "100%",
-		backgroundColor: "#ccc",
+		backgroundColor: myColors.dirtyWhite,
 		position: "absolute",
 		top: SCREEN_HEIGHT,
 		borderRadius: 25,
@@ -75,7 +74,7 @@ const styles = StyleSheet.create({
 	line: {
 		width: 75,
 		height: 4,
-		backgroundColor: "red",
+		backgroundColor: myColors.blue,
 		alignSelf: "center",
 		marginVertical: 15,
 		borderRadius: 2,

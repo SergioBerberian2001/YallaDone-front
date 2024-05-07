@@ -14,135 +14,37 @@ import { MaterialCommunityIcons } from "react-native-vector-icons";
 import myColors from "../myColors";
 import ServiceHome from "../Components/ServiceHome";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import NotificationsSheet from "../Components/NotificationsSheet";
+import { useNavigation } from '@react-navigation/native';
+import services from "../assets/data/services";
 
 
 const windowWidth = Dimensions.get("window").width;
-const Home = () => {
+const Home = ({ navigation, route }) => {
+	const navigations = useNavigation();
 	const [activeItemIndex, setActiveItemIndex] = useState(0);
-	const [showNotifications, setShowNotifications] = useState(false);
 	const carousel = [
 		{ id: 0, image: require("../assets/images/carousel.jpeg") },
 		{ id: 1, image: require("../assets/images/carousel.jpeg") },
 		{ id: 2, image: require("../assets/images/splash-bg.jpg") },
 	];
-	const [services, setServices] = useState([
-		{
-			service_id: 0,
-			service_name: "Car Detailing",
-			service_description:
-				"This service is made to help you make car detailing for your car while you are relaxed and doing your thing without worrying about it",
-			category: "Car",
-			price: 20.0,
-			isEmergency: false,
-			isFav: false,
-		},
-		{
-			service_id: 1,
-			service_name: "Oil Change",
-			service_description:
-				"This service is made to help you make car detailing for your car while you are relaxed and doing your thing without worrying about it",
-			category: "Car",
-			price: 20.0,
-			isEmergency: false,
-			isFav: false,
-		},
-		{
-			service_id: 2,
-			service_name: "Personal Driver",
-			service_description:
-				"This service is made to help you make car detailing for your car while you are relaxed and doing your thing without worrying about it",
-			category: "Transportation",
-			price: 20.0,
-			isEmergency: false,
-			isFav: false,
-		},
-		{
-			service_id: 3,
-			service_name: "Personal Driver",
-			service_description:
-				"This service is made to help you make car detailing for your car while you are relaxed and doing your thing without worrying about it",
-			category: "Transportation",
-			price: 20.0,
-			isEmergency: false,
-			isFav: false,
-		},
-		{
-			service_id: 4,
-			service_name: "Paperwork",
-			service_description:
-				"This service is made to help you make car detailing for your car while you are relaxed and doing your thing without worrying about it",
-			category: "Paperwork",
-			price: 20.0,
-			isEmergency: false,
-			isFav: false,
-		},
-		{
-			service_id: 5,
-			service_name: "Paperwork for Car",
-			service_description:
-				"This service is made to help you make car detailing for your car while you are relaxed and doing your thing without worrying about it",
-			category: "Paperwork",
-			price: 20.0,
-			isEmergency: false,
-			isFav: false,
-		},
-		{
-			service_id: 6,
-			service_name: "Grocery Store Delivery",
-			service_description:
-				"This service is made to help you make car detailing for your car while you are relaxed and doing your thing without worrying about it",
-			category: "Delivery",
-			price: 20.0,
-			isEmergency: false,
-			isFav: false,
-		},
-		{
-			service_id: 7,
-			service_name: "Package Delivery",
-			service_description:
-				"This service is made to help you make car detailing for your car while you are relaxed and doing your thing without worrying about it",
-			category: "Delivery",
-			price: 20.0,
-			isEmergency: false,
-			isFav: false,
-		},
-	]);
-
-	const toggleNotifications = () => {
-		setShowNotifications(!showNotifications);
-	};
 
 	function filterByCategory(data, category) {
 		return data.filter((item) => item.category === category);
 	}
 
 	const onToggleFavorite = (serviceId, isFav) => {
-		setServices(
-			services.map((service) =>
-				service.service_id === serviceId ? { ...service, isFav } : service
-			)
-		);
+		// setServices(
+		// 	services.map((service) =>
+		// 		service.service_id === serviceId ? { ...service, isFav } : service
+		// 	)
+		// );
 	};
 
 	return (
-		<GestureHandlerRootView style={styles.container}>
+	
 			<SafeAreaView style={styles.container}>
 				<ScrollView style={styles.container}>
-					<View style={styles.topView}>
-						<MaterialCommunityIcons
-							name="menu"
-							color={myColors.blue}
-							size={32}
-						/>
-						<TouchableOpacity onPress={toggleNotifications}>
-							<MaterialCommunityIcons
-								name="bell"
-								color={myColors.blue}
-								size={32}
-							/>
-						</TouchableOpacity>
-					</View>
+					
 					<View style={styles.carouselView}>
 						<FlatList
 							style={styles.carousel}
@@ -294,8 +196,7 @@ const Home = () => {
 					</View>
 				</ScrollView>
 			</SafeAreaView>
-			{ showNotifications && <NotificationsSheet onToggle={toggleNotifications}/>}
-		</GestureHandlerRootView>
+	
 	);
 };
 
@@ -373,10 +274,7 @@ const styles = StyleSheet.create({
 		fontFamily: "SF-medium",
 		fontSize: 16,
 	},
-	service: {
-		// shadowColor: "#000000",
-		// shadowOpacity: 0.5,
-		// shadowRadius: 5,
-		// shadowOffset: { width: 3, height: 3 },
+	carouselView: {
+		marginTop:8,
 	},
 });

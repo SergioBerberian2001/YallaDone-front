@@ -5,15 +5,46 @@ import {
 	View,
 	ImageBackground,
 	TouchableOpacity,
+	useWindowDimensions
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import Logo from "../Components/Logo";
 import myColors from "../myColors";
+import axios from "axios";
 
 const Splash = ({ navigation, route } ) => {
-	const width = 280;
-	const height = 35;
+	const { width } = useWindowDimensions();
+	const height = width / 8;
 	// const [isSigningUp,setIsSigningUp] = useState(false)
+	const [mydata,setmydata] = useState()
+
+	useEffect(() => {
+		console.log("hello1");
+		const fetchData = async () => {
+			console.log("hello2");
+			try {
+				console.log("hello3");
+				const response = await axios.get('http://192.168.1.112:8000/api/login');
+				console.log("hel222lo");
+				console.log("hello");
+				console.log(response.data);
+				setmydata(response.data);
+			} catch (error) {
+				console.error('Error fetching data:', error);
+				if (error.response) {
+					console.error('Status:', error.response.status);
+					console.error('Data:', error.response.data);
+				}
+				console.log(mydata);
+			}
+		};
+		
+		fetchData();
+	}, []);
+	
+	
+
+	  
 
 	const navigateToSignup = () => {
 		// setIsSigningUp(true),
@@ -35,7 +66,7 @@ const Splash = ({ navigation, route } ) => {
 			style={styles.background}
 		>
 			<View style={styles.main}>
-				<Logo width={width} height={height} />
+				<Logo width={width * 0.75} height={height * 0.75} />
 				<Text style={styles.welcomeText}>
 					Welcome to YALLA DONE. get ready to make your life easier. Get all the
 					services you want, whenever you want. Sign up to get started

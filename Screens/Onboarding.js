@@ -4,89 +4,92 @@ import {
 	Text,
 	TouchableOpacity,
 	View,
-  LayoutAnimation
+	LayoutAnimation,
+	FlatList,
+	Animated,
+	Pressable,
+	ActivityIndicator,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import Logo from "../Components/Logo";
 import myColors from "../myColors";
 import OnBoardingContent from "../Components/OnBoardingContent";
+import slides from "../assets/data/slides";
+import Paginator from "../Components/Paginator";
 
 const Onboarding = ({ navigation, route }) => {
 	const width = 280;
 	const height = 35;
-	const [countNumber, setCountNumber] = useState(0);
-	const images = [
-		{
-			image: require("../assets/images/onboarding/onboarding-1.png"),
-			text: "YallaDone can help you with your boring daily tasks by providing you their best services that can help you save time or even take your day off to do whatever you want, instead of working",
-		},
-		{
-			image: require("../assets/images/onboarding/onboarding-2.png"),
-			text: "YallaDone can help you with your boring daily tasks by providing you their best services that can help you save time or even take your day off to do whatever you want, instead of working",
-		},
-		{
-			image: require("../assets/images/onboarding/onboarding-3.png"),
-			text: "YallaDone can help you with your boring daily tasks by providing you their best services that can help you save time or even take your day off to do whatever you want, instead of working",
-		},
-		{
-			image: require("../assets/images/onboarding/onboarding-4.png"),
-			text: "YallaDone can help you with your boring daily tasks by providing you their best services that can help you save time or even take your day off to do whatever you want, instead of working",
-		},
-		{
-			image: require("../assets/images/onboarding/onboarding-5.png"),
-			text: "YallaDone can help you with your boring daily tasks by providing you their best services that can help you save time or even take your day off to do whatever you want, instead of working",
-		},
-	];
+	const [currentIndex, setCurrentIndex] = useState(0);
+	const [isLast, setIsLast] = useState(false);
+	const scrollX = useRef(new Animated.Value(0)).current;
+	const slidesRef = useRef(null);
 
-	const handleNext = () => {
-    LayoutAnimation.Presets.easeInEaseOut;
-		setCountNumber(countNumber + 1);
+	const viewableItemsChanged = useRef(({ viewableItems }) => {
+		setCurrentIndex(viewableItems[0].index);
+	}).current;
+
+	const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
+
+	const scrollTo = () => {
+		if (currentIndex < slides.length - 1) {
+			slidesRef.current.scrollToIndex({ index: currentIndex + 1 });
+			if (currentIndex === 3) {
+				setIsLast(true);
+			}
+		} else {
+			handleNavigation();
+		}
 	};
 
-	const handleSkip = () => {
-		navigation.navigate("Home");
+	const handleNavigation = () => {
+		navigation.navigate("DrawerScreen");
 	};
 
-  const renderDots = () => {
-    return (
-      <View style={styles.dotsView}>
-        {images.map((_, index) => (
-          <View key={index} style={index === countNumber ? styles.activeDot : styles.dot} />
-        ))}
-      </View>
-    );
-  };
-
-  useEffect(() => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); // Apply transition globally
-  }, [])
-
+	if (!slides) {
+		return (
+			<SafeAreaView style={styles.container}>
+				<ActivityIndicator size="large" color="#00ff00" />
+			</SafeAreaView>
+		);
+	}
 	return (
 		<SafeAreaView style={styles.container}>
-			<View style={styles.logoView}>
+			<View style={styles.logo}>
 				<Logo width={width} height={height} />
 			</View>
-      <View style={styles.componentView}>
-			<OnBoardingContent screen={images[countNumber]} />
-      </View>
-			{renderDots()}
-			<View style={styles.buttonsView}>
-				<TouchableOpacity>
-					<Text style={styles.buttonsText} onPress={handleSkip}>
-						Skip
-					</Text>
+			<View style={styles.listView}>
+				<FlatList
+					data={slides}
+					renderItem={({ item }) => <OnBoardingContent item={item} />}
+					horizontal
+					showsHorizontalScrollIndicator={false}
+					pagingEnabled
+					bounce={false}
+					onScroll={Animated.event(
+						[{ nativeEvent: { contentOffset: { x: scrollX } } }],
+						{ useNativeDriver: false }
+					)}
+					scrollEventThrottle={32}
+					onViewableItemsChanged={viewableItemsChanged}
+					viewabilityConfig={viewConfig}
+					ref={slidesRef}
+				/>
+			</View>
+
+			<Paginator data={slides} scrollX={scrollX} />
+
+			<View style={styles.bottomView}>
+				<TouchableOpacity style={styles.buttons} onPress={handleNavigation}>
+					<Text style={styles.buttonsText}>Skip</Text>
 				</TouchableOpacity>
-				{countNumber == 4 ? (
-					<TouchableOpacity>
-						<Text style={styles.buttonsText} onPress={handleSkip}>
-							Done
-						</Text>
+				{isLast ? (
+					<TouchableOpacity onPress={handleNavigation} style={styles.buttons}>
+						<Text style={styles.buttonsText}>Done</Text>
 					</TouchableOpacity>
 				) : (
-					<TouchableOpacity>
-						<Text style={styles.buttonsText} onPress={handleNext}>
-							Next
-						</Text>
+					<TouchableOpacity onPress={scrollTo} style={styles.buttons}>
+						<Text style={styles.buttonsText}>Next</Text>
 					</TouchableOpacity>
 				)}
 			</View>
@@ -100,47 +103,28 @@ const styles = StyleSheet.create({
 	container: {
 		backgroundColor: myColors.white,
 		flex: 1,
-		justifyContent: "space-between",
+		justifyContent: "space-around",
 		alignItems: "center",
+		paddingVertical: 20,
 	},
-	buttonsView: {
+	logo: {
+		marginVertical: 12,
+	},
+	listView: {
+		flex: 2,
+	},
+	bottomView: {
+		width: "100%",
 		flexDirection: "row",
 		justifyContent: "space-between",
-		width: "100%",
-		paddingHorizontal: 32,
-		paddingVertical: 16,
+		padding: 20,
 	},
 	buttonsText: {
-		color: myColors.blue,
-		fontSize: 20,
 		fontFamily: "SF-medium",
+		fontSize: 18,
+		color: myColors.blue,
 	},
-	dotsView: {
-		flexDirection: "row",
-		justifyContent: "center",
-		alignItems: "center",
+	buttons: {
+		padding: 6,
 	},
-	dot: {
-		height: 6,
-		width: 6,
-		backgroundColor: "black",
-		margin: 8,
-		borderRadius: 10,
-	},
-	activeDot: {
-		height: 24,
-		width: 6,
-		backgroundColor: "black",
-		margin: 8,
-		borderRadius: 10,
-	},
-	logoView: {
-		paddingTop: 16,
-	},
-  componentView:{
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height:500,
-  }
 });

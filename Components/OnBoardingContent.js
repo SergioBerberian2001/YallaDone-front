@@ -1,37 +1,42 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
+import myColors from '../myColors';
 
-const OnBoardingContent = ({ screen }) => {
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
+
+const OnBoardingContent = ({ item }) => {
 
   
     return (
-      <View style={styles.view}>
+      <View style={[styles.container, {SCREEN_WIDTH}]}>
         <Image
-          source={screen.image}
-          style={styles.image}
+          source={item.image}
+          style={[styles.image, {SCREEN_WIDTH, resizeMode:'contain'}]}
         />
-        <Text style={styles.text}>{screen.text}</Text>
+        
+        <View style={{flex:0.3}}>
+          <Text style={styles.text}>{item.text}</Text>
+        </View>
       </View>
     );
   };
 
 const styles = StyleSheet.create({
-  view: {
+  container: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
-    height:500,
+    width: SCREEN_WIDTH,
     paddingHorizontal: 16,
   },
   image: {
-    width: '100%',
-    height: '70%',
-    
+    flex:0.7,
+    justifyContent:"center",
   },
   text: {
     fontSize: 20,
-    fontFamily: 'SF', 
+    fontFamily: 'SF-medium', 
     textAlign: 'center', 
+    color:myColors.blue
   },
 });
 

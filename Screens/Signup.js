@@ -10,9 +10,11 @@ import {
 	Pressable,
 	Platform,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import myColors from "../myColors";
+import axios from "axios";
+// import { differenceInYears } from 'date-fns';
 
 const Signup = (props) => {
 	const { onNavigate } = props;
@@ -22,17 +24,43 @@ const Signup = (props) => {
 	const [error, setError] = useState("");
 	const [modalVisible, setModalVisible] = useState(false);
 	const [user, setUser] = useState({
-		id: "",
-		firstName: "",
-		lastName: "",
+		user_name: "",
+		user_lastname: "",
 		email: "",
 		password: "",
 		confirmPass: "",
-		birthday: "",
-		phoneNumber: "",
+		age: "",
+		phone_number: "",
 	});
 	const [acceptTerms, setAcceptTerms] = useState(false);
 	const [receiveEmails, setReceiveEmails] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const [apiResponse, setApiResponse] = useState([]);
+	const [loadingError, setLoadingError] = useState(false);
+
+	const handleSignup = async (userInfo) => {
+		try {
+			const userData = {
+				user_name: userInfo.user_name,
+				user_lastname: userInfo.user_lastname,
+				email: userInfo.email,
+				age: userInfo.age,
+				phone_number: userInfo.phone_number,
+				password: userInfo.password,
+			};
+	
+			const response = await axios.post(
+				"http://192.168.1.112:8000/api/login/store",
+				userData
+			);
+	
+			console.log("Response:", response.data);
+			// Handle success response here
+		} catch (error) {
+			console.error("Error:", error);
+			throw error; // Throw the error to be caught by the caller
+		}
+	};
 
 	const handleToggleAcceptTerms = () => {
 		setAcceptTerms(!acceptTerms);
@@ -56,7 +84,7 @@ const Signup = (props) => {
 
 		if (!emailRegex.test(userError.email)) {
 			message = "Please enter a valid email";
-		} else if (userError.phoneNumber.length !== 8) {
+		} else if (userError.phone_number.length !== 8) {
 			message = "Phone must be at least 8 numbers";
 		} else if (!passwordRegex.test(userError.password)) {
 			message =
@@ -74,13 +102,13 @@ const Signup = (props) => {
 		let message = "";
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
-		if (userError.firstName.length === 0) {
+		if (userError.user_name.length === 0) {
 			message = "First name can't be empty";
-		} else if (userError.lastName.length === 0) {
+		} else if (userError.user_lastname.length === 0) {
 			message = "Last name can't be empty";
-		} else if (userError.firstName.length >= 20) {
+		} else if (userError.user_name.length >= 20) {
 			message = "First name must be shorter than 20 characters";
-		} else if (userError.lastName.length >= 20) {
+		} else if (userError.user_lastname.length >= 20) {
 			message = "Last name must be shorter than 20 characters";
 		}
 		setError(message);
@@ -96,45 +124,79 @@ const Signup = (props) => {
 	};
 
 	const onDateChange = ({ type }, selectedDate) => {
-		if (type == "set") {
+		if (type === "set") {
 			const currentDate = selectedDate;
 			setDate(currentDate);
 			if (Platform.OS === "android") {
 				toggleDatePicker();
 				setDateOfBirth(currentDate.toDateString());
-				user.birthday == currentDate.toDateString();
+
+				// Calculate age
+				const age = calculateAge(currentDate);
+				setUser((prevUser) => ({
+					...prevUser,
+					age: currentDate.toDateString(),
+					age,
+				}));
+				console.log(user.age);
 			}
 		} else {
 			toggleDatePicker();
 		}
 	};
 
+	const calculateAge = (birthdate) => {
+		const today = new Date();
+		const birthDate = new Date(birthdate);
+		let age = today.getFullYear() - birthDate.getFullYear();
+		const month = today.getMonth() - birthDate.getMonth();
+
+		// If the birth month has not occurred yet, decrease the age by 1
+		if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+			age--;
+		}
+
+		return age;
+	};
+
 	const confirmIOSDate = () => {
 		setDateOfBirth(date.toDateString());
-		setUser.birthday == date.toDateString();
+
+		const age = calculateAge(date);
+		setUser((prevUser) => ({ ...prevUser, age }));
+		console.log(age)
 		toggleDatePicker();
 	};
+
 	const handleSignupFirst = () => {
-		ToggleModal();
+		
 		if (handleError(user) === "") {
 			setError("");
+			ToggleModal();
 		}
 	};
 
-	const handleSignupSecond = () => {
+	const handleSignupSecond = async () => {
 		if (handleErrorModal(user) === "") {
-			console.log(user);
-			// setUser({
-			// 	id: "",
-			// 	email: "",
-			// 	password: "",
-			// 	confirmPass: "",
-			// 	firstName: "",
-			// 	lastName: "",
-			// });
-			setError("");
-			ToggleModal();
-			onNavigate();
+			try {
+				// Assuming handleSignup is an async function
+				await handleSignup(user);
+				console.log(user);
+				setUser({
+					id: "",
+					email: "",
+					password: "",
+					confirmPass: "",
+					user_name: "",
+					user_lastname: "",
+				});
+				setError("");
+				ToggleModal();
+				onNavigate();
+			} catch (error) {
+				// Handle errors from handleSignup if needed
+				console.error("Error occurred during signup:", error);
+			}
 		}
 	};
 
@@ -154,8 +216,8 @@ const Signup = (props) => {
 						placeholder="Phone Number"
 						placeholderTextColor="rgba(60,60,67,0.3)"
 						style={styles.textInput}
-						onChangeText={(value) => onUpdateField("phoneNumber", value)}
-						value={user.phoneNumber}
+						onChangeText={(value) => onUpdateField("phone_number", value)}
+						value={user.phone_number}
 						keyboardType="numeric"
 					/>
 					<TextInput
@@ -232,15 +294,15 @@ const Signup = (props) => {
 								placeholder="First Name"
 								placeholderTextColor="rgba(60,60,67,0.3)"
 								style={styles.textInput}
-								onChangeText={(value) => onUpdateField("firstName", value)}
-								value={user.firstName}
+								onChangeText={(value) => onUpdateField("user_name", value)}
+								value={user.user_name}
 							/>
 							<TextInput
 								placeholder="Last Name"
 								placeholderTextColor="rgba(60,60,67,0.3)"
 								style={styles.textInput}
-								onChangeText={(value) => onUpdateField("lastName", value)}
-								value={user.lastName}
+								onChangeText={(value) => onUpdateField("user_lastname", value)}
+								value={user.user_lastname}
 							/>
 							<Text style={styles.modalText}>Date Of Birth:</Text>
 							{showPicker && (
