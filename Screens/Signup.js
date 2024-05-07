@@ -2,33 +2,65 @@ import {
 	StyleSheet,
 	Text,
 	View,
-	ImageBackground,
 	TextInput,
 	TouchableWithoutFeedback,
 	Keyboard,
 	TouchableOpacity,
+	Modal,
+	Pressable,
+	Platform,
 } from "react-native";
-import React, { useState } from "react";
-import Logo from "../Components/Logo";
+import React, { useState, useEffect } from "react";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import myColors from "../myColors";
+import axios from "axios";
+// import { differenceInYears } from 'date-fns';
 
-const redColor="#FD2121";
-
-const Signup = () => {
-	const width = 280;
-	const height = 35;
+const Signup = (props) => {
+	const { onNavigate } = props;
+	const [dateOfBirth, setDateOfBirth] = useState("");
+	const [date, setDate] = useState(new Date());
+	const [showPicker, setShowPicker] = useState(false);
 	const [error, setError] = useState("");
+	const [modalVisible, setModalVisible] = useState(false);
 	const [user, setUser] = useState({
-		id: "",
-		firstName: "",
-		lastName: "",
+		user_name: "",
+		user_lastname: "",
 		email: "",
 		password: "",
 		confirmPass: "",
-		birthday: "",
-		phoneNumber: "",
+		age: "",
+		phone_number: "",
 	});
 	const [acceptTerms, setAcceptTerms] = useState(false);
 	const [receiveEmails, setReceiveEmails] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const [apiResponse, setApiResponse] = useState([]);
+	const [loadingError, setLoadingError] = useState(false);
+
+	const handleSignup = async (userInfo) => {
+		try {
+			const userData = {
+				user_name: userInfo.user_name,
+				user_lastname: userInfo.user_lastname,
+				email: userInfo.email,
+				age: userInfo.age,
+				phone_number: userInfo.phone_number,
+				password: userInfo.password,
+			};
+	
+			const response = await axios.post(
+				"http://192.168.1.112:8000/api/login/store",
+				userData
+			);
+	
+			console.log("Response:", response.data);
+			// Handle success response here
+		} catch (error) {
+			console.error("Error:", error);
+			throw error; // Throw the error to be caught by the caller
+		}
+	};
 
 	const handleToggleAcceptTerms = () => {
 		setAcceptTerms(!acceptTerms);
@@ -52,132 +84,278 @@ const Signup = () => {
 
 		if (!emailRegex.test(userError.email)) {
 			message = "Please enter a valid email";
-		} else if (userError.phoneNumber.length !== 8) {
+		} else if (userError.phone_number.length !== 8) {
 			message = "Phone must be at least 8 numbers";
 		} else if (!passwordRegex.test(userError.password)) {
 			message =
 				"Password must contain at least 8 characters with one capital letter and one number";
 		} else if (userError.password !== userError.confirmPass) {
 			message = "Passwords don't match";
-		} else if (userError.lastName.length === 0) {
-			message = "Last name can't be empty";
-		} else if (userError.lastName.length >= 20) {
-			message = "Last name must be shorter than 20 characters";
-		} else if (userError.firstName.length === 0) {
-			message = "First name can't be empty";
-		} else if (userError.firstName.length >= 20) {
-			message = "First name must be shorter than 20 characters";
+		} else if (acceptTerms == false) {
+			message = "You must accept the Terms and Conditions";
 		}
 		setError(message);
 		return message;
 	};
 
-	const handleSignup = () => {
+	const handleErrorModal = (userError) => {
+		let message = "";
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+		if (userError.user_name.length === 0) {
+			message = "First name can't be empty";
+		} else if (userError.user_lastname.length === 0) {
+			message = "Last name can't be empty";
+		} else if (userError.user_name.length >= 20) {
+			message = "First name must be shorter than 20 characters";
+		} else if (userError.user_lastname.length >= 20) {
+			message = "Last name must be shorter than 20 characters";
+		}
+		setError(message);
+		return message;
+	};
+
+	const ToggleModal = () => {
+		setModalVisible(!modalVisible);
+	};
+
+	const toggleDatePicker = () => {
+		setShowPicker(!showPicker);
+	};
+
+	const onDateChange = ({ type }, selectedDate) => {
+		if (type === "set") {
+			const currentDate = selectedDate;
+			setDate(currentDate);
+			if (Platform.OS === "android") {
+				toggleDatePicker();
+				setDateOfBirth(currentDate.toDateString());
+
+				// Calculate age
+				const age = calculateAge(currentDate);
+				setUser((prevUser) => ({
+					...prevUser,
+					age: currentDate.toDateString(),
+					age,
+				}));
+				console.log(user.age);
+			}
+		} else {
+			toggleDatePicker();
+		}
+	};
+
+	const calculateAge = (birthdate) => {
+		const today = new Date();
+		const birthDate = new Date(birthdate);
+		let age = today.getFullYear() - birthDate.getFullYear();
+		const month = today.getMonth() - birthDate.getMonth();
+
+		// If the birth month has not occurred yet, decrease the age by 1
+		if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
+			age--;
+		}
+
+		return age;
+	};
+
+	const confirmIOSDate = () => {
+		setDateOfBirth(date.toDateString());
+
+		const age = calculateAge(date);
+		setUser((prevUser) => ({ ...prevUser, age }));
+		console.log(age)
+		toggleDatePicker();
+	};
+
+	const handleSignupFirst = () => {
+		
 		if (handleError(user) === "") {
-			setUser({
-				id: "",
-				email: "",
-				password: "",
-				confirmPass: "",
-			});
 			setError("");
+			ToggleModal();
+		}
+	};
+
+	const handleSignupSecond = async () => {
+		if (handleErrorModal(user) === "") {
+			try {
+				// Assuming handleSignup is an async function
+				await handleSignup(user);
+				console.log(user);
+				setUser({
+					id: "",
+					email: "",
+					password: "",
+					confirmPass: "",
+					user_name: "",
+					user_lastname: "",
+				});
+				setError("");
+				ToggleModal();
+				onNavigate();
+			} catch (error) {
+				// Handle errors from handleSignup if needed
+				console.error("Error occurred during signup:", error);
+			}
 		}
 	};
 
 	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-			<ImageBackground
-				source={require("../assets/images/splash-bg.jpg")}
-				style={styles.background}
-			>
-				<View style={styles.logoView}>
-					<Logo width={width} height={height} />
+			<View>
+				<View style={styles.formView}>
+					<Text style={styles.errorText}>{error}</Text>
+					<TextInput
+						placeholder="Email"
+						placeholderTextColor="rgba(60,60,67,0.3)"
+						style={styles.textInput}
+						onChangeText={(value) => onUpdateField("email", value)}
+						value={user.email}
+					/>
+					<TextInput
+						placeholder="Phone Number"
+						placeholderTextColor="rgba(60,60,67,0.3)"
+						style={styles.textInput}
+						onChangeText={(value) => onUpdateField("phone_number", value)}
+						value={user.phone_number}
+						keyboardType="numeric"
+					/>
+					<TextInput
+						secureTextEntry
+						placeholder="Password"
+						placeholderTextColor="rgba(60,60,67,0.3)"
+						style={styles.textInput}
+						onChangeText={(value) => onUpdateField("password", value)}
+						value={user.password}
+					/>
+					<TextInput
+						secureTextEntry
+						placeholder="Confirm Password"
+						placeholderTextColor="rgba(60,60,67,0.3)"
+						style={styles.textInput}
+						onChangeText={(value) => onUpdateField("confirmPass", value)}
+						value={user.confirmPass}
+					/>
 				</View>
-				<View style={styles.container}>
-					<View style={styles.swapMainContainer}>
+				<TouchableOpacity
+					style={styles.signupButton}
+					onPress={handleSignupFirst}
+				>
+					<Text style={styles.signupText}>Signup</Text>
+				</TouchableOpacity>
+				<View>
+					<View style={styles.radioView}>
 						<TouchableOpacity
-							style={styles.swapContainerRegister}
-							onPress={() => changeForm(true)}
-						>
-							<Text style={styles.swapText}>Register</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.swapContainerLogin}>
-							<Text style={styles.swapText}>Login</Text>
+							style={[
+								styles.radiobutton,
+								acceptTerms && styles.radioButtonSelected,
+							]}
+							onPress={handleToggleAcceptTerms}
+						/>
+						<Text style={styles.radioText}>
+							I accept the term of service and the privacy policy
+						</Text>
+					</View>
+					<View style={styles.radioView}>
+						<TouchableOpacity
+							style={[
+								styles.radiobutton,
+								receiveEmails && styles.radioButtonSelected,
+							]}
+							onPress={handleToggleReceiveEmails}
+						/>
+						<Text style={styles.radioText}>
+							I would like to receive emails about news and events
+						</Text>
+					</View>
+					<View style={styles.loginView}>
+						<Text style={styles.loginMainText}>Already have an account? </Text>
+						<TouchableOpacity style={styles.loginTouchable}>
+							<Text style={styles.loginText}>Login</Text>
 						</TouchableOpacity>
 					</View>
-					<View style={styles.formView}>
-						<Text style={styles.errorText}>{error}</Text>
-						<TextInput
-							placeholder="Email"
-							placeholderTextColor="rgba(60,60,67,0.3)"
-							style={styles.textInput}
-							onChangeText={(value) => onUpdateField("email", value)}
-							value={user.email}
-						/>
-						<TextInput
-							placeholder="Phone Number"
-							placeholderTextColor="rgba(60,60,67,0.3)"
-							style={styles.textInput}
-							onChangeText={(value) => onUpdateField("phoneNumber", value)}
-							value={user.phoneNumber}
-							keyboardType="numeric"
-						/>
-						<TextInput
-							secureTextEntry
-							placeholder="Password"
-							placeholderTextColor="rgba(60,60,67,0.3)"
-							style={styles.textInput}
-							onChangeText={(value) => onUpdateField("password", value)}
-							value={user.password}
-						/>
-						<TextInput
-							secureTextEntry
-							placeholder="Confirm Password"
-							placeholderTextColor="rgba(60,60,67,0.3)"
-							style={styles.textInput}
-							onChangeText={(value) => onUpdateField("confirmPass", value)}
-							value={user.confirmPass}
-						/>
-					</View>
-					<TouchableOpacity style={styles.signupButton} onPress={handleSignup}>
-						<Text style={styles.signupText}>Signup</Text>
-					</TouchableOpacity>
-					<View>
-						<View style={styles.radioView}>
-							<TouchableOpacity
-								style={[
-									styles.radiobutton,
-									acceptTerms && styles.radioButtonSelected,
-								]}
-								onPress={handleToggleAcceptTerms}
+				</View>
+				<Modal
+					animationType="slide"
+					transparent={true}
+					visible={modalVisible}
+					onRequestClose={() => {
+						Alert.alert("Modal has been closed.");
+						ToggleModal();
+					}}
+				>
+					<TouchableWithoutFeedback
+						onPress={Keyboard.dismiss}
+						accessible={false}
+					>
+						<View style={styles.centeredView}>
+							<Text style={styles.modalText}>Please give us your name:</Text>
+							<TextInput
+								placeholder="First Name"
+								placeholderTextColor="rgba(60,60,67,0.3)"
+								style={styles.textInput}
+								onChangeText={(value) => onUpdateField("user_name", value)}
+								value={user.user_name}
 							/>
-							<Text style={styles.radioText}>
-								I accept the term of service and the privacy policy
-							</Text>
-						</View>
-						<View style={styles.radioView}>
-							<TouchableOpacity
-								style={[
-									styles.radiobutton,
-									receiveEmails && styles.radioButtonSelected,
-								]}
-								onPress={handleToggleReceiveEmails}
+							<TextInput
+								placeholder="Last Name"
+								placeholderTextColor="rgba(60,60,67,0.3)"
+								style={styles.textInput}
+								onChangeText={(value) => onUpdateField("user_lastname", value)}
+								value={user.user_lastname}
 							/>
-							<Text style={styles.radioText}>
-								I would like to receive emails about news and events
-							</Text>
-						</View>
-						<View style={styles.loginView}>
-							<Text style={styles.loginMainText}>
-								Already have an account?{" "}
-							</Text>
-							<TouchableOpacity style={styles.loginTouchable}>
-								<Text style={styles.loginText}>Login</Text>
+							<Text style={styles.modalText}>Date Of Birth:</Text>
+							{showPicker && (
+								<DateTimePicker
+									mode="date"
+									display="spinner"
+									value={date}
+									onChange={onDateChange}
+									style={styles.datePicker}
+								/>
+							)}
+							{showPicker && Platform.OS === "ios" && (
+								<View style={styles.dateButtonsView}>
+									<TouchableOpacity
+										onPress={toggleDatePicker}
+										style={styles.dateCancelButton}
+									>
+										<Text style={styles.dateCancelText}>Cancel</Text>
+									</TouchableOpacity>
+									<TouchableOpacity
+										onPress={confirmIOSDate}
+										style={styles.dateConfirmButton}
+									>
+										<Text style={styles.dateConfirmText}>Confirm</Text>
+									</TouchableOpacity>
+								</View>
+							)}
+
+							{!showPicker && (
+								<Pressable onPress={toggleDatePicker}>
+									<TextInput
+										style={styles.textInput}
+										placeholder="Birthday"
+										value={dateOfBirth}
+										onChangeText={setDateOfBirth}
+										placeholderTextColor="rgba(60,60,67,0.3)"
+										editable={false}
+										onPressIn={toggleDatePicker}
+									></TextInput>
+								</Pressable>
+							)}
+
+							<Text style={styles.errorText}>{error}</Text>
+							<TouchableOpacity
+								style={styles.signupButton}
+								onPress={handleSignupSecond}
+							>
+								<Text style={styles.signupText}>Signup</Text>
 							</TouchableOpacity>
 						</View>
-					</View>
-				</View>
-			</ImageBackground>
+					</TouchableWithoutFeedback>
+				</Modal>
+			</View>
 		</TouchableWithoutFeedback>
 	);
 };
@@ -185,24 +363,14 @@ const Signup = () => {
 export default Signup;
 
 const styles = StyleSheet.create({
-	background: {
-		flex: 1,
-		width: "100%",
-		opacity: 1,
-		justifyContent: "center",
-		alignItems: "center",
-	},
-	logoView: {
-		marginVertical: 64,
-	},
 	textInput: {
 		width: "100%",
 		fontSize: 16,
-		borderRadius: 5,
-		marginHorizontal: 8,
+		borderRadius: 8,
 		marginVertical: 8,
 		padding: 14,
-		backgroundColor: "rgba(242,242,247,0.9)",
+		backgroundColor: myColors.dirtyWhite90,
+		// backgroundColor: "lightgreen",
 		fontFamily: "SF",
 	},
 	formView: {
@@ -212,48 +380,12 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		paddingHorizontal: 8,
 	},
-	swapMainContainer: {
-		flexDirection: "row",
-		height: 38,
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: "rgba(0,0,0,0.2)",
-		borderRadius: 10,
-		padding: 2,
-		marginHorizontal: 8,
-		marginBottom: 32,
-	},
-	swapContainerRegister: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: "rgba(0, 0, 0,0)",
-		borderRadius: 8,
-		height: "100%",
-		marginHorizontal: 1,
-	},
-	swapContainerLogin: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: "#F2F2F7",
-		borderRadius: 8,
-		height: "100%",
-		marginHorizontal: 1,
-	},
-	swapText: {
-		color: "black",
-		fontFamily: "SF-medium",
-		fontSize: 16,
-	},
-	container: {
-		width: "100%",
-	},
+
 	signupButton: {
 		flexDirection: "row",
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "rgba(242,242,247,1)",
+		backgroundColor: myColors.dirtyWhite,
 		borderRadius: 10,
 		padding: 14,
 		marginHorizontal: 8,
@@ -265,7 +397,7 @@ const styles = StyleSheet.create({
 	},
 	signupText: {
 		fontFamily: "SF-bold",
-		color: "#2F3D7E",
+		color: myColors.blue,
 		fontSize: 18,
 	},
 	radioView: {
@@ -276,20 +408,20 @@ const styles = StyleSheet.create({
 	radiobutton: {
 		width: 20,
 		height: 20,
-		backgroundColor: "#F2F2F7",
+		backgroundColor: myColors.dirtyWhite,
 		marginRight: 8,
 		borderWidth: 2,
 		borderRadius: 16,
-		borderColor: "#F2F2F7",
+		borderColor: myColors.dirtyWhite,
 	},
 	radioText: {
-		color: "white",
+		color: myColors.white,
 		fontFamily: "SF",
 		fontSize: 16,
 	},
 	radioButtonSelected: {
-		backgroundColor: redColor,
-	  },
+		backgroundColor: myColors.red,
+	},
 	loginView: {
 		flexDirection: "row",
 		width: "100%",
@@ -299,17 +431,17 @@ const styles = StyleSheet.create({
 		height: 20,
 	},
 	loginMainText: {
-		color: "white",
+		color: myColors.white,
 		fontFamily: "SF",
 		height: "100%",
 		fontSize: 16,
 	},
 	loginTouchable: {
 		borderBottomWidth: 1,
-		borderBottomColor: "#F2F2F7",
+		borderBottomColor: myColors.dirtyWhite,
 	},
 	loginText: {
-		color: "white",
+		color: myColors.white,
 		fontFamily: "SF",
 		fontSize: 16,
 	},
@@ -317,5 +449,82 @@ const styles = StyleSheet.create({
 		color: "#DD2121",
 		fontFamily: "SF",
 		// fontSize:,
+	},
+	centeredView: {
+		height: "90%",
+		width: "100%",
+		backgroundColor: myColors.white,
+		position: "absolute",
+		bottom: 0,
+		padding: 10,
+		borderTopLeftRadius: 20,
+		borderTopRightRadius: 20,
+
+		// justifyContent: "center",
+		// alignItems: "center",
+	},
+	swipe: {
+		backgroundColor: "blue",
+		width: "100%",
+		height: 40,
+	},
+	dateView: {
+		width: "100%",
+		flexDirection: "row",
+		justifyContent: "space-around",
+	},
+
+	modalText: {
+		color: "black",
+		fontFamily: "SF-medium",
+		fontSize: 16,
+		margin: 8,
+		fontSize: 16,
+	},
+	datePicker: {
+		color: "black",
+		backgroundColor: "rgba(47,61,126,0.8)",
+		borderRadius: 20,
+	},
+	dateButtonsView: {
+		flexDirection: "row",
+		justifyContent: "space-around",
+		padding: 8,
+	},
+	dateCancelButton: {
+		backgroundColor: myColors.blue,
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+		borderRadius: 10,
+		padding: 14,
+		marginHorizontal: 8,
+		width: "40%",
+		shadowColor: "#000000",
+		shadowOpacity: 0.5,
+		shadowRadius: 5,
+		shadowOffset: { width: 3, height: 3 },
+	},
+	dateCancelText: {
+		color: myColors.white,
+		fontFamily: "SF",
+	},
+	dateConfirmButton: {
+		backgroundColor: myColors.blue,
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+		borderRadius: 10,
+		padding: 14,
+		width: "40%",
+		marginHorizontal: 8,
+		shadowColor: "#000000",
+		shadowOpacity: 0.5,
+		shadowRadius: 5,
+		shadowOffset: { width: 3, height: 3 },
+	},
+	dateConfirmText: {
+		color: myColors.white,
+		fontFamily: "SF",
 	},
 });
