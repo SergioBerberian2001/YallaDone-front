@@ -8,18 +8,25 @@ import {
 	Dimensions,
 	ScrollView,
 	TouchableOpacity,
+	ActivityIndicator,
+	useWindowDimensions
 } from "react-native";
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import { MaterialCommunityIcons } from "react-native-vector-icons";
 import myColors from "../myColors";
 import ServiceHome from "../Components/ServiceHome";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Logo from "../Components/Logo";
 import { useNavigation } from '@react-navigation/native';
-import services from "../assets/data/services";
+// import services from "../assets/data/services";
+import axios from "axios";
 
 
 const windowWidth = Dimensions.get("window").width;
 const Home = ({ navigation, route }) => {
+	const { width } = useWindowDimensions();
+	const height = width / 8;
+	const [isLoading,setIsLoading] = useState(true)
+	const [services, setServices] = useState();
 	const navigations = useNavigation();
 	const [activeItemIndex, setActiveItemIndex] = useState(0);
 	const carousel = [
@@ -27,6 +34,28 @@ const Home = ({ navigation, route }) => {
 		{ id: 1, image: require("../assets/images/carousel.jpeg") },
 		{ id: 2, image: require("../assets/images/splash-bg.jpg") },
 	];
+
+	useEffect(() => {
+		
+		const fetchData = async () => {
+			try {
+				const response = await axios.get('http://192.168.1.112:8000/api/getAllServices');
+				console.log(response.data);
+				setServices(response.data);
+				setIsLoading(false);
+			} catch (error) {
+				console.error('Error fetching data:', error);
+				if (error.response) {
+					console.error('Status:', error.response.status);
+					console.error('Data:', error.response.data);
+				}
+				console.log(mydata);
+			}
+		};
+		
+		fetchData();
+	}, []);
+
 
 	function filterByCategory(data, category) {
 		return data.filter((item) => item.category === category);
@@ -40,6 +69,14 @@ const Home = ({ navigation, route }) => {
 		// );
 	};
 
+	if(isLoading){
+		return (
+			<SafeAreaView style={styles.container}>
+				<Logo width={width / 2} height={height / 2} />
+				<ActivityIndicator size="large" color="#0000ff" />
+			</SafeAreaView>
+		);
+	}
 	return (
 	
 			<SafeAreaView style={styles.container}>

@@ -56,6 +56,7 @@ const Signup = (props) => {
 	
 			console.log("Response:", response.data);
 			// Handle success response here
+			onNavigate();
 		} catch (error) {
 			console.error("Error:", error);
 			throw error; // Throw the error to be caught by the caller
@@ -192,7 +193,7 @@ const Signup = (props) => {
 				});
 				setError("");
 				ToggleModal();
-				onNavigate();
+				
 			} catch (error) {
 				// Handle errors from handleSignup if needed
 				console.error("Error occurred during signup:", error);
