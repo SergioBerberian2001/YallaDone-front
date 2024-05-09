@@ -19,14 +19,10 @@ const Splash = ({ navigation, route } ) => {
 	const [mydata,setmydata] = useState()
 
 	useEffect(() => {
-		console.log("hello1");
+		
 		const fetchData = async () => {
-			console.log("hello2");
 			try {
-				console.log("hello3");
 				const response = await axios.get('http://192.168.1.112:8000/api/login');
-				console.log("hel222lo");
-				console.log("hello");
 				console.log(response.data);
 				setmydata(response.data);
 			} catch (error) {

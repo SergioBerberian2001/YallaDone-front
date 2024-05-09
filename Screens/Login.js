@@ -10,32 +10,44 @@ import {
 	Modal,
 } from "react-native";
 import React, { useState } from "react";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import Swipeable from "react-native-gesture-handler/Swipeable";
 import myColors from "../myColors";
+import axios from "axios";
 
 const Login = (props) => {
-	const {onNavigate} = props
+	const { onNavigate } = props;
 	const [error, setError] = useState("");
 	const [user, setUser] = useState({
-		id: "",
-		firstName: "",
-		lastName: "",
-		email: "",
-		password: "",
-		confirmPass: "",
-		birthday:"",
-		birthmonth:"",
-		birthyear:"",
-		phoneNumber: "",
+		email: "Paulabz@gmail.com",
+		password: "Qwerty1234",
 	});
-
 
 	const onUpdateField = (fieldName, value) => {
 		setUser({
 			...user,
 			[fieldName]: value,
 		});
+	};
+
+	const handlePost = async (userInfo) => {
+		try {
+			const userData = {
+				identifier: userInfo.email,
+				password: userInfo.password,
+			};
+			console.log(userData.identifier);
+			console.log(userData.password);
+			console.log(userData);
+			const response = await axios.post(
+				"http://192.168.1.112:8000/api/ValidateLogin",
+				userData
+			);
+
+			console.log("Response:", response.data);
+			onNavigate();
+		} catch (error) {
+			console.error("Error:", error);
+			throw error; // Throw the error to be caught by the caller
+		}
 	};
 
 	const handleError = (userError) => {
@@ -45,30 +57,29 @@ const Login = (props) => {
 
 		if (!emailRegex.test(userError.email) && userError.email.length !== 8) {
 			message = "Please enter a valid email or phone number";
-		}  else if (!passwordRegex.test(userError.password)) {
+		} else if (!passwordRegex.test(userError.password)) {
 			message =
 				"Password must contain at least 8 characters with one capital letter and one number";
-		} 
+		}
 		setError(message);
 		return message;
 	};
-	
 
-	const handleSignin = () => {onNavigate();
+	const handleSignin = async () => {
 		if (handleError(user) === "") {
-      setUser({
-				id: "",
-				email: "",
-				password: "",
-				confirmPass: "",
-				firstName:"",
-				lastName:"",
-			});
-			setError("");
-			
+			try {
+				// setUser({
+				// 	email: "",
+				// 	password: "",
+				// });
+				setError("");
+				handlePost(user);
+			} catch (error) {
+				// Handle errors from handleSignup if needed
+				console.error("Error occurred during signup:", error);
+			}
 		}
 	};
-
 
 	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -82,7 +93,7 @@ const Login = (props) => {
 						onChangeText={(value) => onUpdateField("email", value)}
 						value={user.email}
 					/>
-					
+
 					<TextInput
 						secureTextEntry
 						placeholder="Password"
@@ -91,7 +102,6 @@ const Login = (props) => {
 						onChangeText={(value) => onUpdateField("password", value)}
 						value={user.password}
 					/>
-					
 				</View>
 				<TouchableOpacity style={styles.signupButton} onPress={handleSignin}>
 					<Text style={styles.signupText}>Login</Text>
@@ -129,7 +139,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 		paddingHorizontal: 8,
-    marginVertical:32,
+		marginVertical: 32,
 	},
 
 	signupButton: {
@@ -151,7 +161,7 @@ const styles = StyleSheet.create({
 		color: myColors.blue,
 		fontSize: 18,
 	},
-	
+
 	loginView: {
 		flexDirection: "row",
 		width: "100%",
