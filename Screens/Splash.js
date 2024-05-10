@@ -18,25 +18,7 @@ const Splash = ({ navigation, route } ) => {
 	// const [isSigningUp,setIsSigningUp] = useState(false)
 	const [mydata,setmydata] = useState()
 
-	useEffect(() => {
-		
-		const fetchData = async () => {
-			try {
-				const response = await axios.get('http://192.168.1.112:8000/api/login');
-				console.log(response.data);
-				setmydata(response.data);
-			} catch (error) {
-				console.error('Error fetching data:', error);
-				if (error.response) {
-					console.error('Status:', error.response.status);
-					console.error('Data:', error.response.data);
-				}
-				console.log(mydata);
-			}
-		};
-		
-		fetchData();
-	}, []);
+	
 	
 	
 
