@@ -12,7 +12,7 @@ import React, { useEffect, useState } from "react";
 import Logo from "../Components/Logo";
 import Signup from "./Signup";
 import Login from "./Login";
-import myColors from "../myColors";
+import myColors from "../utils/myColors";
 
 const Form = ({ navigation, route }) => {
 	const width = 280;
@@ -23,18 +23,6 @@ const Form = ({ navigation, route }) => {
         setIsSigningUp(isCreating);
     },[])
     
-	const [user, setUser] = useState({
-		id: "",
-		firstName: "",
-		lastName: "",
-		email: "",
-		password: "",
-		confirmPass: "",
-		birthday: "",
-		phoneNumber: "",
-	});
-	const [acceptTerms, setAcceptTerms] = useState(false);
-	const [receiveEmails, setReceiveEmails] = useState(false);
 
 	const handleIsSigningUp = () => {
 		setIsSigningUp(true);
@@ -50,16 +38,6 @@ const Form = ({ navigation, route }) => {
 
 	};
 
-	const handleSignup = () => {
-		if (handleError(user) === "") {
-			setUser({
-				id: "",
-				email: "",
-				password: "",
-				confirmPass: "",
-			});
-		}
-	};
 
 	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>

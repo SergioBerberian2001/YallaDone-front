@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import React from "react";
 import Logo from "../../Components/Logo";
-import myColors from "../../myColors";
+import myColors from "../../utils/myColors";
 import facebook from "../../assets/images/social/facebook.png"
 import tiktok from "../../assets/images/social/tiktok.png"
 import instagram from "../../assets/images/social/instagram.png"

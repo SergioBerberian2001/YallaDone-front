@@ -1,7 +1,7 @@
 import {React, useState} from "react";
 import { StyleSheet, View, Text, TouchableOpacity,SafeAreaView, Dimensions } from "react-native";
 import { MaterialCommunityIcons } from "react-native-vector-icons";
-import myColors from "../../myColors";
+import myColors from "../../utils/myColors";
 import Logo from "../../Components/Logo";
 import NotificationsSheet from "../../Components/NotificationsSheet";
 

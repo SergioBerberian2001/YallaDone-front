@@ -7,11 +7,13 @@ import {
 	ActivityIndicator,
 	SafeAreaView,
 	useWindowDimensions,
+	Settings,
 } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import myColors from "./utils/myColors";
 
 import Logo from "./Components/Logo";
 import Splash from "./Screens/Splash";
@@ -22,6 +24,14 @@ import Onboarding from "./Screens/Onboarding";
 import Home from "./Screens/Home";
 import OTP from "./Screens/OTP";
 import DrawerScreen from "./Screens/Drawer/DrawerScreen";
+
+import MyProfile from "./Screens/My-Account.js/MyProfile";
+import MyAddresses from "./Screens/My-Account.js/MyAddresses";
+import OrdersHistory from "./Screens/My-Account.js/OrdersHistory";
+import MyPoints from "./Screens/My-Account.js/MyPoints";
+import ChangePassword from "./Screens/My-Account.js/ChangePassword";
+import MySettings from "./Screens/My-Account.js/MySettings";
+import AddAddress from "./Screens/My-Account.js/AddAddress";
 
 const Stack = createNativeStackNavigator();
 
@@ -41,7 +51,7 @@ export default function App() {
 			return (
 				<SafeAreaView style={styles.container}>
 					<Logo width={width / 2} height={height / 2} />
-					<ActivityIndicator size="large" color="#00ff00" />
+					<ActivityIndicator size="large" color={myColors.blue} />
 				</SafeAreaView>
 			);
 		}
@@ -51,7 +61,7 @@ export default function App() {
 		return (
 			<SafeAreaView style={styles.container}>
 				<Logo width={width * 0.75} height={height * 0.75} />
-				<ActivityIndicator size="large" color="#00ff00" />
+				<ActivityIndicator size="large" color={myColors.blue} />
 			</SafeAreaView>
 		);
 	}
@@ -143,6 +153,90 @@ export default function App() {
 					name="DrawerScreen"
 					component={DrawerScreen}
 					options={{ title: "Drawer Screen", headerShown: false }}
+				/>
+
+				<Stack.Screen
+					name="MyProfile"
+					component={MyProfile}
+					options={{
+						title: "MyProfile Screen",
+						headerStyle: {
+							backgroundColor: "#000000",
+						},
+						headerTintColor: "#fff",
+					}}
+				/>
+
+				<Stack.Screen
+					name="MyAddresses"
+					component={MyAddresses}
+					options={{
+						title: "MyAddresses Screen",
+						headerStyle: {
+							backgroundColor: "#000000",
+						},
+						headerTintColor: "#fff",
+					}}
+				/>
+
+				<Stack.Screen
+					name="OrdersHistory"
+					component={OrdersHistory}
+					options={{
+						title: "OrdersHistory Screen",
+						headerStyle: {
+							backgroundColor: "#000000",
+						},
+						headerTintColor: "#fff",
+					}}
+				/>
+
+				<Stack.Screen
+					name="MyPoints"
+					component={MyPoints}
+					options={{
+						title: "MyPoints Screen",
+						headerStyle: {
+							backgroundColor: "#000000",
+						},
+						headerTintColor: "#fff",
+					}}
+				/>
+
+				<Stack.Screen
+					name="ChangePassword"
+					component={ChangePassword}
+					options={{
+						title: "ChangePassword Screen",
+						headerStyle: {
+							backgroundColor: "#000000",
+						},
+						headerTintColor: "#fff",
+					}}
+				/>
+
+				<Stack.Screen
+					name="MySettings"
+					component={MySettings}
+					options={{
+						title: "MySettings Screen",
+						headerStyle: {
+							backgroundColor: "#000000",
+						},
+						headerTintColor: "#fff",
+					}}
+				/>
+
+				<Stack.Screen
+					name="AddAddress"
+					component={AddAddress}
+					options={{
+						title: "AddAddress Screen",
+						headerStyle: {
+							backgroundColor: "#000000",
+						},
+						headerTintColor: "#fff",
+					}}
 				/>
 			</Stack.Navigator>
 		</NavigationContainer>

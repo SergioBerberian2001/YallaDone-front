@@ -10,15 +10,16 @@ import {
 	Modal,
 } from "react-native";
 import React, { useState } from "react";
-import myColors from "../myColors";
+import myColors from "../utils/myColors";
 import axios from "axios";
+import { saveBearerToken, getBearerToken, logout } from "../utils/bearer.js";
 
 const Login = (props) => {
 	const { onNavigate } = props;
 	const [error, setError] = useState("");
 	const [user, setUser] = useState({
-		email: "Paulabz@gmail.com",
-		password: "Qwerty1234",
+		email: "",
+		password: "",
 	});
 
 	const onUpdateField = (fieldName, value) => {
@@ -38,11 +39,12 @@ const Login = (props) => {
 			console.log(userData.password);
 			console.log(userData);
 			const response = await axios.post(
-				"http://192.168.1.112:8000/api/ValidateLogin",
+				"http://192.168.1.112:8000/api/auth/login",
 				userData
 			);
 
 			console.log("Response:", response.data);
+			await saveBearerToken(response.data.token);
 			onNavigate();
 		} catch (error) {
 			console.error("Error:", error);

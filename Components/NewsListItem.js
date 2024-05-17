@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image, Dimensions } from "react-native";
 import React from "react";
 import { MaterialCommunityIcons } from "react-native-vector-icons";
-import myColors from "../myColors";
+import myColors from "../utils/myColors";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 

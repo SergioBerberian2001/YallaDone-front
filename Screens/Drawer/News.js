@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View,FlatList } from 'react-native'
 import React from 'react'
 import news from '../../assets/data/news'
-import myColors from '../../myColors'
+import myColors from '../../utils/myColors'
 import NewsListItem from '../../Components/NewsListItem'
 
 const News = () => {
