@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Logo from "../../Components/Logo";
-import myColors from "../../myColors";
+import myColors from "../../utils/myColors";
 import { Ionicons } from "react-native-vector-icons";
 
 const MyAddresses = ({ navigation, route }) => {

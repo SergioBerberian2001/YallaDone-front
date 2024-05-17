@@ -8,7 +8,7 @@ import Animated, {
 	withTiming,
 	call,
 } from "react-native-reanimated";
-import myColors from "../myColors";
+import myColors from "../utils/myColors";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const MAX_TRANSLATE_Y = -SCREEN_HEIGHT + 50;

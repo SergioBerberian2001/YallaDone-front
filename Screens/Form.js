@@ -12,7 +12,7 @@ import React, { useEffect, useState } from "react";
 import Logo from "../Components/Logo";
 import Signup from "./Signup";
 import Login from "./Login";
-import myColors from "../myColors";
+import myColors from "../utils/myColors";
 
 const Form = ({ navigation, route }) => {
 	const width = 280;

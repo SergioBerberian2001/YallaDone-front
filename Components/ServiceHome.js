@@ -8,14 +8,14 @@ import {
 } from "react-native";
 import React from "react";
 import { MaterialCommunityIcons } from "react-native-vector-icons";
-import myColors from "../myColors";
+import myColors from "../utils/myColors";
 
 const windowWidth = Dimensions.get("window").width;
 const ServiceHome = (props) => {
 	const { service, onToggleFavorite } = props;
 
 	const handleToggleFavorite = () => {
-		onToggleFavorite(service.service_id, !service.isFav); 
+		onToggleFavorite(service.service_id, !service.isFav);
 	};
 
 	const truncateDescription = (text, maxLength) => {
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
 		width: (windowWidth * 9) / 10,
 		aspectRatio: 2.5,
 		marginVertical: 4,
-        backgroundColor:"white",
+		backgroundColor: "white",
 	},
 	row: {
 		flexDirection: "row",

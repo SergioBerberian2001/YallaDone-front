@@ -12,8 +12,9 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import myColors from "../myColors";
+import myColors from "../utils/myColors";
 import axios from "axios";
+import { saveBearerToken, getBearerToken, logout } from "../utils/bearer.js";
 // import { differenceInYears } from 'date-fns';
 
 const Signup = (props) => {
@@ -50,12 +51,13 @@ const Signup = (props) => {
 			};
 	
 			const response = await axios.post(
-				"http://192.168.1.112:8000/api/login/store",
+				"http://192.168.1.112:8000/api/auth/register",
 				userData
 			);
 	
 			console.log("Response:", response.data);
 			// Handle success response here
+			await saveBearerToken(response.data.token);
 			onNavigate();
 		} catch (error) {
 			console.error("Error:", error);
@@ -165,12 +167,11 @@ const Signup = (props) => {
 
 		const age = calculateAge(date);
 		setUser((prevUser) => ({ ...prevUser, age }));
-		console.log(age)
+		console.log(age);
 		toggleDatePicker();
 	};
 
 	const handleSignupFirst = () => {
-		
 		if (handleError(user) === "") {
 			setError("");
 			ToggleModal();
@@ -193,7 +194,6 @@ const Signup = (props) => {
 				});
 				setError("");
 				ToggleModal();
-				
 			} catch (error) {
 				// Handle errors from handleSignup if needed
 				console.error("Error occurred during signup:", error);

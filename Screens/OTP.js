@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import OtpInput from "@twotalltotems/react-native-otp-input";
 import Logo from "../Components/Logo";
-import myColors from "../myColors";
+import myColors from "../utils/myColors";
 
 const OtpScreen = () => {
 	const width = 280;

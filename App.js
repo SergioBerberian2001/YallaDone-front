@@ -13,6 +13,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import myColors from "./utils/myColors";
 
 import Logo from "./Components/Logo";
 import Splash from "./Screens/Splash";
@@ -50,7 +51,7 @@ export default function App() {
 			return (
 				<SafeAreaView style={styles.container}>
 					<Logo width={width / 2} height={height / 2} />
-					<ActivityIndicator size="large" color="#00ff00" />
+					<ActivityIndicator size="large" color={myColors.blue} />
 				</SafeAreaView>
 			);
 		}
@@ -60,7 +61,7 @@ export default function App() {
 		return (
 			<SafeAreaView style={styles.container}>
 				<Logo width={width * 0.75} height={height * 0.75} />
-				<ActivityIndicator size="large" color="#00ff00" />
+				<ActivityIndicator size="large" color={myColors.blue} />
 			</SafeAreaView>
 		);
 	}

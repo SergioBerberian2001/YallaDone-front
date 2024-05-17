@@ -8,17 +8,21 @@ import {
 	Keyboard,
 	TouchableOpacity,
 	useWindowDimensions,
+	SafeAreaView,
+	ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Logo from "../../Components/Logo";
-import myColors from "../../myColors";
+import myColors from "../../utils/myColors";
 import { Ionicons } from "react-native-vector-icons";
 import axios from "axios";
+import { saveBearerToken, getBearerToken, logout } from "../../utils/bearer.js";
 
 const MyProfile = ({ navigation, route }) => {
 	const { width } = useWindowDimensions();
 	const height = width / 8;
 	const marginH = { marginHorizontal: 8 };
+	const [isLoading, setIsLoading] = useState(true);
 
 	const [user, setUser] = useState({
 		user_name: "",
@@ -31,6 +35,42 @@ const MyProfile = ({ navigation, route }) => {
 		bmonth: "",
 		byear: "",
 	});
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				// Retrieve the token
+				const token = await getBearerToken();
+
+				// Make the API call with the Authorization header
+				const response = await axios.get("http://192.168.1.112:8000/api/profile", {
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				});
+
+				// Extract user data from response
+				const userData = response.data.data;
+
+				// Update state with the response data one by one
+				setUser(prevState => ({ ...prevState, user_name: userData.user_name }));
+				setUser(prevState => ({ ...prevState, user_lastname: userData.user_lastname }));
+				setUser(prevState => ({ ...prevState, email: userData.email }));
+				setUser(prevState => ({ ...prevState, phone_number: userData.phone_number.toString() }));
+				setUser(prevState => ({ ...prevState, age: userData.age.toString() })); // assuming age is a string
+
+				setIsLoading(false);
+			} catch (error) {
+				console.error("Error fetching data:", error);
+				if (error.response) {
+					console.error("Status:", error.response.status);
+					console.error("Data:", error.response.data);
+				}
+			}
+		};
+
+		fetchData();
+	}, []);
 
 	const handleChangeInfo = async (userInfo) => {
 		try {
@@ -65,6 +105,15 @@ const MyProfile = ({ navigation, route }) => {
 		// Handle form submission or navigation logic here
 		navigation.goBack();
 	};
+
+	if (isLoading) {
+		return (
+			<SafeAreaView style={styles.loadingcontainer}>
+				<Logo width={width * 0.9} height={height * 0.9} />
+				<ActivityIndicator size="large" color={myColors.blue} />
+			</SafeAreaView>
+		);
+	}
 
 	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>

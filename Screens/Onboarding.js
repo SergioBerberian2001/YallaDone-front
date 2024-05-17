@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import React, { useState, useRef } from "react";
 import Logo from "../Components/Logo";
-import myColors from "../myColors";
+import myColors from "../utils/myColors";
 import OnBoardingContent from "../Components/OnBoardingContent";
 import slides from "../assets/data/slides";
 import Paginator from "../Components/Paginator";

@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
-import myColors from "../myColors";
+import myColors from "../utils/myColors";
 
 const MyAccountButton = (props) => {
 	const { text } = props;

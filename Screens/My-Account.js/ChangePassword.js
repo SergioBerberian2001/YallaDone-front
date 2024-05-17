@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Logo from "../../Components/Logo";
-import myColors from "../../myColors";
+import myColors from "../../utils/myColors";
 import { Ionicons } from "react-native-vector-icons";
 import axios from "axios";
 
@@ -20,20 +20,20 @@ const ChangePassword = ({ navigation, route }) => {
 	const height = width / 8;
 
 	const [user, setUser] = useState({
-        email:"",
+		email: "",
 		oldPassword: "",
 		newPassword: "",
 		confirmPassword: "",
 	});
 
-    const handleChangePassword = async (userInfo) => {
+	const handleChangePassword = async (userInfo) => {
 		try {
 			const userData = {
-                email : userInfo.email,
+				email: userInfo.email,
 				password: userInfo.oldPassword,
 				new_password: userInfo.newPassword,
 			};
-            console.log(userData.email);
+			console.log(userData.email);
 			console.log(userData.password);
 			console.log(userData.new_password);
 			console.log(userData);
@@ -74,11 +74,11 @@ const ChangePassword = ({ navigation, route }) => {
 					<Text style={styles.topText}>My Account</Text>
 				</TouchableOpacity>
 				<View style={styles.logoView}>
-					<Logo width={width/2} height={height/2} />
+					<Logo width={width / 2} height={height / 2} />
 				</View>
 				<Text style={styles.title}>Change Password</Text>
 				<View style={styles.container}>
-                <TextInput
+					<TextInput
 						style={styles.textInput}
 						placeholder="Email"
 						secureTextEntry={true} // Make password field hidden
@@ -106,7 +106,10 @@ const ChangePassword = ({ navigation, route }) => {
 						onChangeText={(text) => handleChange("confirmPassword", text)}
 						value={user.confirmPassword}
 					/>
-					<TouchableOpacity style={styles.button} onPress={() => handleChangePassword(user)}>
+					<TouchableOpacity
+						style={styles.button}
+						onPress={() => handleChangePassword(user)}
+					>
 						<Text style={styles.buttonText}>Change Password</Text>
 					</TouchableOpacity>
 				</View>

@@ -6,8 +6,7 @@ import {
 	TouchableOpacity,
 } from "react-native";
 import React from "react";
-import MyAccountButton from "../../Components/MyAccountButton";
-import myColors from "../../myColors";
+import myColors from "../../utils/myColors";
 
 const MyAccount = ({ navigation, route }) => {
 
