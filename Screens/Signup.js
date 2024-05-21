@@ -30,7 +30,7 @@ const Signup = (props) => {
 		email: "",
 		password: "",
 		confirmPass: "",
-		age: "",
+		birthday: "",
 		phone_number: "",
 	});
 	const [acceptTerms, setAcceptTerms] = useState(false);
@@ -45,16 +45,16 @@ const Signup = (props) => {
 				user_name: userInfo.user_name,
 				user_lastname: userInfo.user_lastname,
 				email: userInfo.email,
-				age: userInfo.age,
+				birthday: userInfo.birthday,
 				phone_number: userInfo.phone_number,
 				password: userInfo.password,
 			};
-	
+
 			const response = await axios.post(
-				"http://192.168.1.112:8000/api/auth/register",
+				"http://192.168.0.134:8000/api/auth/register",
 				userData
 			);
-	
+
 			console.log("Response:", response.data);
 			// Handle success response here
 			await saveBearerToken(response.data.token);
@@ -128,46 +128,26 @@ const Signup = (props) => {
 
 	const onDateChange = ({ type }, selectedDate) => {
 		if (type === "set") {
-			const currentDate = selectedDate;
+			const currentDate = selectedDate || date;
 			setDate(currentDate);
 			if (Platform.OS === "android") {
 				toggleDatePicker();
-				setDateOfBirth(currentDate.toDateString());
-
-				// Calculate age
-				const age = calculateAge(currentDate);
+				const formattedDate = currentDate.toISOString().split("T")[0];
+				setDateOfBirth(formattedDate);
 				setUser((prevUser) => ({
 					...prevUser,
-					age: currentDate.toDateString(),
-					age,
+					birthday: formattedDate,
 				}));
-				console.log(user.age);
 			}
 		} else {
 			toggleDatePicker();
 		}
 	};
 
-	const calculateAge = (birthdate) => {
-		const today = new Date();
-		const birthDate = new Date(birthdate);
-		let age = today.getFullYear() - birthDate.getFullYear();
-		const month = today.getMonth() - birthDate.getMonth();
-
-		// If the birth month has not occurred yet, decrease the age by 1
-		if (month < 0 || (month === 0 && today.getDate() < birthDate.getDate())) {
-			age--;
-		}
-
-		return age;
-	};
-
 	const confirmIOSDate = () => {
-		setDateOfBirth(date.toDateString());
-
-		const age = calculateAge(date);
-		setUser((prevUser) => ({ ...prevUser, age }));
-		console.log(age);
+		const formattedDate = date.toISOString().split("T")[0];
+		setDateOfBirth(formattedDate);
+		setUser((prevUser) => ({ ...prevUser, birthday: formattedDate }));
 		toggleDatePicker();
 	};
 

@@ -38,7 +38,7 @@ const ChangePassword = ({ navigation, route }) => {
 			console.log(userData.new_password);
 			console.log(userData);
 			const response = await axios.put(
-				"http://192.168.1.112:8000/api/changepassword",
+				"http://192.168.0.134:8000/api/changepassword",
 				userData
 			);
 

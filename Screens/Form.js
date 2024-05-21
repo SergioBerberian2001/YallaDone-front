@@ -13,10 +13,12 @@ import Logo from "../Components/Logo";
 import Signup from "./Signup";
 import Login from "./Login";
 import myColors from "../utils/myColors";
+import slides from "../assets/data/slides";
 
 const Form = ({ navigation, route }) => {
 	const width = 280;
 	const height = 35;
+	const slidesInfo = slides;
 	const { isCreating } = route.params;
 	const [isSigningUp, setIsSigningUp] = useState(true);
     useEffect(()=> {
@@ -34,7 +36,15 @@ const Form = ({ navigation, route }) => {
 	const navigateToOnboarding = () => {
 		// setIsSigningUp(true),
 		// navigation.navigate("Form");
-		navigation.navigate("Onboarding");
+		
+		navigation.navigate("Onboarding", slidesInfo);
+
+	};
+
+	const navigateToHome = () => {
+		// setIsSigningUp(true),
+		// navigation.navigate("Form");
+		navigation.navigate("DrawerScreen");
 
 	};
 
@@ -79,7 +89,7 @@ const Form = ({ navigation, route }) => {
 						</TouchableOpacity>
 					</View>
                     }
-					{isSigningUp ? <Signup onNavigate={navigateToOnboarding}/> : <Login onNavigate={navigateToOnboarding}/>}
+					{isSigningUp ? <Signup onNavigate={navigateToOnboarding}/> : <Login onNavigate={navigateToHome}/>}
 				</View>
 			</ImageBackground>
 		</TouchableWithoutFeedback>

@@ -32,6 +32,7 @@ import MyPoints from "./Screens/My-Account.js/MyPoints";
 import ChangePassword from "./Screens/My-Account.js/ChangePassword";
 import MySettings from "./Screens/My-Account.js/MySettings";
 import AddAddress from "./Screens/My-Account.js/AddAddress";
+import Loading from "./Components/Loading";
 
 const Stack = createNativeStackNavigator();
 
@@ -49,20 +50,14 @@ export default function App() {
 	const onLayoutRootView = useCallback(async () => {
 		if (fontsLoaded || fontError) {
 			return (
-				<SafeAreaView style={styles.container}>
-					<Logo width={width / 2} height={height / 2} />
-					<ActivityIndicator size="large" color={myColors.blue} />
-				</SafeAreaView>
+				<Loading />
 			);
 		}
 	}, [fontsLoaded, fontError]);
 
 	if (!fontsLoaded && !fontError) {
 		return (
-			<SafeAreaView style={styles.container}>
-				<Logo width={width * 0.75} height={height * 0.75} />
-				<ActivityIndicator size="large" color={myColors.blue} />
-			</SafeAreaView>
+			<Loading />
 		);
 	}
 	return (

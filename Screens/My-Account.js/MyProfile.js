@@ -17,6 +17,7 @@ import myColors from "../../utils/myColors";
 import { Ionicons } from "react-native-vector-icons";
 import axios from "axios";
 import { saveBearerToken, getBearerToken, logout } from "../../utils/bearer.js";
+import Loading from "../../Components/Loading.js";
 
 const MyProfile = ({ navigation, route }) => {
 	const { width } = useWindowDimensions();
@@ -28,9 +29,9 @@ const MyProfile = ({ navigation, route }) => {
 		user_name: "",
 		user_lastname: "",
 		email: "",
-		age: "",
+		birthday: "",
 		phone_number: "",
-		countryCode: "",
+		countryCode: "+961",
 		bday: "",
 		bmonth: "",
 		byear: "",
@@ -43,21 +44,36 @@ const MyProfile = ({ navigation, route }) => {
 				const token = await getBearerToken();
 
 				// Make the API call with the Authorization header
-				const response = await axios.get("http://192.168.1.112:8000/api/profile", {
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				});
+				const response = await axios.get(
+					"http://192.168.0.134:8000/api/profile",
+					{
+						headers: {
+							Authorization: `Bearer ${token}`,
+						},
+					}
+				);
 
 				// Extract user data from response
 				const userData = response.data.data;
 
 				// Update state with the response data one by one
-				setUser(prevState => ({ ...prevState, user_name: userData.user_name }));
-				setUser(prevState => ({ ...prevState, user_lastname: userData.user_lastname }));
-				setUser(prevState => ({ ...prevState, email: userData.email }));
-				setUser(prevState => ({ ...prevState, phone_number: userData.phone_number.toString() }));
-				setUser(prevState => ({ ...prevState, age: userData.age.toString() })); // assuming age is a string
+				setUser((prevState) => ({
+					...prevState,
+					user_name: userData.user_name,
+					user_lastname: userData.user_lastname,
+					email: userData.email,
+					phone_number: userData.phone_number.toString(),
+					birthday: userData.birthday.toString(),
+				}));
+
+				// Extract and set birthday parts
+				const [byear, bmonth, bday] = userData.birthday.split("-");
+				setUser((prevState) => ({
+					...prevState,
+					bday,
+					bmonth,
+					byear,
+				}));
 
 				setIsLoading(false);
 			} catch (error) {
@@ -80,12 +96,9 @@ const MyProfile = ({ navigation, route }) => {
 				email: userInfo.email,
 				phone_number: userInfo.phone_number,
 			};
-			// console.log(userData.email);
-			// console.log(userData.password);
-			// console.log(userData.new_password);
 			console.log(userData);
 			const response = await axios.put(
-				"http://192.168.1.112:8000/api/changeUserInfo",
+				"http://192.168.0.134:8000/api/changeUserInfo",
 				userData
 			);
 
@@ -107,12 +120,7 @@ const MyProfile = ({ navigation, route }) => {
 	};
 
 	if (isLoading) {
-		return (
-			<SafeAreaView style={styles.loadingcontainer}>
-				<Logo width={width * 0.9} height={height * 0.9} />
-				<ActivityIndicator size="large" color={myColors.blue} />
-			</SafeAreaView>
-		);
+		return <Loading />;
 	}
 
 	return (
@@ -303,5 +311,10 @@ const styles = StyleSheet.create({
 		backgroundColor: myColors.dirtyWhite90,
 		// backgroundColor: "lightgreen",
 		fontFamily: "SF",
+	},
+	backgroundLoading: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "space-evenly",
 	},
 });
