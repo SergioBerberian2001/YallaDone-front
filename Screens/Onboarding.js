@@ -14,10 +14,10 @@ import React, { useState, useRef } from "react";
 import Logo from "../Components/Logo";
 import myColors from "../utils/myColors";
 import OnBoardingContent from "../Components/OnBoardingContent";
-import slides from "../assets/data/slides";
 import Paginator from "../Components/Paginator";
 
 const Onboarding = ({ navigation, route }) => {
+	const slidesInfo  = route.params;
 	const width = 280;
 	const height = 35;
 	const [currentIndex, setCurrentIndex] = useState(0);
@@ -32,7 +32,7 @@ const Onboarding = ({ navigation, route }) => {
 	const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 50 }).current;
 
 	const scrollTo = () => {
-		if (currentIndex < slides.length - 1) {
+		if (currentIndex < slidesInfo.length - 1) {
 			slidesRef.current.scrollToIndex({ index: currentIndex + 1 });
 			if (currentIndex === 3) {
 				setIsLast(true);
@@ -46,7 +46,7 @@ const Onboarding = ({ navigation, route }) => {
 		navigation.navigate("DrawerScreen");
 	};
 
-	if (!slides) {
+	if (!slidesInfo) {
 		return (
 			<SafeAreaView style={styles.container}>
 				<ActivityIndicator size="large" color="#00ff00" />
@@ -60,7 +60,7 @@ const Onboarding = ({ navigation, route }) => {
 			</View>
 			<View style={styles.listView}>
 				<FlatList
-					data={slides}
+					data={slidesInfo}
 					renderItem={({ item }) => <OnBoardingContent item={item} />}
 					horizontal
 					showsHorizontalScrollIndicator={false}
@@ -77,7 +77,7 @@ const Onboarding = ({ navigation, route }) => {
 				/>
 			</View>
 
-			<Paginator data={slides} scrollX={scrollX} />
+			<Paginator data={slidesInfo} scrollX={scrollX} />
 
 			<View style={styles.bottomView}>
 				<TouchableOpacity style={styles.buttons} onPress={handleNavigation}>

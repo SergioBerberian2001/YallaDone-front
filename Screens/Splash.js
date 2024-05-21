@@ -13,6 +13,7 @@ import Logo from "../Components/Logo";
 import myColors from "../utils/myColors";
 import axios from "axios";
 import { saveBearerToken, getBearerToken, logout } from "../utils/bearer.js";
+import Loading from "../Components/Loading.js";
 
 const Splash = ({ navigation, route }) => {
 	const { width } = useWindowDimensions();
@@ -24,16 +25,16 @@ const Splash = ({ navigation, route }) => {
 		const checkLogin = async () => {
 			const token = await getBearerToken();
 			if (token) {
-				setIsLoggedIn(true);
-			} else {
-				setIsLoggedIn(false);
+				navigation.navigate("DrawerScreen");
+				console.log("user logged in");
+				setIsLoading(false);
+			} else if (!token) {
+				setIsLoading(false);
+				console.log("user not logged in");
 			}
-			// Set isLoggedIn to true if token exists
-			setIsLoading(false); // Set loading to false after token is retrieved
 		};
-
 		checkLogin();
-	}, []);
+	});
 
 	const navigateToSignup = () => {
 		navigation.navigate("Form", { isCreating: true });
@@ -46,15 +47,8 @@ const Splash = ({ navigation, route }) => {
 	if (isLoading) {
 		// Render a loading indicator while fetching the token
 		return (
-			<View style={styles.loadingContainer}>
-				<ActivityIndicator size="large" color="#FFFFFF" />
-			</View>
+			<Loading />
 		);
-	}
-
-	if (isLoggedIn) {
-		navigation.navigate("DrawerScreen");
-		return null; // Render nothing while navigating
 	}
 
 	return (

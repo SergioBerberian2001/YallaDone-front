@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, ImageBackground, ScrollView} from "react-native";
 import React from "react";
-import splashBg from "C:/Users/User/YallaDone-front/assets/images/splash-bg.jpg";
+import splashBg from "../../assets/images/splash-bg.jpg";
 import myColors from "../../utils/myColors";
 
 const AboutUs = () => {
