@@ -14,7 +14,7 @@ const MySettings = () => {
 			const token = await getBearerToken();
 
 			// Make the API call with the Authorization header
-			const response = await axios.get("http://192.168.0.134:8000/api/logout", {
+			const response = await axios.get("http://192.168.1.112:8000/api/logout", {
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
@@ -33,12 +33,21 @@ const MySettings = () => {
 	const handleLogout = () => {
 		fetchData();
 	};
+
+	const handleLogoutFront = async () => {
+		await logout();
+		navigation.navigate("Splash");
+	};
+	
 	return (
 		<View style={styles.container}>
 			<TouchableOpacity style={styles.button} onPress={handleLogout}>
-				<Text>Logout</Text>
+				<Text style={styles.text}>Logout</Text>
 			</TouchableOpacity>
 			<Text>My Settings</Text>
+			<TouchableOpacity style={styles.button} onPress={handleLogoutFront}>
+				<Text style={styles.text}>Logout only from front</Text>
+			</TouchableOpacity>
 		</View>
 	);
 };
@@ -49,10 +58,13 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		alignItems: "center",
-		justifyContent: "center",
+		justifyContent: "space-evenly",
 	},
 	button: {
-		padding: 8,
+		padding: 32,
 		backgroundColor: myColors.blue,
+	},
+	text: {
+		color: "white",
 	},
 });

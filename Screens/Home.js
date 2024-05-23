@@ -34,12 +34,12 @@ const Home = ({ navigation, route }) => {
 		{ id: 1, image: require("../assets/images/carousel.jpeg") },
 		{ id: 2, image: require("../assets/images/splash-bg.jpg") },
 	];
-	
+
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
 				const response = await axios.get(
-					"http://192.168.0.134:8000/api/getAllServices"
+					"http://192.168.1.112:8000/api/getAllServices"
 				);
 				// console.log(response.data);
 				setServices(response.data);
@@ -70,9 +70,7 @@ const Home = ({ navigation, route }) => {
 	};
 
 	if (isLoading) {
-		return (
-			<Loading />
-		);
+		return <Loading />;
 	}
 	return (
 		<SafeAreaView style={styles.container}>

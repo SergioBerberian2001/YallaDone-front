@@ -39,7 +39,7 @@ const Login = (props) => {
 			console.log(userData.password);
 			console.log(userData);
 			const response = await axios.post(
-				"http://192.168.0.134:8000/api/auth/login",
+				"http://192.168.1.112:8000/api/auth/login",
 				userData
 			);
 
