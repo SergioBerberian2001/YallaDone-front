@@ -14,13 +14,13 @@ import Logo from "../../Components/Logo";
 import myColors from "../../utils/myColors";
 import { Ionicons } from "react-native-vector-icons";
 import axios from "axios";
+import { saveBearerToken, getBearerToken, logout } from "../../utils/bearer.js";
 
 const ChangePassword = ({ navigation, route }) => {
 	const { width } = useWindowDimensions();
 	const height = width / 8;
 
 	const [user, setUser] = useState({
-		email: "",
 		oldPassword: "",
 		newPassword: "",
 		confirmPassword: "",
@@ -28,18 +28,22 @@ const ChangePassword = ({ navigation, route }) => {
 
 	const handleChangePassword = async (userInfo) => {
 		try {
+			const token = await getBearerToken();
 			const userData = {
-				email: userInfo.email,
-				password: userInfo.oldPassword,
+				old_password: userInfo.oldPassword,
 				new_password: userInfo.newPassword,
 			};
-			console.log(userData.email);
-			console.log(userData.password);
+			console.log(userData.old_password);
 			console.log(userData.new_password);
 			console.log(userData);
 			const response = await axios.put(
-				"http://192.168.0.134:8000/api/changepassword",
-				userData
+				"http://192.168.1.112:8000/api/updatePassword",
+				userData,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
 			);
 
 			console.log("Response:", response.data);
@@ -78,13 +82,6 @@ const ChangePassword = ({ navigation, route }) => {
 				</View>
 				<Text style={styles.title}>Change Password</Text>
 				<View style={styles.container}>
-					<TextInput
-						style={styles.textInput}
-						placeholder="Email"
-						secureTextEntry={true} // Make password field hidden
-						onChangeText={(text) => handleChange("email", text)}
-						value={user.email}
-					/>
 					<TextInput
 						style={styles.textInput}
 						placeholder="Old Password"

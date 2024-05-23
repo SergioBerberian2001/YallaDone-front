@@ -45,7 +45,7 @@ const MyProfile = ({ navigation, route }) => {
 
 				// Make the API call with the Authorization header
 				const response = await axios.get(
-					"http://192.168.0.134:8000/api/profile",
+					"http://192.168.1.112:8000/api/profile",
 					{
 						headers: {
 							Authorization: `Bearer ${token}`,
@@ -90,16 +90,23 @@ const MyProfile = ({ navigation, route }) => {
 
 	const handleChangeInfo = async (userInfo) => {
 		try {
+			const token = await getBearerToken();
 			const userData = {
 				user_name: userInfo.user_name,
 				user_lastname: userInfo.user_lastname,
 				email: userInfo.email,
 				phone_number: userInfo.phone_number,
+				birthday: userInfo.byear + "-" + userInfo.bmonth + "-" + userInfo.bday,
 			};
 			console.log(userData);
 			const response = await axios.put(
-				"http://192.168.0.134:8000/api/changeUserInfo",
-				userData
+				"http://192.168.1.112:8000/api/profile/updateUser",
+				userData,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
 			);
 
 			console.log("Response:", response.data);
