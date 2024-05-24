@@ -49,16 +49,12 @@ export default function App() {
 
 	const onLayoutRootView = useCallback(async () => {
 		if (fontsLoaded || fontError) {
-			return (
-				<Loading />
-			);
+			return <Loading />;
 		}
 	}, [fontsLoaded, fontError]);
 
 	if (!fontsLoaded && !fontError) {
-		return (
-			<Loading />
-		);
+		return <Loading />;
 	}
 	return (
 		<NavigationContainer>
@@ -147,7 +143,10 @@ export default function App() {
 				<Stack.Screen
 					name="DrawerScreen"
 					component={DrawerScreen}
-					options={{ title: "Drawer Screen", headerShown: false }}
+					options={{
+						title: "Drawer Screen",
+						headerShown: false,
+					}}
 				/>
 
 				<Stack.Screen

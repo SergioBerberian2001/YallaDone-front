@@ -10,6 +10,7 @@ import {
 	TouchableOpacity,
 	ActivityIndicator,
 	useWindowDimensions,
+	 
 } from "react-native";
 import { React, useState, useEffect } from "react";
 import { MaterialCommunityIcons } from "react-native-vector-icons";
@@ -60,6 +61,7 @@ const Home = ({ navigation, route }) => {
 	function filterByCategory(data, category) {
 		return data.filter((item) => item.category === category);
 	}
+
 
 	const onToggleFavorite = (serviceId, isFav) => {
 		// setServices(
