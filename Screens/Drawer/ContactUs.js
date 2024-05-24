@@ -6,19 +6,56 @@ import {
 	ScrollView,
 	TouchableOpacity,
 	TextInput,
+	Alert
 } from "react-native";
 import React, { useState } from "react";
 import splashBg from "../../assets/images/splash-bg.jpg";
 import myColors from "../../utils/myColors";
 import { Ionicons } from "react-native-vector-icons";
+import { getBearerToken } from "../../utils/bearer";
+import axios from "axios";
 
 const ContactUs = () => {
 	const [feedback, setFeedback] = useState("");
 
-	const handleFeedbackSubmit = () => {
-		// Handle feedback submission here
-		console.log("Feedback submitted:", feedback);
-		// Optionally, clear the feedback input after submission
+	const handleSubmit = async (feed) => {
+		try {
+			const token = await getBearerToken();
+			const userData = {
+				body : feed,
+			};
+			console.log(feed);
+			const response = await axios.post(
+				"http://192.168.1.112:8000/api/send",
+				userData,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+
+			console.log("Response:", response.data);
+			handleFeedbackSubmit();
+		} catch (error) {
+			console.error("Error:", error);
+			throw error; // Throw the error to be caught by the caller
+		}
+	};
+
+	const showDeleteConfirmation = async () => {
+		Alert.alert(
+			"Email Sent ",
+			"Thank You For Contacting us!",
+			[
+				{ text: "Done", style: "done" },
+			]
+		);
+	};
+
+	const handleFeedbackSubmit = async () => {
+		
+		await showDeleteConfirmation();
 		setFeedback("");
 	};
 
@@ -63,7 +100,7 @@ const ContactUs = () => {
 				/>
 				<TouchableOpacity
 					style={styles.submitButton}
-					onPress={handleFeedbackSubmit}
+					onPress={() => handleSubmit(feedback)}
 				>
 					<Text style={styles.submitButtonText}>Submit Feedback</Text>
 				</TouchableOpacity>

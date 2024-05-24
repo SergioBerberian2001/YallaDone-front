@@ -11,6 +11,7 @@ import {
 	SafeAreaView,
 	ActivityIndicator,
 	ScrollView,
+	Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Logo from "../../Components/Logo";
@@ -63,6 +64,17 @@ const AddAddress = ({ navigation, route }) => {
 		handlePress(locationInfo.type);
 		getButtonStyle(locationInfo.type);
 	}, []);
+
+	const showDeleteConfirmation = () => {
+		Alert.alert(
+			"Delete Contact",
+			"Are you sure you want to delete your account?",
+			[
+				{ text: "Cancel", style: "cancel" },
+				{ text: "Delete", onPress: () => handleDeleteLocation(locationInfo) },
+			]
+		);
+	};
 
 	const handleUpdateLocation = async (location) => {
 		try {
@@ -132,6 +144,27 @@ const AddAddress = ({ navigation, route }) => {
 		}
 	};
 
+	const handleDeleteLocation = async (location) => {
+		try {
+			const token = await getBearerToken();
+
+			const addressId = location.address_id; // Assuming address_id is a number
+			const url = `http://192.168.1.112:8000/api/DestroyUserLocation/${addressId}`;
+
+			const response = await axios.delete(url,  {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+
+			console.log("Response:", response.data);
+			navigate();
+		} catch (error) {
+			console.error("Error:", error);
+			throw error; // Throw the error to be caught by the caller
+		}
+	};
+
 	const handleChange = (name, value) => {
 		setLocation({ ...locationInfo, [name]: value });
 	};
@@ -162,14 +195,32 @@ const AddAddress = ({ navigation, route }) => {
 				style={styles.background}
 			>
 				<ScrollView style={styles.scroll}>
-					<TouchableOpacity style={styles.topView} onPress={navigate}>
-						<Ionicons
-							name="chevron-back-outline"
-							color={myColors.white}
-							size={32}
-						/>
-						<Text style={styles.topText}>My Account</Text>
-					</TouchableOpacity>
+					<View style={styles.topViewContainer}>
+						<TouchableOpacity style={styles.topView} onPress={navigate}>
+							<Ionicons
+								name="chevron-back-outline"
+								color={myColors.white}
+								size={32}
+							/>
+							<Text style={styles.topText}>My Account</Text>
+						</TouchableOpacity>
+
+						{!isCreating && (
+							<TouchableOpacity
+								style={styles.deleteButton}
+								onPress={showDeleteConfirmation}
+							>
+								<Text style={[styles.topText, { color: myColors.white }]}>
+									Delete
+								</Text>
+								<Ionicons
+									name="trash-outline"
+									color={myColors.white}
+									size={20}
+								/>
+							</TouchableOpacity>
+						)}
+					</View>
 
 					<Text style={styles.title}>Add New Address</Text>
 
@@ -340,11 +391,23 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 	},
 	topView: {
-		marginTop: 40,
 		marginLeft: 10,
-		alignSelf: "flex-start",
 		flexDirection: "row",
 		alignItems: "center",
+	},
+	topViewContainer: {
+		marginTop: 50,
+		marginBottom: 10,
+		flexDirection: "row",
+		justifyContent: "space-between",
+	},
+	deleteButton: {
+		marginRight: 10,
+		flexDirection: "row",
+		alignItems: "center",
+		padding: 8,
+		backgroundColor: myColors.red,
+		borderRadius: 25,
 	},
 	topText: {
 		fontFamily: "SF-medium",

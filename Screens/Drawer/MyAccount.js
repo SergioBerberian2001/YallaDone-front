@@ -4,38 +4,73 @@ import {
 	Text,
 	View,
 	TouchableOpacity,
+	Modal,
 } from "react-native";
-import React from "react";
+import { React, useState } from "react";
 import myColors from "../../utils/myColors";
+import MySettings from "../My-Account.js/MySettings";
 
 const MyAccount = ({ navigation, route }) => {
+	const [modalVisible, setModalVisible] = useState(false);
 
-  const navigate = (destination) => {
+	const ToggleModal = () => {
+		setModalVisible(!modalVisible);
+	};
+
+	const navigate = (destination) => {
 		navigation.navigate(`${destination}`);
-
 	};
 
 	return (
-		<SafeAreaView style={styles.container} >
+		<SafeAreaView style={styles.container}>
 			<Text style={styles.title}>My Account</Text>
-			<TouchableOpacity style={styles.button} onPress={() => navigate("MyProfile")}>
+			<TouchableOpacity
+				style={styles.button}
+				onPress={() => navigate("MyProfile")}
+			>
 				<Text style={styles.text}>MY PROFILE</Text>
 			</TouchableOpacity>
-			<TouchableOpacity style={styles.button} onPress={() => navigate("MyAddresses")}>
+			<TouchableOpacity
+				style={styles.button}
+				onPress={() => navigate("MyAddresses")}
+			>
 				<Text style={styles.text}>MY ADDRESSES</Text>
 			</TouchableOpacity>
-			<TouchableOpacity style={styles.button} onPress={() => navigate("OrdersHistory")}>
+			<TouchableOpacity
+				style={styles.button}
+				onPress={() => navigate("OrdersHistory")}
+			>
 				<Text style={styles.text}>ORDERS HISTORY</Text>
 			</TouchableOpacity>
-			<TouchableOpacity style={styles.button} onPress={() => navigate("MyPoints")}>
+			<TouchableOpacity
+				style={styles.button}
+				onPress={() => navigate("MyPoints")}
+			>
 				<Text style={styles.text}>MY POINTS</Text>
 			</TouchableOpacity>
-			<TouchableOpacity style={styles.button} onPress={() => navigate("ChangePassword")}>
+			<TouchableOpacity
+				style={styles.button}
+				onPress={() => navigate("ChangePassword")}
+			>
 				<Text style={styles.text}>CHANGE PASSWORD</Text>
 			</TouchableOpacity>
-			<TouchableOpacity style={styles.button} onPress={() => navigate("MySettings")}>
+			<TouchableOpacity style={styles.button} onPress={ToggleModal}>
 				<Text style={styles.text}>SETTINGS</Text>
 			</TouchableOpacity>
+
+			<Modal
+				animationType="slide"
+				transparent={true}
+				visible={modalVisible}
+				onRequestClose={() => {
+					Alert.alert("Modal has been closed.");
+					ToggleModal();
+				}}
+			>
+				<View style={styles.centeredView}>
+					<MySettings onToggle={ToggleModal} />
+				</View>
+			</Modal>
 		</SafeAreaView>
 	);
 };
@@ -66,5 +101,17 @@ const styles = StyleSheet.create({
 		fontFamily: "SF-bold",
 		fontSize: 20,
 		color: myColors.white,
+	},
+	centeredView: {
+		height: "30%",
+		width: "100%",
+		backgroundColor: myColors.white,
+		position: "absolute",
+		bottom: 0,
+		borderTopLeftRadius: 20,
+		borderTopRightRadius: 20,
+
+		// justifyContent: "center",
+		// alignItems: "center",
 	},
 });

@@ -18,8 +18,8 @@ const Login = (props) => {
 	const { onNavigate } = props;
 	const [error, setError] = useState("");
 	const [user, setUser] = useState({
-		email: "",
-		password: "",
+		email: "81384086",
+		password: "Sergio1234",
 	});
 
 	const onUpdateField = (fieldName, value) => {

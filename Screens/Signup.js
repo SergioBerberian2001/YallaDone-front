@@ -270,6 +270,9 @@ const Signup = (props) => {
 						accessible={false}
 					>
 						<View style={styles.centeredView}>
+							<TouchableOpacity onPress={ToggleModal}>
+								<Text>Close</Text>
+							</TouchableOpacity>
 							<Text style={styles.modalText}>Please give us your name:</Text>
 							<TextInput
 								placeholder="First Name"
