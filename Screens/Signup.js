@@ -25,19 +25,22 @@ const Signup = (props) => {
 	const [error, setError] = useState("");
 	const [modalVisible, setModalVisible] = useState(false);
 	const [user, setUser] = useState({
-		user_name: "",
-		user_lastname: "",
-		email: "",
-		password: "",
-		confirmPass: "",
-		birthday: "",
-		phone_number: "",
+		user_name: "sergio",
+		user_lastname: "berberian",
+		email: "sergioberberian909@hotmail.com",
+		password: "Qwerty1234",
+		confirmPass: "Qwerty1234",
+		birthday: "2001-09-04",
+		phone_number: "61112222",
 	});
 	const [acceptTerms, setAcceptTerms] = useState(false);
 	const [receiveEmails, setReceiveEmails] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [apiResponse, setApiResponse] = useState([]);
 	const [loadingError, setLoadingError] = useState(false);
+
+
+
 
 	const handleSignup = async (userInfo) => {
 		try {
@@ -51,19 +54,21 @@ const Signup = (props) => {
 			};
 
 			const response = await axios.post(
-				"http://192.168.1.112:8000/api/auth/register",
+				"http://192.168.1.100:8000/api/auth/register",
 				userData
 			);
 
-			console.log("Response:", response.data);
+			
 			// Handle success response here
 			await saveBearerToken(response.data.token);
-			onNavigate();
+			
 		} catch (error) {
 			console.error("Error:", error);
 			throw error; // Throw the error to be caught by the caller
 		}
 	};
+
+	
 
 	const handleToggleAcceptTerms = () => {
 		setAcceptTerms(!acceptTerms);
@@ -163,6 +168,7 @@ const Signup = (props) => {
 			try {
 				// Assuming handleSignup is an async function
 				await handleSignup(user);
+				onNavigate(user);
 				console.log(user);
 				setUser({
 					id: "",

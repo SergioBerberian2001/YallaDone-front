@@ -1,28 +1,134 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
 	StyleSheet,
 	ImageBackground,
-	Image,
 	View,
 	Text,
 	TouchableOpacity,
 	TouchableWithoutFeedback,
 	Keyboard,
+	Dimensions,
 } from "react-native";
 import OtpInput from "@twotalltotems/react-native-otp-input";
 import Logo from "../Components/Logo";
 import myColors from "../utils/myColors";
+import slides from "../assets/data/slides";
+import { getBearerToken } from "../utils/bearer";
+import axios from "axios";
 
-const OtpScreen = () => {
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const OtpScreen = ({ navigation, route }) => {
+	const user = route.params;
 	const width = 280;
 	const height = 35;
+	const slidesInfo = slides;
 	const [otp, setOtp] = useState("");
+	const [timer, setTimer] = useState(0);
+	const [resendEnabled, setResendEnabled] = useState(true);
+	const [resendAttempts, setResendAttempts] = useState(0);
+	const intervalRef = useRef(null);
+
+	const handleOTPSending = async () => {
+		if (resendAttempts >= 3) {
+			navigation.navigate("Splash");
+			return;
+		}
+		try {
+			const token = await getBearerToken();
+			console.log("Bearer Token:", token);
+
+			const response = await axios.post(
+				"http://192.168.1.100:8000/api/generate-otp",
+				{},
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						"Content-Type": "application/json",
+					},
+				}
+			);
+		} catch (error) {
+			if (error.response) {
+				console.error("Error Response Data:", error.response.data);
+				console.error("Error Response Status:", error.response.status);
+				console.error("Error Response Headers:", error.response.headers);
+			} else if (error.request) {
+				console.error("Error Request Data:", error.request);
+			} else {
+				console.error("Error Message:", error.message);
+			}
+			console.error("Error Config:", error.config);
+		}
+	};
+
+	const startTimer = () => {
+		setResendEnabled(false);
+		setTimer(30);
+		clearInterval(intervalRef.current);
+		intervalRef.current = setInterval(() => {
+			setTimer((prev) => {
+				if (prev === 1) {
+					clearInterval(intervalRef.current);
+					setResendEnabled(true);
+					return 0;
+				}
+				return prev - 1;
+			});
+		}, 1000);
+	};
+
+	useEffect(() => {
+		handleOTPSending();
+		// return () => clearInterval(intervalRef.current);
+	}, []);
+
+	const handleVerifyOTP = async (otp) => {
+		try {
+			const token = await getBearerToken();
+			const VerifyOTP = parseInt(otp);
+			const url = `http://192.168.1.100:8000/api/verify-otp/${VerifyOTP}`;
+
+			const response = await axios.post(
+				url,
+				{},
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						"Content-Type": "application/json",
+					},
+				}
+			);
+
+			console.log("Response:", response.data);
+		} catch (error) {
+			console.error("Error:", error);
+			if (error.response) {
+				console.error("Error Response Data:", error.response.data);
+				console.error("Error Response Status:", error.response.status);
+				console.error("Error Response Headers:", error.response.headers);
+			} else if (error.request) {
+				console.error("Error Request Data:", error.request);
+			} else {
+				console.error("Error Message:", error.message);
+			}
+		}
+	};
 
 	const handleOtpChange = (text) => setOtp(text);
 
-	const handleSubmit = () => {
-		// Implement your OTP verification logic here
-		console.log("OTP:", otp);
+	const handleSubmit = async (code) => {
+		await handleVerifyOTP(code);
+		navigateToOnboarding();
+	};
+
+	const handleResend = async () => {
+		startTimer();
+		await handleOTPSending();
+		setResendAttempts((prev) => prev + 1);
+	};
+
+	const navigateToOnboarding = () => {
+		navigation.navigate("Onboarding", slidesInfo);
 	};
 
 	return (
@@ -36,25 +142,38 @@ const OtpScreen = () => {
 				</View>
 				<View style={styles.padding}>
 					<Text style={styles.text}>
-						We sent you an email containing the 4 number one time password.
+						We sent you an email containing the 6 number one time password.
 						Please enter it below
 					</Text>
 					<OtpInput
 						value={otp}
 						onChangeText={handleOtpChange}
-						pinCount={4}
+						pinCount={6}
 						codeInputFieldStyle={styles.otpInputContainer}
 						style={styles.otpInput}
 						onCodeFilled={(code) => {
-							console.log(`Code is ${code}, you are good to go!`);
+							handleSubmit(code);
 						}}
 					/>
-					<TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+					<TouchableOpacity
+						style={styles.submitButton}
+						onPress={() => handleSubmit(otp)}
+					>
 						<Text style={styles.submitButtonText}>Submit</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.resendLinkButton}>
+					<TouchableOpacity
+						style={[
+							resendEnabled
+								? styles.resendLinkButton
+								: styles.resendDisabledButton,
+						]}
+						onPress={handleResend}
+						disabled={!resendEnabled}
+					>
 						<Text style={styles.resendLink}>
-							Click here if you didn't receive code
+							{resendEnabled
+								? "Click here to resend the OTP"
+								: `Resend OTP in ${timer} seconds`}
 						</Text>
 					</TouchableOpacity>
 				</View>
@@ -98,8 +217,8 @@ const styles = StyleSheet.create({
 	otpInputContainer: {
 		backgroundColor: myColors.dirtyWhite90,
 		borderRadius: 50,
-		width: 70,
-		height: 70,
+		width: SCREEN_WIDTH / 6,
+		aspectRatio: 1,
 		color: myColors.black,
 		fontSize: 20,
 		fontFamily: "SF-medium",
@@ -131,5 +250,10 @@ const styles = StyleSheet.create({
 	resendLinkButton: {
 		borderBottomColor: myColors.white,
 		borderBottomWidth: 1,
+	},
+	resendDisabledButton: {
+		borderBottomColor: myColors.white,
+		borderBottomWidth: 0,
+		opacity: 0.5,
 	},
 });

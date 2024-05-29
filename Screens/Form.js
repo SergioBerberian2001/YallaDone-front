@@ -33,11 +33,11 @@ const Form = ({ navigation, route }) => {
 		setIsSigningUp(false);
 	};
 
-	const navigateToOnboarding = () => {
+	const navigateToOTP = (user) => {
 		// setIsSigningUp(true),
 		// navigation.navigate("Form");
 		
-		navigation.navigate("Onboarding", slidesInfo);
+		navigation.navigate("OTP", user);
 
 	};
 
@@ -89,7 +89,7 @@ const Form = ({ navigation, route }) => {
 						</TouchableOpacity>
 					</View>
                     }
-					{isSigningUp ? <Signup onNavigate={navigateToOnboarding}/> : <Login onNavigate={navigateToHome}/>}
+					{isSigningUp ? <Signup onNavigate={navigateToOTP}/> : <Login onNavigate={navigateToHome}/>}
 				</View>
 			</ImageBackground>
 		</TouchableWithoutFeedback>

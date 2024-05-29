@@ -45,7 +45,7 @@ const MyProfile = ({ navigation, route }) => {
 
 				// Make the API call with the Authorization header
 				const response = await axios.get(
-					"http://192.168.1.112:8000/api/profile",
+					"http://192.168.1.100:8000/api/profile",
 					{
 						headers: {
 							Authorization: `Bearer ${token}`,
@@ -100,7 +100,7 @@ const MyProfile = ({ navigation, route }) => {
 			};
 			console.log(userData);
 			const response = await axios.put(
-				"http://192.168.1.112:8000/api/profile/updateUser",
+				"http://192.168.1.100:8000/api/profile/updateUser",
 				userData,
 				{
 					headers: {

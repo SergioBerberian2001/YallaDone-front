@@ -17,9 +17,10 @@ import myColors from "../utils/myColors";
 import ServiceHome from "../Components/ServiceHome";
 import Logo from "../Components/Logo";
 import { useNavigation } from "@react-navigation/native";
-// import services from "../assets/data/services";
+import Popup from "../Components/Popup";
 import axios from "axios";
 import Loading from "../Components/Loading";
+import popupModes from "../utils/PopupModes";
 
 const windowWidth = Dimensions.get("window").width;
 const Home = ({ navigation, route }) => {
@@ -34,12 +35,23 @@ const Home = ({ navigation, route }) => {
 		{ id: 1, image: require("../assets/images/carousel.jpeg") },
 		{ id: 2, image: require("../assets/images/splash-bg.jpg") },
 	];
+	const [popupVisible, setPopupVisible] = useState(false);
+	const [popupData, setPopupData] = useState({});
+
+	const showPopup = (mode) => {
+		setPopupData(popupModes[mode]);
+		setPopupVisible(true);
+	};
+
+	const handleClosePopup = () => {
+		setPopupVisible(false);
+	};
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
 				const response = await axios.get(
-					"http://192.168.1.112:8000/api/getAllServices"
+					"http://192.168.1.100:8000/api/getAllServices"
 				);
 				// console.log(response.data);
 				setServices(response.data);
@@ -108,7 +120,7 @@ const Home = ({ navigation, route }) => {
 					</View>
 				</View>
 				<View style={styles.emergencyView}>
-					<TouchableOpacity style={styles.emergencyButton}>
+					<TouchableOpacity style={styles.emergencyButton} onPress={() => showPopup("error")}>
 						<Text style={styles.emergencyText}>Emergency Services</Text>
 					</TouchableOpacity>
 				</View>
@@ -225,6 +237,15 @@ const Home = ({ navigation, route }) => {
 					</View>
 				</View>
 			</ScrollView>
+			<Popup
+				visible={popupVisible}
+				onClose={handleClosePopup}
+				title={popupData.title}
+				message={popupData.message}
+				icon={popupData.icon}
+				iconColor={popupData.iconColor}
+				type={popupData.type}
+			/>
 		</SafeAreaView>
 	);
 };

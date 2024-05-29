@@ -6,7 +6,7 @@ import {
 	ScrollView,
 	TouchableOpacity,
 	TextInput,
-	Alert
+	Alert,
 } from "react-native";
 import React, { useState } from "react";
 import splashBg from "../../assets/images/splash-bg.jpg";
@@ -22,11 +22,11 @@ const ContactUs = () => {
 		try {
 			const token = await getBearerToken();
 			const userData = {
-				body : feed,
+				body: feed,
 			};
 			console.log(feed);
 			const response = await axios.post(
-				"http://192.168.1.112:8000/api/send",
+				"http://192.168.1.100:8000/api/send",
 				userData,
 				{
 					headers: {
@@ -44,17 +44,12 @@ const ContactUs = () => {
 	};
 
 	const showDeleteConfirmation = async () => {
-		Alert.alert(
-			"Email Sent ",
-			"Thank You For Contacting us!",
-			[
-				{ text: "Done", style: "done" },
-			]
-		);
+		Alert.alert("Email Sent ", "Thank You For Contacting us!", [
+			{ text: "Done", style: "done" },
+		]);
 	};
 
 	const handleFeedbackSubmit = async () => {
-		
 		await showDeleteConfirmation();
 		setFeedback("");
 	};

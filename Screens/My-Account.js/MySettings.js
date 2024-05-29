@@ -15,7 +15,7 @@ const MySettings = (props) => {
 	const logoutAxios = async () => {
 		try {
 			const token = await getBearerToken();
-			const response = await axios.get("http://192.168.1.112:8000/api/logout", {
+			const response = await axios.get("http://192.168.1.100:8000/api/logout", {
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
@@ -34,11 +34,14 @@ const MySettings = (props) => {
 	const deleteAccount = async () => {
 		try {
 			const token = await getBearerToken();
-			const response = await axios.delete("http://192.168.1.112:8000/api/DestroyUser", {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
+			const response = await axios.delete(
+				"http://192.168.1.100:8000/api/DestroyUser",
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
 			await logout();
 			navigation.navigate("Splash");
 		} catch (error) {

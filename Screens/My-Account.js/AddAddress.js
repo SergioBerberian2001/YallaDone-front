@@ -94,7 +94,7 @@ const AddAddress = ({ navigation, route }) => {
 			console.log(location.address_id);
 
 			const addressId = location.address_id; // Assuming address_id is a number
-			const url = `http://192.168.1.112:8000/api/UpdateUserLocation/${addressId}`;
+			const url = `http://192.168.1.100:8000/api/UpdateUserLocation/${addressId}`;
 
 			const response = await axios.put(url, userData, {
 				headers: {
@@ -127,7 +127,7 @@ const AddAddress = ({ navigation, route }) => {
 			};
 			console.log(userData);
 			const response = await axios.post(
-				"http://192.168.1.112:8000/api/createUserLocation",
+				"http://192.168.1.100:8000/api/createUserLocation",
 				userData,
 				{
 					headers: {
@@ -149,9 +149,9 @@ const AddAddress = ({ navigation, route }) => {
 			const token = await getBearerToken();
 
 			const addressId = location.address_id; // Assuming address_id is a number
-			const url = `http://192.168.1.112:8000/api/DestroyUserLocation/${addressId}`;
+			const url = `http://192.168.1.100:8000/api/DestroyUserLocation/${addressId}`;
 
-			const response = await axios.delete(url,  {
+			const response = await axios.delete(url, {
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},

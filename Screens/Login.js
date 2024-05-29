@@ -19,7 +19,7 @@ const Login = (props) => {
 	const [error, setError] = useState("");
 	const [user, setUser] = useState({
 		email: "81384086",
-		password: "Sergio1234",
+		password: "Qwerty1234",
 	});
 
 	const onUpdateField = (fieldName, value) => {
@@ -39,7 +39,7 @@ const Login = (props) => {
 			console.log(userData.password);
 			console.log(userData);
 			const response = await axios.post(
-				"http://192.168.1.112:8000/api/auth/login",
+				"http://192.168.1.100:8000/api/auth/login",
 				userData
 			);
 
