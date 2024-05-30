@@ -11,7 +11,7 @@ import { MaterialCommunityIcons } from "react-native-vector-icons";
 import myColors from "../utils/myColors";
 
 const windowWidth = Dimensions.get("window").width;
-const ServiceHome = (props) => {
+const ServiceItem = (props) => {
 	const { service } = props;
 
 	return (
@@ -28,7 +28,7 @@ const ServiceHome = (props) => {
 						<Text style={styles.title}>{service.service_name}</Text>
 						<Text style={styles.price}>$ {service.price}</Text>
 					</View>
-					<Text style={styles.description}>{service.description}</Text>
+					<Text style={styles.description}>{service.service_description}</Text>
 					<View style={styles.row}>
 
 						
@@ -39,7 +39,7 @@ const ServiceHome = (props) => {
 	);
 };
 
-export default ServiceHome;
+export default ServiceItem;
 
 const styles = StyleSheet.create({
 	shadowView: {
@@ -47,16 +47,16 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.5,
 		shadowRadius: 5,
 		shadowOffset: { width: 2, height: 2 },
+        margin: 16,
 	},
 	main: {
 		flexDirection: "row",
 		borderWidth: 1,
 		borderRadius: 20,
 		borderColor: "white",
-		marginHorizontal: 8,
-		width: (windowWidth * 9) / 10,
+		
+		width: "100%",
 		aspectRatio: 2.5,
-		marginVertical: 4,
 		backgroundColor: "white",
 	},
 	row: {

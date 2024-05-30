@@ -108,8 +108,39 @@ const OrderForm = ({ navigation, route }) => {
 		}, [])
 	);
 
+	const handleSubmit = async () => {
+		try {
+			const token = await getBearerToken();
+			const userData = {
+				location_id: selectedAddress.address_id,
+				service_date: newDate + " " + time,
+				additional_info: additionalInfo,
+				service_id: order.service_id,
+			};
+			const response = await axios.post(
+				"http://192.168.1.100:8000/api/StoreUserServiceForm",
+				userData,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+
+			console.log("Response:", response.data);
+			navigateToCheckout();
+		} catch (error) {
+			console.error("Error:", error);
+			throw error; // Throw the error to be caught by the caller
+		}
+	};
+
 	const navigate = () => {
 		navigation.goBack();
+	};
+
+	const navigateToCheckout = () => {
+		navigation.navigate("Checkout", order);
 	};
 
 	const handleAddAddress = (paramAddress) => {
@@ -129,7 +160,7 @@ const OrderForm = ({ navigation, route }) => {
 						color={myColors.blue}
 						size={32}
 					/>
-					<Text style={styles.topText}>My Account</Text>
+					<Text style={styles.topText}>Back</Text>
 				</TouchableOpacity>
 				<View style={styles.topCard}>
 					<ServiceForm order={order} />
@@ -161,11 +192,14 @@ const OrderForm = ({ navigation, route }) => {
 								borderRadius: 5, // Add border radius
 							}}
 							placeholder={{ label: "Select your address", value: null }}
-							value={selectedAddress}
-							onValueChange={(itemValue) => setSelectedAddress(itemValue)}
-							items={addresses.map((address) => ({
+							// value={selectedAddress ? selectedAddress.address_id : null}
+							onValueChange={(itemValue) => {
+								const selected = addresses[itemValue];
+								setSelectedAddress(selected);
+							}}
+							items={addresses.map((address, index) => ({
 								label: address.name,
-								value: address.address_id,
+								value: index,
 							}))}
 							itemStyle={styles.inputIOS} // Apply custom styles
 							placeholderStyle={styles.placeholder} // Apply custom styles (optional)
@@ -207,7 +241,7 @@ const OrderForm = ({ navigation, route }) => {
 
 				<View style={styles.form}></View>
 
-				<TouchableOpacity style={styles.button}>
+				<TouchableOpacity style={styles.button} onPress={handleSubmit}>
 					<Text style={styles.buttonText}>Create Order</Text>
 				</TouchableOpacity>
 			</ScrollView>

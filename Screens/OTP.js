@@ -121,7 +121,7 @@ const OtpScreen = ({ navigation, route }) => {
 	};
 
 	useEffect(() => {
-		// handleOTPSending();
+		handleOTPSending();
 		// return () => clearInterval(intervalRef.current);
 		logout();
 		startFiveMinuteTimer();
