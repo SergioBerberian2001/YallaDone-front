@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
 const Logo = (props) => {
-    const{width, height} = props
+	const { width, height } = props;
 	return (
 		<View style={styles.main}>
 			<Svg
@@ -102,7 +102,7 @@ const Logo = (props) => {
 export default Logo;
 
 const styles = StyleSheet.create({
-    main:{
-        justifyContent:"center"
-    },
-})
+	main: {
+		justifyContent: "center",
+	},
+});

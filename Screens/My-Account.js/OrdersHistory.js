@@ -1,14 +1,14 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View } from "react-native";
+import React from "react";
 
 const OrdersHistory = () => {
-  return (
-    <View>
-      <Text>OrdersHistory</Text>
-    </View>
-  )
-}
+	return (
+		<View>
+			<Text>OrdersHistory</Text>
+		</View>
+	);
+};
 
-export default OrdersHistory
+export default OrdersHistory;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

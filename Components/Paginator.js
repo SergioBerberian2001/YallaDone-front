@@ -21,14 +21,17 @@ const Paginator = ({ data, scrollX }) => {
 					extrapolate: "clamp",
 				});
 
-                const opacity = scrollX.interpolate({
+				const opacity = scrollX.interpolate({
 					inputRange,
 					outputRange: [0.3, 1, 0.3],
 					extrapolate: "clamp",
 				});
 
 				return (
-					<Animated.View style={[styles.dot, { width: dotWidth, opacity }]} key={i.toString()} />
+					<Animated.View
+						style={[styles.dot, { width: dotWidth, opacity }]}
+						key={i.toString()}
+					/>
 				);
 			})}
 		</View>

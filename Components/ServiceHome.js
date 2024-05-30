@@ -20,7 +20,7 @@ const ServiceHome = (props) => {
 
 	const handleOrder = (order) => {
 		onOrder(order);
-	}
+	};
 
 	const truncateDescription = (text, maxLength) => {
 		return text.length > maxLength
@@ -63,7 +63,10 @@ const ServiceHome = (props) => {
 							</TouchableOpacity>
 						)}
 
-						<TouchableOpacity style={styles.orderButton} onPress={()=> handleOrder(service)} >
+						<TouchableOpacity
+							style={styles.orderButton}
+							onPress={() => handleOrder(service)}
+						>
 							<Text style={styles.orderText}>Order Service</Text>
 						</TouchableOpacity>
 					</View>

@@ -84,8 +84,8 @@ const Home = ({ navigation, route }) => {
 	};
 
 	const handleOrder = (order) => {
-		navigation.navigate("OrderForm", order)
-	}
+		navigation.navigate("OrderForm", order);
+	};
 
 	if (isLoading) {
 		return <Loading />;
@@ -126,7 +126,10 @@ const Home = ({ navigation, route }) => {
 					</View>
 				</View>
 				<View style={styles.emergencyView}>
-					<TouchableOpacity style={styles.emergencyButton} onPress={() => showPopup("error")}>
+					<TouchableOpacity
+						style={styles.emergencyButton}
+						onPress={() => showPopup("error")}
+					>
 						<Text style={styles.emergencyText}>Emergency Services</Text>
 					</TouchableOpacity>
 				</View>

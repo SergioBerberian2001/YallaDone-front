@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef,useContext } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import {
 	StyleSheet,
 	ImageBackground,
@@ -80,7 +80,6 @@ const OtpScreen = ({ navigation, route }) => {
 					},
 				}
 			);
-
 		} catch (error) {
 			if (error.response) {
 				console.error("Error Response Data:", error.response.data);

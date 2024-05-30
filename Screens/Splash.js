@@ -16,7 +16,6 @@ import { saveBearerToken, getBearerToken, logout } from "../utils/bearer.js";
 import Loading from "../Components/Loading.js";
 
 const Splash = ({ navigation, route }) => {
-	
 	const { width } = useWindowDimensions();
 	const height = width / 8;
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -45,9 +44,7 @@ const Splash = ({ navigation, route }) => {
 
 	if (isLoading) {
 		// Render a loading indicator while fetching the token
-		return (
-			<Loading />
-		);
+		return <Loading />;
 	}
 
 	return (

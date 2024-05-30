@@ -9,8 +9,6 @@ import React from "react";
 import splashBg from "../../assets/images/splash-bg.jpg";
 import myColors from "../../utils/myColors";
 
-
-
 const Terms = () => {
 	return (
 		<ImageBackground source={splashBg} style={styles.background}>

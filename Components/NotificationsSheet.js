@@ -1,4 +1,10 @@
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+	Dimensions,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View,
+} from "react-native";
 import React, { useEffect } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -22,20 +28,15 @@ const NotificationsSheet = (props) => {
 		translateY.value = withSpring(0, { damping: 50 });
 		setTimeout(() => {
 			onToggle(); // Toggle notification sheet visibility
-		  }, 1000); // Delay for 1 second (1000 milliseconds)
+		}, 1000); // Delay for 1 second (1000 milliseconds)
 	};
 
-
 	const gesture = Gesture.Pan()
-		
-		
-		.onEnd(() => {
-			
-					if (translateY.value > -SCREEN_HEIGHT / 3) {
-						translateY.value = withSpring(0, { damping: 50 });
-					}
-			
-		});
+	.onEnd(() => {
+		if (translateY.value > -SCREEN_HEIGHT / 3) {
+			translateY.value = withSpring(0, { damping: 50 });
+		}
+	});
 
 	useEffect(() => {
 		translateY.value = withSpring(-SCREEN_HEIGHT * 0.8, { damping: 50 });
@@ -51,7 +52,7 @@ const NotificationsSheet = (props) => {
 		<GestureDetector gesture={gesture}>
 			<Animated.View style={[styles.bottmSheetCont, rBottomSheetStyle]}>
 				<View style={styles.line}></View>
-				<TouchableOpacity onPress={toggleSheet} >
+				<TouchableOpacity onPress={toggleSheet}>
 					<Text>Close</Text>
 				</TouchableOpacity>
 			</Animated.View>

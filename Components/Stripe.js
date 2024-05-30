@@ -60,7 +60,7 @@ const StripeApp = (props) => {
 					Alert.alert(`Payment Confirmation Error: ${confirmError.message}`);
 				} else if (paymentIntent) {
 					Alert.alert("Payment Successful");
-                    await onStorePayment();
+					await onStorePayment();
 					console.log("Payment successful:", paymentIntent);
 				}
 			}

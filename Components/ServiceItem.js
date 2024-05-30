@@ -29,10 +29,7 @@ const ServiceItem = (props) => {
 						<Text style={styles.price}>$ {service.price}</Text>
 					</View>
 					<Text style={styles.description}>{service.service_description}</Text>
-					<View style={styles.row}>
-
-						
-					</View>
+					<View style={styles.row}></View>
 				</View>
 			</View>
 		</View>
@@ -47,14 +44,14 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.5,
 		shadowRadius: 5,
 		shadowOffset: { width: 2, height: 2 },
-        margin: 16,
+		margin: 16,
 	},
 	main: {
 		flexDirection: "row",
 		borderWidth: 1,
 		borderRadius: 20,
 		borderColor: "white",
-		
+
 		width: "100%",
 		aspectRatio: 2.5,
 		backgroundColor: "white",
@@ -93,5 +90,4 @@ const styles = StyleSheet.create({
 		fontFamily: "SF",
 		fontSize: 12,
 	},
-	
 });

@@ -15,9 +15,9 @@ const AddressComponent = (props) => {
 		}
 	};
 
-	const handleNavigation =() => {
-		onNavigate(item)
-	}
+	const handleNavigation = () => {
+		onNavigate(item);
+	};
 
 	return (
 		<View style={styles.textInput}>
@@ -27,7 +27,10 @@ const AddressComponent = (props) => {
 				</View>
 				<Text style={styles.titleText}>{item.name}</Text>
 			</View>
-			<TouchableOpacity style={styles.rightContainer} onPress={handleNavigation}>
+			<TouchableOpacity
+				style={styles.rightContainer}
+				onPress={handleNavigation}
+			>
 				<Text style={styles.titleText}>Edit</Text>
 				<View style={styles.homeRightView}>
 					<Ionicons name="create-outline" color={myColors.white} size={22} />

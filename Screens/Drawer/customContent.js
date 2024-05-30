@@ -4,15 +4,15 @@ import {
 	View,
 	TouchableOpacity,
 	Dimensions,
-    Image,
-	Linking 
+	Image,
+	Linking,
 } from "react-native";
 import React from "react";
 import Logo from "../../Components/Logo";
 import myColors from "../../utils/myColors";
-import facebook from "../../assets/images/social/facebook.png"
-import tiktok from "../../assets/images/social/tiktok.png"
-import instagram from "../../assets/images/social/instagram.png"
+import facebook from "../../assets/images/social/facebook.png";
+import tiktok from "../../assets/images/social/tiktok.png";
+import instagram from "../../assets/images/social/instagram.png";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -21,17 +21,16 @@ const customContent = (props) => {
 	const height = width / 8;
 
 	const handleInstagramPress = () => {
-		Linking.openURL('https://www.instagram.com/');
-	  };
-	
-	  const handleTikTokPress = () => {
-		Linking.openURL('https://www.tiktok.com/');
-	  };
-	
-	  const handleFacebookPress = () => {
-		Linking.openURL('https://www.facebook.com/');
-	  };
+		Linking.openURL("https://www.instagram.com/");
+	};
 
+	const handleTikTokPress = () => {
+		Linking.openURL("https://www.tiktok.com/");
+	};
+
+	const handleFacebookPress = () => {
+		Linking.openURL("https://www.facebook.com/");
+	};
 
 	return (
 		<View style={styles.container}>
@@ -95,10 +94,16 @@ const customContent = (props) => {
 			<View style={styles.bottomView}>
 				<Text style={styles.socialText}>Follow us on social media!</Text>
 				<View style={styles.socialView}>
-                    <TouchableOpacity onPress={handleTikTokPress}><Image source={tiktok} style={styles.socialImage} /></TouchableOpacity>
-                    <TouchableOpacity onPress={handleInstagramPress}><Image source={instagram} style={styles.socialImage} /></TouchableOpacity>
-                    <TouchableOpacity onPress={handleFacebookPress}><Image source={facebook} style={styles.socialImage} /></TouchableOpacity>
-                </View>
+					<TouchableOpacity onPress={handleTikTokPress}>
+						<Image source={tiktok} style={styles.socialImage} />
+					</TouchableOpacity>
+					<TouchableOpacity onPress={handleInstagramPress}>
+						<Image source={instagram} style={styles.socialImage} />
+					</TouchableOpacity>
+					<TouchableOpacity onPress={handleFacebookPress}>
+						<Image source={facebook} style={styles.socialImage} />
+					</TouchableOpacity>
+				</View>
 			</View>
 		</View>
 	);
@@ -110,16 +115,16 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		justifyContent: "space-evenly",
-		backgroundColor:myColors.dirtyWhite
+		backgroundColor: myColors.dirtyWhite,
 	},
-    logo:{
-        width:"100%",
-        alignItems:"center",
-        marginVertical:20,
-    },
-    middleView:{
-        paddingLeft: 16,
-    },
+	logo: {
+		width: "100%",
+		alignItems: "center",
+		marginVertical: 20,
+	},
+	middleView: {
+		paddingLeft: 16,
+	},
 	titles: {
 		fontSize: 20,
 		color: myColors.blue,
@@ -133,23 +138,23 @@ const styles = StyleSheet.create({
 		fontSize: 10,
 		color: myColors.grey,
 	},
-    bottomView:{
-        width:"100%",
-        alignItems:"center",
-        },
-    socialView:{
-        flexDirection:"row",
-        width:"100%",
-        justifyContent:"space-evenly"
-    },
-    socialText:{
-        fontSize: 12,
+	bottomView: {
+		width: "100%",
+		alignItems: "center",
+	},
+	socialView: {
+		flexDirection: "row",
+		width: "100%",
+		justifyContent: "space-evenly",
+	},
+	socialText: {
+		fontSize: 12,
 		color: myColors.blue,
-        marginBottom:16,
-    },
-    socialImage:{
-        width:32,
-        height:32,
-        margin:2
-    }
+		marginBottom: 16,
+	},
+	socialImage: {
+		width: 32,
+		height: 32,
+		margin: 2,
+	},
 });

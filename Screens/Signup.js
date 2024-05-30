@@ -40,9 +40,6 @@ const Signup = (props) => {
 	const [apiResponse, setApiResponse] = useState([]);
 	const [loadingError, setLoadingError] = useState(false);
 
-
-
-
 	const handleSignup = async (userInfo) => {
 		try {
 			const userData = {
@@ -59,17 +56,13 @@ const Signup = (props) => {
 				userData
 			);
 
-			
 			// Handle success response here
 			await saveBearerToken(response.data.token);
-			
 		} catch (error) {
 			console.error("Error:", error);
 			throw error; // Throw the error to be caught by the caller
 		}
 	};
-
-	
 
 	const handleToggleAcceptTerms = () => {
 		setAcceptTerms(!acceptTerms);
@@ -170,7 +163,7 @@ const Signup = (props) => {
 				// Assuming handleSignup is an async function
 				await handleSignup(user);
 				newToken = await getBearerToken();
-				onNavigate(user,newToken);
+				onNavigate(user, newToken);
 				console.log(user);
 				setUser({
 					id: "",
@@ -278,15 +271,14 @@ const Signup = (props) => {
 						accessible={false}
 					>
 						<View style={styles.centeredView}>
-							
 							<TouchableOpacity style={styles.topView} onPress={ToggleModal}>
-							<Ionicons
-								name="chevron-back-outline"
-								color={myColors.blue}
-								size={24}
-							/>
-							<Text style={styles.topText}>Back</Text>
-						</TouchableOpacity>
+								<Ionicons
+									name="chevron-back-outline"
+									color={myColors.blue}
+									size={24}
+								/>
+								<Text style={styles.topText}>Back</Text>
+							</TouchableOpacity>
 							<Text style={styles.modalText}>Please give us your name:</Text>
 							<TextInput
 								placeholder="First Name"
@@ -476,7 +468,7 @@ const styles = StyleSheet.create({
 	modalText: {
 		color: myColors.blue,
 		fontFamily: "SF-bold",
-		fontSize:16,
+		fontSize: 16,
 		margin: 8,
 	},
 	datePicker: {
@@ -490,7 +482,6 @@ const styles = StyleSheet.create({
 		padding: 8,
 	},
 	dateCancelButton: {
-		
 		flexDirection: "row",
 		justifyContent: "center",
 		alignItems: "center",
@@ -498,12 +489,11 @@ const styles = StyleSheet.create({
 		padding: 14,
 		marginHorizontal: 8,
 		width: "40%",
-		
 	},
 	dateCancelText: {
 		color: myColors.blue,
 		fontFamily: "SF-bold",
-		fontSize:16
+		fontSize: 16,
 	},
 	dateConfirmButton: {
 		flexDirection: "row",
@@ -517,7 +507,7 @@ const styles = StyleSheet.create({
 	dateConfirmText: {
 		color: myColors.blue,
 		fontFamily: "SF-bold",
-		fontSize:16
+		fontSize: 16,
 	},
 	signup2Button: {
 		flexDirection: "row",
@@ -542,7 +532,7 @@ const styles = StyleSheet.create({
 		margin: 10,
 		flexDirection: "row",
 		alignItems: "center",
-		marginBottom:8
+		marginBottom: 8,
 	},
 	topText: {
 		fontFamily: "SF-medium",

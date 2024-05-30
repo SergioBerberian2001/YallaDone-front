@@ -35,21 +35,21 @@ const VisaCard = (props) => {
 					<View style={styles.row}>
 						<View style={styles.dotCont}>
 							<Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
-              <Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
-              <Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
-              <Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
-						</View>
-            <View style={styles.dotCont}>
 							<Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
-              <Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
-              <Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
-              <Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
-						</View>
-            <View style={styles.dotCont}>
 							<Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
-              <Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
-              <Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
-              <Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
+							<Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
+						</View>
+						<View style={styles.dotCont}>
+							<Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
+							<Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
+							<Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
+							<Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
+						</View>
+						<View style={styles.dotCont}>
+							<Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
+							<Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
+							<Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
+							<Ionicons name="ellipse" color={"#FFFFFF"} size={10} />
 						</View>
 
 						{cardDetails && cardDetails.last4 ? (
@@ -152,7 +152,6 @@ const styles = StyleSheet.create({
 	row: {
 		flexDirection: "row",
 		alignItems: "center",
-    
 	},
 	valid: {
 		alignSelf: "flex-end",
@@ -162,9 +161,9 @@ const styles = StyleSheet.create({
 	cardNbr: {
 		margin: 8,
 	},
-  dotCont:{
-    flexDirection: "row",
+	dotCont: {
+		flexDirection: "row",
 		alignItems: "center",
-    marginRight:4
-  }
+		marginRight: 4,
+	},
 });

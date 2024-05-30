@@ -140,7 +140,7 @@ const OrderForm = ({ navigation, route }) => {
 	};
 
 	const navigateToCheckout = (formId) => {
-		navigation.navigate("Checkout", {order, formId});
+		navigation.navigate("Checkout", { order, formId });
 	};
 
 	const handleAddAddress = (paramAddress) => {

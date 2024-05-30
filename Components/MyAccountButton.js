@@ -14,17 +14,17 @@ const MyAccountButton = (props) => {
 export default MyAccountButton;
 
 const styles = StyleSheet.create({
-    button:{
-        width:"90%",
-        aspectRatio:9/2,
-        backgroundColor:myColors.blue,
-        alignItems:"center",
-        justifyContent:"center",
-        borderRadius:10,
-    },
-    text:{
-       fontFamily:"SF-bold",
-       fontSize:20,
-       color:myColors.white,
-    }
+	button: {
+		width: "90%",
+		aspectRatio: 9 / 2,
+		backgroundColor: myColors.blue,
+		alignItems: "center",
+		justifyContent: "center",
+		borderRadius: 10,
+	},
+	text: {
+		fontFamily: "SF-bold",
+		fontSize: 20,
+		color: myColors.white,
+	},
 });

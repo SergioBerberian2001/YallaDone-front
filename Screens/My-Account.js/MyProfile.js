@@ -128,7 +128,15 @@ const MyProfile = ({ navigation, route }) => {
 	};
 
 	const handleChangeInfo = async (userInfo) => {
-		const { user_name, user_lastname, email, phone_number, bday, bmonth, byear } = userInfo;
+		const {
+			user_name,
+			user_lastname,
+			email,
+			phone_number,
+			bday,
+			bmonth,
+			byear,
+		} = userInfo;
 
 		let valid = true;
 		const newErrors = {
@@ -165,7 +173,7 @@ const MyProfile = ({ navigation, route }) => {
 			valid = false;
 		}
 
-		if (!bday || bday > 31 ||  !bmonth || bmonth > 12 || !byear) {
+		if (!bday || bday > 31 || !bmonth || bmonth > 12 || !byear) {
 			newErrors.bday = !bday ? "Day is required." : "";
 			newErrors.bmonth = !bmonth ? "Month is required." : "";
 			newErrors.byear = !byear ? "Year is required." : "";
@@ -205,7 +213,9 @@ const MyProfile = ({ navigation, route }) => {
 			console.error("Error:", error);
 			if (error.response) {
 				const errorMessage = error.response.data.message;
-				errorPopup(errorMessage || "Failed to update profile. Please try again.");
+				errorPopup(
+					errorMessage || "Failed to update profile. Please try again."
+				);
 			} else {
 				errorPopup("Failed to update profile. Please try again.");
 			}
@@ -219,8 +229,6 @@ const MyProfile = ({ navigation, route }) => {
 	const navigate = () => {
 		navigation.goBack();
 	};
-
-	
 
 	if (isLoading) {
 		return <Loading />;
@@ -252,7 +260,7 @@ const MyProfile = ({ navigation, route }) => {
 						onChangeText={(text) => handleChange("user_name", text)}
 						value={user.user_name}
 					/>
-					
+
 					<Text style={styles.inputTitle}>Last Name</Text>
 					<TextInput
 						style={styles.textInput}
@@ -260,7 +268,7 @@ const MyProfile = ({ navigation, route }) => {
 						onChangeText={(text) => handleChange("user_lastname", text)}
 						value={user.user_lastname}
 					/>
-					
+
 					<Text style={styles.inputTitle}>Email</Text>
 					<TextInput
 						style={styles.textInput}
@@ -268,7 +276,7 @@ const MyProfile = ({ navigation, route }) => {
 						onChangeText={(text) => handleChange("email", text)}
 						value={user.email}
 					/>
-					
+
 					<Text style={styles.inputTitle}>Phone Number</Text>
 					<View style={styles.PhoneView}>
 						<TextInput
@@ -286,7 +294,7 @@ const MyProfile = ({ navigation, route }) => {
 							keyboardType="numeric"
 						/>
 					</View>
-					
+
 					<Text style={styles.inputTitle}>Birthday</Text>
 					<View style={styles.PhoneView}>
 						<TextInput
@@ -311,7 +319,7 @@ const MyProfile = ({ navigation, route }) => {
 							keyboardType="numeric"
 						/>
 					</View>
-	
+
 					<TouchableOpacity
 						style={styles.button}
 						onPress={() => handleChangeInfo(user)}

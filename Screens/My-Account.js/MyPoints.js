@@ -1,14 +1,14 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View } from "react-native";
+import React from "react";
 
 const MyPoints = () => {
-  return (
-    <View>
-      <Text>MyPoints</Text>
-    </View>
-  )
-}
+	return (
+		<View>
+			<Text>MyPoints</Text>
+		</View>
+	);
+};
 
-export default MyPoints
+export default MyPoints;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

@@ -17,7 +17,7 @@ import OnBoardingContent from "../Components/OnBoardingContent";
 import Paginator from "../Components/Paginator";
 
 const Onboarding = ({ navigation, route }) => {
-	const slidesInfo  = route.params;
+	const slidesInfo = route.params;
 	const width = 280;
 	const height = 35;
 	const [currentIndex, setCurrentIndex] = useState(0);

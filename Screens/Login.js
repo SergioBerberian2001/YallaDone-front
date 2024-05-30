@@ -46,47 +46,43 @@ const Login = (props) => {
 			);
 
 			console.log("Response:", response.data);
-			
+
 			await saveBearerToken(response.data.token);
 			await fetchData();
-			
 		} catch (error) {
 			console.error("Error:", error);
 			throw error; // Throw the error to be caught by the caller
 		}
 	};
 
-	
-		const fetchData = async () => {
-			try {
-				// Retrieve the token
-				const token = await getBearerToken();
+	const fetchData = async () => {
+		try {
+			// Retrieve the token
+			const token = await getBearerToken();
 
-				// Make the API call with the Authorization header
-				const response = await axios.get(
-					"http://192.168.1.100:8000/api/profile",
-					{
-						headers: {
-							Authorization: `Bearer ${token}`,
-						},
-					}
-				);
-
-				// Extract user data from response
-				const userData = response.data.data;
-
-				await saveUser(userData)
-				onNavigate();
-			} catch (error) {
-				console.error("Error fetching data:", error);
-				if (error.response) {
-					console.error("Status:", error.response.status);
-					console.error("Data:", error.response.data);
+			// Make the API call with the Authorization header
+			const response = await axios.get(
+				"http://192.168.1.100:8000/api/profile",
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
 				}
-			}
-		};
+			);
 
-		
+			// Extract user data from response
+			const userData = response.data.data;
+
+			await saveUser(userData);
+			onNavigate();
+		} catch (error) {
+			console.error("Error fetching data:", error);
+			if (error.response) {
+				console.error("Status:", error.response.status);
+				console.error("Data:", error.response.data);
+			}
+		}
+	};
 
 	const handleError = (userError) => {
 		let message = "";

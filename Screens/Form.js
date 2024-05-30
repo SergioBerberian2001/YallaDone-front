@@ -21,10 +21,9 @@ const Form = ({ navigation, route }) => {
 	const slidesInfo = slides;
 	const { isCreating } = route.params;
 	const [isSigningUp, setIsSigningUp] = useState(true);
-    useEffect(()=> {
-        setIsSigningUp(isCreating);
-    },[])
-    
+	useEffect(() => {
+		setIsSigningUp(isCreating);
+	}, []);
 
 	const handleIsSigningUp = () => {
 		setIsSigningUp(true);
@@ -36,18 +35,15 @@ const Form = ({ navigation, route }) => {
 	const navigateToOTP = (user, token) => {
 		// setIsSigningUp(true),
 		// navigation.navigate("Form");
-		
-		navigation.navigate("OTP", {user, token});
 
+		navigation.navigate("OTP", { user, token });
 	};
 
 	const navigateToHome = () => {
 		// setIsSigningUp(true),
 		// navigation.navigate("Form");
 		navigation.navigate("DrawerScreen");
-
 	};
-
 
 	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -58,38 +54,43 @@ const Form = ({ navigation, route }) => {
 				<View style={styles.logoView}>
 					<Logo width={width} height={height} />
 				</View>
-				<View style={styles.container}>{isSigningUp? 
-					<View style={styles.swapMainContainer}>
-                        
-						<TouchableOpacity
-							style={styles.swapContainerOn}
-							onPress={handleIsSigningUp}
-						>
-							<Text style={styles.swapText}>Register</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
-							style={styles.swapContainerOff}
-							onPress={handleIsSigningIn}
-						>
-							<Text style={styles.swapText}>Login</Text>
-						</TouchableOpacity>
-					</View>: <View style={styles.swapMainContainer}>
-                        
-						<TouchableOpacity
-							style={styles.swapContainerOff}
-							onPress={handleIsSigningUp}
-						>
-							<Text style={styles.swapText}>Register</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
-							style={styles.swapContainerOn}
-							onPress={handleIsSigningIn}
-						>
-							<Text style={styles.swapText}>Login</Text>
-						</TouchableOpacity>
-					</View>
-                    }
-					{isSigningUp ? <Signup onNavigate={navigateToOTP}/> : <Login onNavigate={navigateToHome}/>}
+				<View style={styles.container}>
+					{isSigningUp ? (
+						<View style={styles.swapMainContainer}>
+							<TouchableOpacity
+								style={styles.swapContainerOn}
+								onPress={handleIsSigningUp}
+							>
+								<Text style={styles.swapText}>Register</Text>
+							</TouchableOpacity>
+							<TouchableOpacity
+								style={styles.swapContainerOff}
+								onPress={handleIsSigningIn}
+							>
+								<Text style={styles.swapText}>Login</Text>
+							</TouchableOpacity>
+						</View>
+					) : (
+						<View style={styles.swapMainContainer}>
+							<TouchableOpacity
+								style={styles.swapContainerOff}
+								onPress={handleIsSigningUp}
+							>
+								<Text style={styles.swapText}>Register</Text>
+							</TouchableOpacity>
+							<TouchableOpacity
+								style={styles.swapContainerOn}
+								onPress={handleIsSigningIn}
+							>
+								<Text style={styles.swapText}>Login</Text>
+							</TouchableOpacity>
+						</View>
+					)}
+					{isSigningUp ? (
+						<Signup onNavigate={navigateToOTP} />
+					) : (
+						<Login onNavigate={navigateToHome} />
+					)}
 				</View>
 			</ImageBackground>
 		</TouchableWithoutFeedback>
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
 		marginBottom: 32,
 	},
 	swapContainerOn: {
-        flex: 1,
+		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
 		backgroundColor: "rgba(255,255,255,0.4)",
