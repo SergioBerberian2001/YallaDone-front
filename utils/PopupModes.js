@@ -23,6 +23,13 @@ const popupModes = {
 		iconColor: myColors.red,
         type: "error",
 	},
+	OTPError: {
+		title: "OTP is invalid",
+		message: "The OTP you entered was invalid",
+		icon: "close-circle",
+		iconColor: myColors.red,
+        type: "error",
+	},
 	// Add more modes as needed
 };
 

@@ -12,26 +12,7 @@ import myColors from "../utils/myColors";
 
 const windowWidth = Dimensions.get("window").width;
 const ServiceHome = (props) => {
-	const { service, onToggleFavorite, onOrder } = props;
-
-	const handleToggleFavorite = () => {
-		onToggleFavorite(service.service_id, !service.isFav);
-	};
-
-	const handleOrder = (order) => {
-		onOrder(order);
-	}
-
-	const truncateDescription = (text, maxLength) => {
-		return text.length > maxLength
-			? `${text.substring(0, maxLength)}...`
-			: text;
-	};
-
-	const truncatedDescription = truncateDescription(
-		service.service_description,
-		120
-	); // Adjust maxLength for desired line count (assuming ~20 characters per line)
+	const { service } = props;
 
 	return (
 		<View style={styles.shadowView}>
@@ -47,25 +28,10 @@ const ServiceHome = (props) => {
 						<Text style={styles.title}>{service.service_name}</Text>
 						<Text style={styles.price}>$ {service.price}</Text>
 					</View>
-					<Text style={styles.description}>{truncatedDescription}</Text>
+					<Text style={styles.description}>{service.description}</Text>
 					<View style={styles.row}>
-						{service.isFav ? (
-							<TouchableOpacity onPress={handleToggleFavorite}>
-								<MaterialCommunityIcons
-									name="heart"
-									color={myColors.red}
-									size={26}
-								/>
-							</TouchableOpacity>
-						) : (
-							<TouchableOpacity onPress={handleToggleFavorite}>
-								<MaterialCommunityIcons name="heart" color="#ccc" size={26} />
-							</TouchableOpacity>
-						)}
 
-						<TouchableOpacity style={styles.orderButton} onPress={()=> handleOrder(service)} >
-							<Text style={styles.orderText}>Order Service</Text>
-						</TouchableOpacity>
+						
 					</View>
 				</View>
 			</View>
@@ -127,14 +93,5 @@ const styles = StyleSheet.create({
 		fontFamily: "SF",
 		fontSize: 12,
 	},
-	orderButton: {
-		backgroundColor: myColors.red,
-		padding: 6,
-		borderRadius: 32,
-	},
-	orderText: {
-		fontFamily: "SF",
-		fontSize: 14,
-		color: "white",
-	},
+	
 });

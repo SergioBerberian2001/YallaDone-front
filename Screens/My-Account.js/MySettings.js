@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import myColors from "../../utils/myColors";
 import { saveBearerToken, getBearerToken, logout } from "../../utils/bearer.js";
@@ -6,8 +6,10 @@ import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import ToggleButton from "../../Components/ToggleButton.js";
 import Loading from "../../Components/Loading.js";
+import UserContext from "../../utils/UserContext.js";
 
 const MySettings = (props) => {
+	const { user, clearUser } = useContext(UserContext);
 	const { onToggle } = props;
 	const navigation = useNavigation();
 	const [isLoading, setIsLoading] = useState(false);
@@ -42,6 +44,7 @@ const MySettings = (props) => {
 					},
 				}
 			);
+			clearUser();
 			await logout();
 			navigation.navigate("Splash");
 		} catch (error) {
@@ -60,9 +63,11 @@ const MySettings = (props) => {
 
 	const handleLogout = () => {
 		try {
+			clearUser();
 			logoutAxios();
 			handleLogoutFront();
 		} catch (error) {
+			clearUser();
 			handleLogoutFront();
 		}
 	};

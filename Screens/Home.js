@@ -11,7 +11,7 @@ import {
 	ActivityIndicator,
 	useWindowDimensions,
 } from "react-native";
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useContext } from "react";
 import { MaterialCommunityIcons } from "react-native-vector-icons";
 import myColors from "../utils/myColors";
 import ServiceHome from "../Components/ServiceHome";
@@ -21,9 +21,11 @@ import Popup from "../Components/Popup";
 import axios from "axios";
 import Loading from "../Components/Loading";
 import popupModes from "../utils/PopupModes";
+import UserContext from "../utils/UserContext";
 
 const windowWidth = Dimensions.get("window").width;
 const Home = ({ navigation, route }) => {
+	const { user, clearUser } = useContext(UserContext);
 	const { width } = useWindowDimensions();
 	const height = width / 8;
 	const [isLoading, setIsLoading] = useState(true);
@@ -80,6 +82,10 @@ const Home = ({ navigation, route }) => {
 		// 	)
 		// );
 	};
+
+	const handleOrder = (order) => {
+		navigation.navigate("OrderForm", order)
+	}
 
 	if (isLoading) {
 		return <Loading />;
@@ -147,6 +153,7 @@ const Home = ({ navigation, route }) => {
 								<ServiceHome
 									service={item}
 									onToggleFavorite={onToggleFavorite}
+									onOrder={handleOrder}
 								/>
 							)}
 						/>
@@ -175,6 +182,7 @@ const Home = ({ navigation, route }) => {
 								<ServiceHome
 									service={item}
 									onToggleFavorite={onToggleFavorite}
+									onOrder={handleOrder}
 								/>
 							)}
 						/>
@@ -203,6 +211,7 @@ const Home = ({ navigation, route }) => {
 								<ServiceHome
 									service={item}
 									onToggleFavorite={onToggleFavorite}
+									onOrder={handleOrder}
 								/>
 							)}
 						/>
@@ -231,6 +240,7 @@ const Home = ({ navigation, route }) => {
 								<ServiceHome
 									service={item}
 									onToggleFavorite={onToggleFavorite}
+									onOrder={handleOrder}
 								/>
 							)}
 						/>

@@ -15,6 +15,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import myColors from "../utils/myColors";
 import axios from "axios";
 import { saveBearerToken, getBearerToken, logout } from "../utils/bearer.js";
+import { Ionicons } from "react-native-vector-icons";
 // import { differenceInYears } from 'date-fns';
 
 const Signup = (props) => {
@@ -168,7 +169,8 @@ const Signup = (props) => {
 			try {
 				// Assuming handleSignup is an async function
 				await handleSignup(user);
-				onNavigate(user);
+				newToken = await getBearerToken();
+				onNavigate(user,newToken);
 				console.log(user);
 				setUser({
 					id: "",
@@ -276,9 +278,15 @@ const Signup = (props) => {
 						accessible={false}
 					>
 						<View style={styles.centeredView}>
-							<TouchableOpacity onPress={ToggleModal}>
-								<Text>Close</Text>
-							</TouchableOpacity>
+							
+							<TouchableOpacity style={styles.topView} onPress={ToggleModal}>
+							<Ionicons
+								name="chevron-back-outline"
+								color={myColors.blue}
+								size={24}
+							/>
+							<Text style={styles.topText}>Back</Text>
+						</TouchableOpacity>
 							<Text style={styles.modalText}>Please give us your name:</Text>
 							<TextInput
 								placeholder="First Name"
@@ -302,6 +310,7 @@ const Signup = (props) => {
 									value={date}
 									onChange={onDateChange}
 									style={styles.datePicker}
+									themeVariant="light"
 								/>
 							)}
 							{showPicker && Platform.OS === "ios" && (
@@ -337,10 +346,10 @@ const Signup = (props) => {
 
 							<Text style={styles.errorText}>{error}</Text>
 							<TouchableOpacity
-								style={styles.signupButton}
+								style={styles.signup2Button}
 								onPress={handleSignupSecond}
 							>
-								<Text style={styles.signupText}>Signup</Text>
+								<Text style={styles.signup2Text}>Signup</Text>
 							</TouchableOpacity>
 						</View>
 					</TouchableWithoutFeedback>
@@ -441,7 +450,7 @@ const styles = StyleSheet.create({
 		// fontSize:,
 	},
 	centeredView: {
-		height: "90%",
+		height: "80%",
 		width: "100%",
 		backgroundColor: myColors.white,
 		position: "absolute",
@@ -465,16 +474,15 @@ const styles = StyleSheet.create({
 	},
 
 	modalText: {
-		color: "black",
-		fontFamily: "SF-medium",
-		fontSize: 16,
+		color: myColors.blue,
+		fontFamily: "SF-bold",
+		fontSize:16,
 		margin: 8,
-		fontSize: 16,
 	},
 	datePicker: {
 		color: "black",
-		backgroundColor: "rgba(47,61,126,0.8)",
-		borderRadius: 20,
+		// backgroundColor: "rgba(47,61,126,0.8)",
+		// borderRadius: 20,
 	},
 	dateButtonsView: {
 		flexDirection: "row",
@@ -482,7 +490,7 @@ const styles = StyleSheet.create({
 		padding: 8,
 	},
 	dateCancelButton: {
-		backgroundColor: myColors.blue,
+		
 		flexDirection: "row",
 		justifyContent: "center",
 		alignItems: "center",
@@ -490,17 +498,14 @@ const styles = StyleSheet.create({
 		padding: 14,
 		marginHorizontal: 8,
 		width: "40%",
-		shadowColor: "#000000",
-		shadowOpacity: 0.5,
-		shadowRadius: 5,
-		shadowOffset: { width: 3, height: 3 },
+		
 	},
 	dateCancelText: {
-		color: myColors.white,
-		fontFamily: "SF",
+		color: myColors.blue,
+		fontFamily: "SF-bold",
+		fontSize:16
 	},
 	dateConfirmButton: {
-		backgroundColor: myColors.blue,
 		flexDirection: "row",
 		justifyContent: "center",
 		alignItems: "center",
@@ -508,13 +513,40 @@ const styles = StyleSheet.create({
 		padding: 14,
 		width: "40%",
 		marginHorizontal: 8,
+	},
+	dateConfirmText: {
+		color: myColors.blue,
+		fontFamily: "SF-bold",
+		fontSize:16
+	},
+	signup2Button: {
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: myColors.blue,
+		borderRadius: 10,
+		padding: 14,
+		marginHorizontal: 8,
+		marginVertical: 40,
 		shadowColor: "#000000",
 		shadowOpacity: 0.5,
 		shadowRadius: 5,
 		shadowOffset: { width: 3, height: 3 },
 	},
-	dateConfirmText: {
+	signup2Text: {
+		fontFamily: "SF-bold",
 		color: myColors.white,
-		fontFamily: "SF",
+		fontSize: 18,
+	},
+	topView: {
+		margin: 10,
+		flexDirection: "row",
+		alignItems: "center",
+		marginBottom:8
+	},
+	topText: {
+		fontFamily: "SF-medium",
+		fontSize: 16,
+		color: myColors.blue,
 	},
 });

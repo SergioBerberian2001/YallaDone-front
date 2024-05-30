@@ -20,7 +20,6 @@ import { Ionicons } from "react-native-vector-icons";
 import axios from "axios";
 import { saveBearerToken, getBearerToken, logout } from "../../utils/bearer.js";
 import Loading from "../../Components/Loading.js";
-import MapView, { Marker } from "react-native-maps";
 import MyMap from "../../Components/MyMap.js";
 
 const AddAddress = ({ navigation, route }) => {
@@ -48,6 +47,28 @@ const AddAddress = ({ navigation, route }) => {
 	});
 
 	const [selectedType, setSelectedType] = useState(null);
+
+	const [errors, setErrors] = useState({
+		name: "",
+		district: "",
+		city: "",
+		street: "",
+		building: "",
+		floor: "",
+		additional_info: "",
+	});
+
+	const validateInputs = () => {
+		const newErrors = {};
+		if (!locationInfo.name) newErrors.name = "Name is required";
+		if (!locationInfo.district) newErrors.district = "District is required";
+		if (!locationInfo.city) newErrors.city = "City is required";
+		if (!locationInfo.street) newErrors.street = "Street is required";
+		if (!locationInfo.building) newErrors.building = "Building is required";
+		if (!locationInfo.floor) newErrors.floor = "Floor is required";
+		setErrors(newErrors);
+		return Object.keys(newErrors).length === 0;
+	};
 
 	const handlePress = (type) => {
 		setSelectedType(type);
@@ -77,6 +98,8 @@ const AddAddress = ({ navigation, route }) => {
 	};
 
 	const handleUpdateLocation = async (location) => {
+		if (!validateInputs()) return;
+
 		try {
 			const token = await getBearerToken();
 			const userData = {
@@ -111,6 +134,7 @@ const AddAddress = ({ navigation, route }) => {
 	};
 
 	const handleCreateLocation = async (location) => {
+		if (!validateInputs()) return;
 		try {
 			const token = await getBearerToken();
 			const userData = {
@@ -167,6 +191,17 @@ const AddAddress = ({ navigation, route }) => {
 
 	const handleChange = (name, value) => {
 		setLocation({ ...locationInfo, [name]: value });
+		if (value.trim() === "") {
+			setErrors((prevErrors) => ({
+				...prevErrors,
+				[name]: `${name.charAt(0).toUpperCase() + name.slice(1)} is required`,
+			}));
+		} else {
+			setErrors((prevErrors) => ({
+				...prevErrors,
+				[name]: "",
+			}));
+		}
 	};
 
 	const navigate = () => {
@@ -202,7 +237,7 @@ const AddAddress = ({ navigation, route }) => {
 								color={myColors.white}
 								size={32}
 							/>
-							<Text style={styles.topText}>My Account</Text>
+							<Text style={styles.topText}>Back</Text>
 						</TouchableOpacity>
 
 						{!isCreating && (
@@ -265,48 +300,85 @@ const AddAddress = ({ navigation, route }) => {
 
 					<Text style={styles.title}>Address Details</Text>
 					<View style={styles.container}>
-						<Text style={styles.inputTitle}>Name</Text>
+						<View style={styles.titleView}>
+							<Text style={styles.inputTitle}>Name</Text>
+							{errors.name ? (
+								<Text style={styles.errorText}>{errors.name}</Text>
+							) : null}
+						</View>
+
 						<TextInput
 							style={styles.textInput}
 							placeholder="Name"
 							onChangeText={(text) => handleChange("name", text)}
 							value={locationInfo.name}
 						/>
-						<Text style={styles.inputTitle}>District</Text>
+
+						<View style={styles.titleView}>
+							<Text style={styles.inputTitle}>District</Text>
+							{errors.district ? (
+								<Text style={styles.errorText}>{errors.district}</Text>
+							) : null}
+						</View>
 						<TextInput
 							style={styles.textInput}
 							placeholder="District"
 							onChangeText={(text) => handleChange("district", text)}
 							value={locationInfo.district}
 						/>
-						<Text style={styles.inputTitle}>City</Text>
+
+						<View style={styles.titleView}>
+							<Text style={styles.inputTitle}>City</Text>
+							{errors.city ? (
+								<Text style={styles.errorText}>{errors.city}</Text>
+							) : null}
+						</View>
 						<TextInput
 							style={styles.textInput}
 							placeholder="City"
 							onChangeText={(text) => handleChange("city", text)}
 							value={locationInfo.city}
 						/>
-						<Text style={styles.inputTitle}>Street</Text>
+
+						<View style={styles.titleView}>
+							<Text style={styles.inputTitle}>Street</Text>
+							{errors.street ? (
+								<Text style={styles.errorText}>{errors.street}</Text>
+							) : null}
+						</View>
 						<TextInput
 							style={styles.textInput}
 							placeholder="Street"
 							onChangeText={(text) => handleChange("street", text)}
 							value={locationInfo.street}
 						/>
-						<Text style={styles.inputTitle}>Building</Text>
+
+						<View style={styles.titleView}>
+							<Text style={styles.inputTitle}>Building</Text>
+							{errors.building ? (
+								<Text style={styles.errorText}>{errors.building}</Text>
+							) : null}
+						</View>
 						<TextInput
 							style={styles.textInput}
 							placeholder="Building"
 							onChangeText={(text) => handleChange("building", text)}
 							value={locationInfo.building}
 						/>
-						<Text style={styles.inputTitle}>Floor</Text>
+
+						<View style={styles.titleView}>
+							<Text style={styles.inputTitle}>Floor</Text>
+							{errors.floor ? (
+								<Text style={styles.errorText}>{errors.floor}</Text>
+							) : null}
+						</View>
 						<TextInput
 							style={styles.textInput}
 							placeholder="Floor"
 							onChangeText={(text) => handleChange("floor", text)}
 							value={locationInfo.floor}
 						/>
+
 						<Text style={styles.inputTitle}>
 							Additional Information(Optional)
 						</Text>
@@ -370,7 +442,7 @@ const styles = StyleSheet.create({
 		width: "100%",
 		fontSize: 16,
 		borderRadius: 8,
-		marginVertical: 8,
+		marginBottom: 12,
 		padding: 14,
 		backgroundColor: myColors.dirtyWhite90,
 		// backgroundColor: "lightgreen",
@@ -415,11 +487,6 @@ const styles = StyleSheet.create({
 		color: myColors.white,
 	},
 
-	inputTitle: {
-		fontFamily: "SF-bold",
-		fontSize: 16,
-		color: myColors.white,
-	},
 	dateInput: {
 		flex: 1,
 		fontSize: 16,
@@ -467,5 +534,23 @@ const styles = StyleSheet.create({
 		alignSelf: "center",
 		borderRadius: 20,
 		marginBottom: 10,
+	},
+	inputTitle: {
+		fontFamily: "SF-bold",
+		fontSize: 16,
+		color: myColors.white,
+		paddingBottom: 8,
+	},
+	errorText: {
+		fontFamily: "SF-bold",
+		fontSize: 16,
+		color: "rgba(255,80,80,1)",
+		height: "100%",
+	},
+	titleView: {
+		flexDirection: "row",
+		width: "100%",
+		alignItems: "center",
+		justifyContent: "space-between",
 	},
 });

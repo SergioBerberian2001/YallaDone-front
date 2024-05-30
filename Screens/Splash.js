@@ -16,6 +16,7 @@ import { saveBearerToken, getBearerToken, logout } from "../utils/bearer.js";
 import Loading from "../Components/Loading.js";
 
 const Splash = ({ navigation, route }) => {
+	
 	const { width } = useWindowDimensions();
 	const height = width / 8;
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -26,11 +27,9 @@ const Splash = ({ navigation, route }) => {
 			const token = await getBearerToken();
 			if (token) {
 				navigation.navigate("DrawerScreen");
-				console.log("user logged in");
 				setIsLoading(false);
 			} else if (!token) {
 				setIsLoading(false);
-				console.log("user not logged in");
 			}
 		};
 		checkLogin();
