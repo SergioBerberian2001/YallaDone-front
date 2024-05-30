@@ -18,14 +18,71 @@ import myColors from "../utils/myColors";
 import Loading from "../Components/Loading";
 import ServiceItem from "../Components/ServiceItem.js";
 import { RadioButton, Provider as PaperProvider } from "react-native-paper";
-import VisaCard from "../Components/VisaCard.js";
 import StripeApp from "../Components/Stripe";
 import { StripeProvider } from "@stripe/stripe-react-native";
 
 const Checkout = ({ navigation, route }) => {
-	const order = route.params;
+	const {order, formId} = route.params;
+	
 	const [checked, setChecked] = useState("cash");
-	// console.log(order)
+
+	const storePayment = async () => {
+		try {
+			const token = await getBearerToken();
+			const userData = {
+				type: checked,
+				service_id: order.service_id,
+			};
+			console.log(userData)
+			const response = await axios.post(
+				"http://192.168.1.100:8000/api/storePayment",
+				userData,
+				{
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+
+			console.log("Response:", response.data);
+			console.log(response.data.data.payment_id);
+			storeOrder(response.data.data.payment_id)
+			// navigateToCheckout();
+		} catch (error) {
+			console.error("Error:", error);
+			throw error; // Throw the error to be caught by the caller
+		}
+	};
+
+	const storeOrder = async (payment_id) => {
+		try {
+			const token = await getBearerToken();
+			const userData = {
+				payment_id: payment_id,
+				form_id: formId,
+			};
+			console.log(userData)
+			const response = await axios.post(
+				"http://192.168.1.100:8000/api/storeOrder",
+				userData,
+				{
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+
+			console.log("Response:", response.data);
+			console.log("YallaDone");
+			
+			// navigateToCheckout();
+		} catch (error) {
+			console.error("Error:", error);
+			throw error; // Throw the error to be caught by the caller
+		}
+	};
 	const navigate = () => {
 		navigation.goBack();
 	};
@@ -46,7 +103,7 @@ const Checkout = ({ navigation, route }) => {
 					<View style={styles.serviceView}>
 						<ServiceItem service={order} />
 					</View>
-					<Text>Select your method of payement</Text>
+					<Text>Select your method of payement </Text>
 					<PaperProvider>
 						<View style={styles.RadioContainer}>
 							<View style={styles.optionContainer}>
@@ -98,8 +155,10 @@ const Checkout = ({ navigation, route }) => {
 							</View>
 						</View>
 					</PaperProvider>
-					<VisaCard />
-					<StripeApp />
+					{checked === "visa" && <StripeApp onStorePayment={storePayment} />}
+					<TouchableOpacity style={styles.button} onPress={storePayment}>
+					<Text style={styles.buttonText}>Create Order</Text>
+				</TouchableOpacity>
 				</ScrollView>
 			</SafeAreaView>
 		</StripeProvider>
@@ -136,5 +195,20 @@ const styles = StyleSheet.create({
 	yallacoin: {
 		width: 20,
 		height: 20,
+	},
+	button: {
+		backgroundColor: myColors.red,
+		paddingHorizontal: 20,
+		paddingVertical: 16,
+		borderRadius: 8,
+		alignItems: "center",
+		marginVertical: 12,
+		marginHorizontal: 16,
+		marginBottom: 24,
+	},
+	buttonText: {
+		fontFamily: "SF-bold",
+		color: myColors.white,
+		fontSize: 16,
 	},
 });

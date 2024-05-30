@@ -128,7 +128,7 @@ const OrderForm = ({ navigation, route }) => {
 			);
 
 			console.log("Response:", response.data);
-			navigateToCheckout();
+			navigateToCheckout(response.data.data.form_id);
 		} catch (error) {
 			console.error("Error:", error);
 			throw error; // Throw the error to be caught by the caller
@@ -139,8 +139,8 @@ const OrderForm = ({ navigation, route }) => {
 		navigation.goBack();
 	};
 
-	const navigateToCheckout = () => {
-		navigation.navigate("Checkout", order);
+	const navigateToCheckout = (formId) => {
+		navigation.navigate("Checkout", {order, formId});
 	};
 
 	const handleAddAddress = (paramAddress) => {
