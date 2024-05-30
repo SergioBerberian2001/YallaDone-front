@@ -22,8 +22,8 @@ import StripeApp from "../Components/Stripe";
 import { StripeProvider } from "@stripe/stripe-react-native";
 
 const Checkout = ({ navigation, route }) => {
-	const {order, formId} = route.params;
-	
+	const { order, formId } = route.params;
+
 	const [checked, setChecked] = useState("cash");
 
 	const storePayment = async () => {
@@ -33,7 +33,7 @@ const Checkout = ({ navigation, route }) => {
 				type: checked,
 				service_id: order.service_id,
 			};
-			console.log(userData)
+			console.log(userData);
 			const response = await axios.post(
 				"http://192.168.1.100:8000/api/storePayment",
 				userData,
@@ -47,7 +47,7 @@ const Checkout = ({ navigation, route }) => {
 
 			console.log("Response:", response.data);
 			console.log(response.data.data.payment_id);
-			storeOrder(response.data.data.payment_id)
+			storeOrder(response.data.data.payment_id);
 			// navigateToCheckout();
 		} catch (error) {
 			console.error("Error:", error);
@@ -62,7 +62,7 @@ const Checkout = ({ navigation, route }) => {
 				payment_id: payment_id,
 				form_id: formId,
 			};
-			console.log(userData)
+			console.log(userData);
 			const response = await axios.post(
 				"http://192.168.1.100:8000/api/storeOrder",
 				userData,
@@ -76,7 +76,7 @@ const Checkout = ({ navigation, route }) => {
 
 			console.log("Response:", response.data);
 			console.log("YallaDone");
-			
+
 			// navigateToCheckout();
 		} catch (error) {
 			console.error("Error:", error);
@@ -157,8 +157,8 @@ const Checkout = ({ navigation, route }) => {
 					</PaperProvider>
 					{checked === "visa" && <StripeApp onStorePayment={storePayment} />}
 					<TouchableOpacity style={styles.button} onPress={storePayment}>
-					<Text style={styles.buttonText}>Create Order</Text>
-				</TouchableOpacity>
+						<Text style={styles.buttonText}>Create Order</Text>
+					</TouchableOpacity>
 				</ScrollView>
 			</SafeAreaView>
 		</StripeProvider>
