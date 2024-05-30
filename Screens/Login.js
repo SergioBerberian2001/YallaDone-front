@@ -9,13 +9,15 @@ import {
 	TouchableOpacity,
 	Modal,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import myColors from "../utils/myColors";
 import axios from "axios";
-import { saveBearerToken, getBearerToken, logout } from "../utils/bearer.js";
+import { saveBearerToken, getBearerToken } from "../utils/bearer.js";
+import UserContext from "../utils/UserContext.js";
 
 const Login = (props) => {
 	const { onNavigate } = props;
+	const { saveUser } = useContext(UserContext);
 	const [error, setError] = useState("");
 	const [user, setUser] = useState({
 		email: "81384086",
@@ -44,13 +46,47 @@ const Login = (props) => {
 			);
 
 			console.log("Response:", response.data);
+			
 			await saveBearerToken(response.data.token);
-			onNavigate();
+			await fetchData();
+			
 		} catch (error) {
 			console.error("Error:", error);
 			throw error; // Throw the error to be caught by the caller
 		}
 	};
+
+	
+		const fetchData = async () => {
+			try {
+				// Retrieve the token
+				const token = await getBearerToken();
+
+				// Make the API call with the Authorization header
+				const response = await axios.get(
+					"http://192.168.1.100:8000/api/profile",
+					{
+						headers: {
+							Authorization: `Bearer ${token}`,
+						},
+					}
+				);
+
+				// Extract user data from response
+				const userData = response.data.data;
+
+				await saveUser(userData)
+				onNavigate();
+			} catch (error) {
+				console.error("Error fetching data:", error);
+				if (error.response) {
+					console.error("Status:", error.response.status);
+					console.error("Data:", error.response.data);
+				}
+			}
+		};
+
+		
 
 	const handleError = (userError) => {
 		let message = "";

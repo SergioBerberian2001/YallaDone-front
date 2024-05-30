@@ -33,11 +33,11 @@ const Form = ({ navigation, route }) => {
 		setIsSigningUp(false);
 	};
 
-	const navigateToOTP = (user) => {
+	const navigateToOTP = (user, token) => {
 		// setIsSigningUp(true),
 		// navigation.navigate("Form");
 		
-		navigation.navigate("OTP", user);
+		navigation.navigate("OTP", {user, token});
 
 	};
 

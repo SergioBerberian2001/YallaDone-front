@@ -11,27 +11,8 @@ import { MaterialCommunityIcons } from "react-native-vector-icons";
 import myColors from "../utils/myColors";
 
 const windowWidth = Dimensions.get("window").width;
-const ServiceHome = (props) => {
-	const { service, onToggleFavorite, onOrder } = props;
-
-	const handleToggleFavorite = () => {
-		onToggleFavorite(service.service_id, !service.isFav);
-	};
-
-	const handleOrder = (order) => {
-		onOrder(order);
-	}
-
-	const truncateDescription = (text, maxLength) => {
-		return text.length > maxLength
-			? `${text.substring(0, maxLength)}...`
-			: text;
-	};
-
-	const truncatedDescription = truncateDescription(
-		service.service_description,
-		120
-	); // Adjust maxLength for desired line count (assuming ~20 characters per line)
+const ServiceItem = (props) => {
+	const { service } = props;
 
 	return (
 		<View style={styles.shadowView}>
@@ -47,25 +28,10 @@ const ServiceHome = (props) => {
 						<Text style={styles.title}>{service.service_name}</Text>
 						<Text style={styles.price}>$ {service.price}</Text>
 					</View>
-					<Text style={styles.description}>{truncatedDescription}</Text>
+					<Text style={styles.description}>{service.service_description}</Text>
 					<View style={styles.row}>
-						{service.isFav ? (
-							<TouchableOpacity onPress={handleToggleFavorite}>
-								<MaterialCommunityIcons
-									name="heart"
-									color={myColors.red}
-									size={26}
-								/>
-							</TouchableOpacity>
-						) : (
-							<TouchableOpacity onPress={handleToggleFavorite}>
-								<MaterialCommunityIcons name="heart" color="#ccc" size={26} />
-							</TouchableOpacity>
-						)}
 
-						<TouchableOpacity style={styles.orderButton} onPress={()=> handleOrder(service)} >
-							<Text style={styles.orderText}>Order Service</Text>
-						</TouchableOpacity>
+						
 					</View>
 				</View>
 			</View>
@@ -73,7 +39,7 @@ const ServiceHome = (props) => {
 	);
 };
 
-export default ServiceHome;
+export default ServiceItem;
 
 const styles = StyleSheet.create({
 	shadowView: {
@@ -81,16 +47,16 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.5,
 		shadowRadius: 5,
 		shadowOffset: { width: 2, height: 2 },
+        margin: 16,
 	},
 	main: {
 		flexDirection: "row",
 		borderWidth: 1,
 		borderRadius: 20,
 		borderColor: "white",
-		marginHorizontal: 8,
-		width: (windowWidth * 9) / 10,
+		
+		width: "100%",
 		aspectRatio: 2.5,
-		marginVertical: 4,
 		backgroundColor: "white",
 	},
 	row: {
@@ -127,14 +93,5 @@ const styles = StyleSheet.create({
 		fontFamily: "SF",
 		fontSize: 12,
 	},
-	orderButton: {
-		backgroundColor: myColors.red,
-		padding: 6,
-		borderRadius: 32,
-	},
-	orderText: {
-		fontFamily: "SF",
-		fontSize: 14,
-		color: "white",
-	},
+	
 });

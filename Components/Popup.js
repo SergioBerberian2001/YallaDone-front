@@ -21,7 +21,7 @@ const Popup = ({ visible, onClose, title, message, icon, iconColor, type }) => {
 			visible={visible}
 			onRequestClose={onClose}
 		>
-			<View style={styles.centeredView}>
+			<TouchableOpacity style={styles.centeredView} onPress={onClose}>
 				<View style={styles.modalView}>
 					{icon && <Ionicons name={icon} size={50} color={iconColor} />}
 					<Text
@@ -42,7 +42,7 @@ const Popup = ({ visible, onClose, title, message, icon, iconColor, type }) => {
 						<Text style={styles.closeButtonText}>Close</Text>
 					</TouchableOpacity>
 				</View>
-			</View>
+			</TouchableOpacity>
 		</Modal>
 	);
 };

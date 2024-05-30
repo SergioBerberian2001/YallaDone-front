@@ -9,7 +9,7 @@ import {
 	TouchableOpacity,
 	useWindowDimensions,
 	SafeAreaView,
-	ActivityIndicator,
+	Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Logo from "../../Components/Logo";
@@ -18,13 +18,22 @@ import { Ionicons } from "react-native-vector-icons";
 import axios from "axios";
 import { saveBearerToken, getBearerToken, logout } from "../../utils/bearer.js";
 import Loading from "../../Components/Loading.js";
+import Popup from "../../Components/Popup.js";
+import popupModes from "../../utils/PopupModes.js";
 
 const MyProfile = ({ navigation, route }) => {
 	const { width } = useWindowDimensions();
 	const height = width / 8;
 	const marginH = { marginHorizontal: 8 };
 	const [isLoading, setIsLoading] = useState(true);
-
+	const [popupVisible, setPopupVisible] = useState(false);
+	const [popupContent, setPopupContent] = useState({
+		title: "",
+		message: "",
+		icon: "",
+		iconColor: "",
+		type: "",
+	});
 	const [user, setUser] = useState({
 		user_name: "",
 		user_lastname: "",
@@ -36,14 +45,37 @@ const MyProfile = ({ navigation, route }) => {
 		bmonth: "",
 		byear: "",
 	});
+	const [errors, setErrors] = useState({
+		user_name: "",
+		user_lastname: "",
+		email: "",
+		phone_number: "",
+		bday: "",
+		bmonth: "",
+		byear: "",
+	});
+
+	const errorPopup = (errorMessage) => {
+		setPopupContent({
+			title: "Error",
+			message: errorMessage,
+			icon: "alert-circle",
+			iconColor: myColors.red,
+			type: "error",
+		});
+		setPopupVisible(true);
+	};
+
+	const showPopup = (mode) => {
+		setPopupContent(popupModes[mode]);
+		setPopupVisible(true);
+	};
 
 	useEffect(() => {
 		const fetchData = async () => {
 			try {
-				// Retrieve the token
 				const token = await getBearerToken();
 
-				// Make the API call with the Authorization header
 				const response = await axios.get(
 					"http://192.168.1.100:8000/api/profile",
 					{
@@ -53,10 +85,8 @@ const MyProfile = ({ navigation, route }) => {
 					}
 				);
 
-				// Extract user data from response
 				const userData = response.data.data;
 
-				// Update state with the response data one by one
 				setUser((prevState) => ({
 					...prevState,
 					user_name: userData.user_name,
@@ -66,7 +96,6 @@ const MyProfile = ({ navigation, route }) => {
 					birthday: userData.birthday.toString(),
 				}));
 
-				// Extract and set birthday parts
 				const [byear, bmonth, bday] = userData.birthday.split("-");
 				setUser((prevState) => ({
 					...prevState,
@@ -88,7 +117,68 @@ const MyProfile = ({ navigation, route }) => {
 		fetchData();
 	}, []);
 
+	const validateEmail = (email) => {
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		return emailRegex.test(email);
+	};
+
+	const validatePhoneNumber = (phoneNumber) => {
+		const phoneRegex = /^[0-9]{7,15}$/;
+		return phoneRegex.test(phoneNumber);
+	};
+
 	const handleChangeInfo = async (userInfo) => {
+		const { user_name, user_lastname, email, phone_number, bday, bmonth, byear } = userInfo;
+
+		let valid = true;
+		const newErrors = {
+			user_name: "",
+			user_lastname: "",
+			email: "",
+			phone_number: "",
+			bday: "",
+			bmonth: "",
+			byear: "",
+		};
+
+		if (!user_name) {
+			newErrors.user_name = "First name is required.";
+			errorPopup(newErrors.user_name);
+			valid = false;
+		}
+
+		if (!user_lastname) {
+			newErrors.user_lastname = "Last name is required.";
+			errorPopup(newErrors.user_lastname);
+			valid = false;
+		}
+
+		if (!email || !validateEmail(email)) {
+			newErrors.email = "Invalid email address.";
+			errorPopup(newErrors.email);
+			valid = false;
+		}
+
+		if (!phone_number || !validatePhoneNumber(phone_number)) {
+			newErrors.phone_number = "Invalid phone number.";
+			errorPopup(newErrors.phone_number);
+			valid = false;
+		}
+
+		if (!bday || bday > 31 ||  !bmonth || bmonth > 12 || !byear) {
+			newErrors.bday = !bday ? "Day is required." : "";
+			newErrors.bmonth = !bmonth ? "Month is required." : "";
+			newErrors.byear = !byear ? "Year is required." : "";
+			errorPopup("Please enter a valid date");
+			valid = false;
+		}
+
+		setErrors(newErrors);
+
+		if (!valid) {
+			return;
+		}
+
 		try {
 			const token = await getBearerToken();
 			const userData = {
@@ -96,9 +186,9 @@ const MyProfile = ({ navigation, route }) => {
 				user_lastname: userInfo.user_lastname,
 				email: userInfo.email,
 				phone_number: userInfo.phone_number,
-				birthday: userInfo.byear + "-" + userInfo.bmonth + "-" + userInfo.bday,
+				birthday: `${userInfo.byear}-${userInfo.bmonth}-${userInfo.bday}`,
 			};
-			console.log(userData);
+
 			const response = await axios.put(
 				"http://192.168.1.100:8000/api/profile/updateUser",
 				userData,
@@ -109,11 +199,16 @@ const MyProfile = ({ navigation, route }) => {
 				}
 			);
 
-			console.log("Response:", response.data);
+			Alert.alert("Success", "Profile updated successfully!");
 			navigate();
 		} catch (error) {
 			console.error("Error:", error);
-			throw error; // Throw the error to be caught by the caller
+			if (error.response) {
+				const errorMessage = error.response.data.message;
+				errorPopup(errorMessage || "Failed to update profile. Please try again.");
+			} else {
+				errorPopup("Failed to update profile. Please try again.");
+			}
 		}
 	};
 
@@ -122,9 +217,10 @@ const MyProfile = ({ navigation, route }) => {
 	};
 
 	const navigate = () => {
-		// Handle form submission or navigation logic here
 		navigation.goBack();
 	};
+
+	
 
 	if (isLoading) {
 		return <Loading />;
@@ -156,6 +252,7 @@ const MyProfile = ({ navigation, route }) => {
 						onChangeText={(text) => handleChange("user_name", text)}
 						value={user.user_name}
 					/>
+					
 					<Text style={styles.inputTitle}>Last Name</Text>
 					<TextInput
 						style={styles.textInput}
@@ -163,6 +260,7 @@ const MyProfile = ({ navigation, route }) => {
 						onChangeText={(text) => handleChange("user_lastname", text)}
 						value={user.user_lastname}
 					/>
+					
 					<Text style={styles.inputTitle}>Email</Text>
 					<TextInput
 						style={styles.textInput}
@@ -170,6 +268,7 @@ const MyProfile = ({ navigation, route }) => {
 						onChangeText={(text) => handleChange("email", text)}
 						value={user.email}
 					/>
+					
 					<Text style={styles.inputTitle}>Phone Number</Text>
 					<View style={styles.PhoneView}>
 						<TextInput
@@ -187,6 +286,7 @@ const MyProfile = ({ navigation, route }) => {
 							keyboardType="numeric"
 						/>
 					</View>
+					
 					<Text style={styles.inputTitle}>Birthday</Text>
 					<View style={styles.PhoneView}>
 						<TextInput
@@ -211,13 +311,23 @@ const MyProfile = ({ navigation, route }) => {
 							keyboardType="numeric"
 						/>
 					</View>
+	
 					<TouchableOpacity
 						style={styles.button}
 						onPress={() => handleChangeInfo(user)}
 					>
-						<Text style={styles.buttonText}>Update My Profile </Text>
+						<Text style={styles.buttonText}>Save Changes</Text>
 					</TouchableOpacity>
 				</View>
+				<Popup
+					visible={popupVisible}
+					onClose={() => setPopupVisible(false)}
+					title={popupContent.title}
+					message={popupContent.message}
+					icon={popupContent.icon}
+					iconColor={popupContent.iconColor}
+					type={popupContent.type}
+				/>
 			</ImageBackground>
 		</TouchableWithoutFeedback>
 	);

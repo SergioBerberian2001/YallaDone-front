@@ -8,15 +8,18 @@ import {
 	Keyboard,
 	TouchableOpacity,
 	useWindowDimensions,
+	Alert,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Logo from "../../Components/Logo";
 import myColors from "../../utils/myColors";
 import { Ionicons } from "react-native-vector-icons";
 import axios from "axios";
-import { saveBearerToken, getBearerToken, logout } from "../../utils/bearer.js";
+import { getBearerToken } from "../../utils/bearer.js";
+import Popup from "../../Components/Popup";
+import popupModes from "../../utils/PopupModes.js";
 
-const ChangePassword = ({ navigation, route }) => {
+const ChangePassword = ({ navigation }) => {
 	const { width } = useWindowDimensions();
 	const height = width / 8;
 
@@ -25,17 +28,83 @@ const ChangePassword = ({ navigation, route }) => {
 		newPassword: "",
 		confirmPassword: "",
 	});
+	const [errors, setErrors] = useState({
+		oldPassword: "",
+		newPassword: "",
+		confirmPassword: "",
+	});
+	const [popupVisible, setPopupVisible] = useState(false);
+	const [popupContent, setPopupContent] = useState({
+		title: "",
+		message: "",
+		icon: "",
+		iconColor: "",
+		type: "",
+	});
 
+	const validatePassword = (password) => {
+		const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+		return passwordRegex.test(password);
+	};
+
+	const errorPopup = (errorMessage) => {
+		setPopupContent({
+			title: "Error",
+			message: errorMessage,
+			icon: "alert-circle",
+			iconColor: myColors.red,
+			type: "error",
+		});
+		setPopupVisible(true);
+	};
+
+	const showPopup = (mode) => {
+		setPopupContent(popupModes[mode]);
+		setPopupVisible(true);
+	};
 	const handleChangePassword = async (userInfo) => {
+		const { oldPassword, newPassword, confirmPassword } = userInfo;
+
+		let valid = true;
+		const newErrors = {
+			oldPassword: "",
+			newPassword: "",
+			confirmPassword: "",
+		};
+
+		if (!validatePassword(newPassword)) {
+			newErrors.newPassword =
+				"Password must contain 1 uppercase letter, 1 lowercase letter, 1 number, and be at least 8 characters long.";
+			errorPopup(newErrors.newPassword);
+
+			valid = false;
+		}
+
+		if (newPassword !== confirmPassword) {
+			newErrors.confirmPassword = "Passwords do not match.";
+			errorPopup(newErrors.confirmPassword);
+			valid = false;
+		}
+
+		if (user.oldPassword === "") {
+			newErrors.oldPassword = "Please fill out old Password field";
+			errorPopup(newErrors.oldPassword);
+			valid = false;
+		}
+
+		setErrors(newErrors);
+
+		if (!valid) {
+			return;
+		}
+
 		try {
 			const token = await getBearerToken();
 			const userData = {
-				old_password: userInfo.oldPassword,
-				new_password: userInfo.newPassword,
+				old_password: oldPassword,
+				new_password: newPassword,
 			};
-			console.log(userData.old_password);
-			console.log(userData.new_password);
-			console.log(userData);
+
 			const response = await axios.put(
 				"http://192.168.1.100:8000/api/updatePassword",
 				userData,
@@ -46,11 +115,21 @@ const ChangePassword = ({ navigation, route }) => {
 				}
 			);
 
-			console.log("Response:", response.data);
+			Alert.alert("Success", "Password changed successfully!");
 			navigate();
 		} catch (error) {
-			console.error("Error:", error);
-			throw error; // Throw the error to be caught by the caller
+			if (error.response && error.response.status === 401) {
+				const errorMessage = error.response.data.message;
+				if (errorMessage === "Old password is incorrect") {
+					errorPopup("Old password is incorrect");
+				} else {
+					errorPopup("Validation error or other issue.");
+				}
+			} else {
+				errorPopup("Failed to change password. Please try again.");
+			}
+
+			setPopupVisible(true);
 		}
 	};
 
@@ -59,7 +138,6 @@ const ChangePassword = ({ navigation, route }) => {
 	};
 
 	const navigate = () => {
-		// Handle form submission or navigation logic here
 		navigation.goBack();
 	};
 
@@ -85,24 +163,27 @@ const ChangePassword = ({ navigation, route }) => {
 					<TextInput
 						style={styles.textInput}
 						placeholder="Old Password"
-						secureTextEntry={true} // Make password field hidden
+						secureTextEntry={true}
 						onChangeText={(text) => handleChange("oldPassword", text)}
 						value={user.oldPassword}
 					/>
+
 					<TextInput
 						style={styles.textInput}
 						placeholder="New Password"
-						secureTextEntry={true} // Make password field hidden
+						secureTextEntry={true}
 						onChangeText={(text) => handleChange("newPassword", text)}
 						value={user.newPassword}
 					/>
+
 					<TextInput
 						style={styles.textInput}
 						placeholder="Confirm New Password"
-						secureTextEntry={true} // Make password field hidden
+						secureTextEntry={true}
 						onChangeText={(text) => handleChange("confirmPassword", text)}
 						value={user.confirmPassword}
 					/>
+
 					<TouchableOpacity
 						style={styles.button}
 						onPress={() => handleChangePassword(user)}
@@ -110,6 +191,16 @@ const ChangePassword = ({ navigation, route }) => {
 						<Text style={styles.buttonText}>Change Password</Text>
 					</TouchableOpacity>
 				</View>
+
+				<Popup
+					visible={popupVisible}
+					onClose={() => setPopupVisible(false)}
+					title={popupContent.title}
+					message={popupContent.message}
+					icon={popupContent.icon}
+					iconColor={popupContent.iconColor}
+					type={popupContent.type}
+				/>
 			</ImageBackground>
 		</TouchableWithoutFeedback>
 	);
@@ -122,7 +213,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		width: "100%",
 		opacity: 1,
-		//   justifyContent: "center",
 		alignItems: "center",
 	},
 	logoView: {
@@ -135,7 +225,7 @@ const styles = StyleSheet.create({
 	},
 	container: {
 		width: "100%",
-		padding: 20, // Add padding for better spacing
+		padding: 20,
 	},
 	textInput: {
 		width: "100%",
@@ -144,7 +234,6 @@ const styles = StyleSheet.create({
 		marginVertical: 8,
 		padding: 14,
 		backgroundColor: myColors.dirtyWhite90,
-		// backgroundColor: "lightgreen",
 		fontFamily: "SF",
 	},
 	button: {
@@ -171,5 +260,10 @@ const styles = StyleSheet.create({
 		fontFamily: "SF-medium",
 		fontSize: 16,
 		color: myColors.white,
+	},
+	errorText: {
+		color: "red",
+		fontSize: 14,
+		marginVertical: 4,
 	},
 });

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef,useContext } from "react";
 import {
 	StyleSheet,
 	ImageBackground,
@@ -13,12 +13,17 @@ import OtpInput from "@twotalltotems/react-native-otp-input";
 import Logo from "../Components/Logo";
 import myColors from "../utils/myColors";
 import slides from "../assets/data/slides";
-import { getBearerToken } from "../utils/bearer";
+import { getBearerToken, logout, saveBearerToken } from "../utils/bearer";
 import axios from "axios";
+import Popup from "../Components/Popup";
+import popupModes from "../utils/PopupModes";
+import UserContext from "../utils/UserContext";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const OtpScreen = ({ navigation, route }) => {
-	const user = route.params;
+	const { user, token } = route.params;
+	const { saveUser } = useContext(UserContext);
+	// console.log(token);
 	const width = 280;
 	const height = 35;
 	const slidesInfo = slides;
@@ -26,16 +31,44 @@ const OtpScreen = ({ navigation, route }) => {
 	const [timer, setTimer] = useState(0);
 	const [resendEnabled, setResendEnabled] = useState(true);
 	const [resendAttempts, setResendAttempts] = useState(0);
+	const [attempts, setAttempts] = useState(0);
 	const intervalRef = useRef(null);
+	const [popupVisible, setPopupVisible] = useState(false);
+	const [popupData, setPopupData] = useState({});
+
+	const showPopup = (mode) => {
+		setPopupData(popupModes[mode]);
+		setPopupVisible(true);
+	};
+
+	const handleClosePopup = () => {
+		setPopupVisible(false);
+	};
+
+	const deleteUnverified = async () => {
+		try {
+			const response = await axios.delete(
+				"http://192.168.1.100:8000/api/unverified-users"
+			);
+			// console.log(response.data);
+		} catch (error) {
+			console.error("Error fetching data:", error);
+			if (error.response) {
+				console.error("Status:", error.response.status);
+				console.error("Data:", error.response.data);
+			}
+			console.log(mydata);
+		}
+	};
 
 	const handleOTPSending = async () => {
 		if (resendAttempts >= 3) {
+			await deleteUnverified();
 			navigation.navigate("Splash");
 			return;
 		}
 		try {
 			const token = await getBearerToken();
-			console.log("Bearer Token:", token);
 
 			const response = await axios.post(
 				"http://192.168.1.100:8000/api/generate-otp",
@@ -47,6 +80,7 @@ const OtpScreen = ({ navigation, route }) => {
 					},
 				}
 			);
+
 		} catch (error) {
 			if (error.response) {
 				console.error("Error Response Data:", error.response.data);
@@ -61,7 +95,7 @@ const OtpScreen = ({ navigation, route }) => {
 		}
 	};
 
-	const startTimer = () => {
+	const startTimer = async () => {
 		setResendEnabled(false);
 		setTimer(30);
 		clearInterval(intervalRef.current);
@@ -77,14 +111,25 @@ const OtpScreen = ({ navigation, route }) => {
 		}, 1000);
 	};
 
+	const startFiveMinuteTimer = () => {
+		const fiveMinutes = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+		setTimeout(() => {
+			deleteUnverified();
+			navigation.navigate("Splash");
+		}, fiveMinutes);
+	};
+
 	useEffect(() => {
 		handleOTPSending();
 		// return () => clearInterval(intervalRef.current);
+		logout();
+		startFiveMinuteTimer();
 	}, []);
 
 	const handleVerifyOTP = async (otp) => {
 		try {
-			const token = await getBearerToken();
+			const paramToken = token;
 			const VerifyOTP = parseInt(otp);
 			const url = `http://192.168.1.100:8000/api/verify-otp/${VerifyOTP}`;
 
@@ -93,16 +138,19 @@ const OtpScreen = ({ navigation, route }) => {
 				{},
 				{
 					headers: {
-						Authorization: `Bearer ${token}`,
+						Authorization: `Bearer ${paramToken}`,
 						"Content-Type": "application/json",
 					},
 				}
 			);
-
+			await saveUser(user);
+			await saveBearerToken(token);
+			navigateToOnboarding();
 			console.log("Response:", response.data);
 		} catch (error) {
 			console.error("Error:", error);
 			if (error.response) {
+				showPopup("OTPError");
 				console.error("Error Response Data:", error.response.data);
 				console.error("Error Response Status:", error.response.status);
 				console.error("Error Response Headers:", error.response.headers);
@@ -113,12 +161,16 @@ const OtpScreen = ({ navigation, route }) => {
 			}
 		}
 	};
-
 	const handleOtpChange = (text) => setOtp(text);
 
 	const handleSubmit = async (code) => {
+		setAttempts((prev) => prev + 1);
 		await handleVerifyOTP(code);
-		navigateToOnboarding();
+		if (attempts >= 3) {
+			await deleteUnverified();
+			navigation.navigate("Splash");
+			return;
+		}
 	};
 
 	const handleResend = async () => {
@@ -177,6 +229,15 @@ const OtpScreen = ({ navigation, route }) => {
 						</Text>
 					</TouchableOpacity>
 				</View>
+				<Popup
+					visible={popupVisible}
+					onClose={handleClosePopup}
+					title={popupData.title}
+					message={popupData.message}
+					icon={popupData.icon}
+					iconColor={popupData.iconColor}
+					type={popupData.type}
+				/>
 			</ImageBackground>
 		</TouchableWithoutFeedback>
 	);
