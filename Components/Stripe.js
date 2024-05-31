@@ -5,7 +5,7 @@ import { getBearerToken } from "../utils/bearer";
 import VisaCard from "./VisaCard";
 
 // Change this to the address of your Laravel backend
-const API_URL = "http://192.168.1.100:8000/api";
+const API_URL = "http://192.168.1.104:8000/api";
 
 const StripeApp = (props) => {
 	const { onStorePayment } = props;

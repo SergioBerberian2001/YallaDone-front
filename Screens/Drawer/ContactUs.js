@@ -26,7 +26,7 @@ const ContactUs = () => {
 			};
 			console.log(feed);
 			const response = await axios.post(
-				"http://192.168.1.100:8000/api/send",
+				"http://192.168.1.104:8000/api/send",
 				userData,
 				{
 					headers: {

@@ -35,7 +35,7 @@ const Checkout = ({ navigation, route }) => {
 			};
 			console.log(userData);
 			const response = await axios.post(
-				"http://192.168.1.100:8000/api/storePayment",
+				"http://192.168.1.104:8000/api/storePayment",
 				userData,
 				{
 					headers: {
@@ -64,7 +64,7 @@ const Checkout = ({ navigation, route }) => {
 			};
 			console.log(userData);
 			const response = await axios.post(
-				"http://192.168.1.100:8000/api/storeOrder",
+				"http://192.168.1.104:8000/api/storeOrder",
 				userData,
 				{
 					headers: {
@@ -88,7 +88,7 @@ const Checkout = ({ navigation, route }) => {
 	};
 
 	return (
-		<StripeProvider publishableKey="pk_test_51PMAhL07mb77Stj1OD3V96xsfMLd8bmWXNx8InMbwE1hcTkWjTTSHck6OqOVSlgOuOSPh3RhtxOP2s4hm1kDWuby00L073BzaE">
+		<StripeProvider publishableKey="pk_test_51PLuxqCMBk4EIhlTekYU4C6wiVNiN5vy96D6ZBP8lp9COGcAh3ypvVOyFWrLiDvLoZhaAocYatT9BmIeSPI7bwjJ00zOnLBn3D">
 			<SafeAreaView style={styles.container}>
 				<ScrollView style={styles.scroll}>
 					<TouchableOpacity style={styles.topView} onPress={navigate}>

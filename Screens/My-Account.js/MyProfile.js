@@ -77,7 +77,7 @@ const MyProfile = ({ navigation, route }) => {
 				const token = await getBearerToken();
 
 				const response = await axios.get(
-					"http://192.168.1.100:8000/api/profile",
+					"http://192.168.1.104:8000/api/profile",
 					{
 						headers: {
 							Authorization: `Bearer ${token}`,
@@ -198,7 +198,7 @@ const MyProfile = ({ navigation, route }) => {
 			};
 
 			const response = await axios.put(
-				"http://192.168.1.100:8000/api/profile/updateUser",
+				"http://192.168.1.104:8000/api/profile/updateUser",
 				userData,
 				{
 					headers: {
@@ -214,7 +214,7 @@ const MyProfile = ({ navigation, route }) => {
 			if (error.response) {
 				const errorMessage = error.response.data.message;
 				errorPopup(
-					errorMessage || "Failed to update profile. Please try again."
+					 "Failed to update profile. Please try again."
 				);
 			} else {
 				errorPopup("Failed to update profile. Please try again.");

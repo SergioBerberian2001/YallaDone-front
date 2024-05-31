@@ -53,7 +53,7 @@ const Home = ({ navigation, route }) => {
 		const fetchData = async () => {
 			try {
 				const response = await axios.get(
-					"http://192.168.1.100:8000/api/getAllServices"
+					"http://192.168.1.104:8000/api/getAllServices"
 				);
 				// console.log(response.data);
 				setServices(response.data);
