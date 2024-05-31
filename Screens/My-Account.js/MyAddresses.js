@@ -45,7 +45,7 @@ const MyAddresses = ({ navigation, route }) => {
 				try {
 					const token = await getBearerToken();
 					const response = await axios.get(
-						"http://192.168.1.104:8000/api/UserLocations",
+						"http://192.168.1.100:8000/api/UserLocations",
 						{
 							headers: {
 								Authorization: `Bearer ${token}`,

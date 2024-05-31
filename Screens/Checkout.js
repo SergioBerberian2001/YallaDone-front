@@ -9,6 +9,7 @@ import {
 	Button,
 	ScrollView,
 	Image,
+	Alert,
 } from "react-native";
 import axios from "axios";
 import { Ionicons } from "react-native-vector-icons";
@@ -22,9 +23,50 @@ import StripeApp from "../Components/Stripe";
 import { StripeProvider } from "@stripe/stripe-react-native";
 
 const Checkout = ({ navigation, route }) => {
-	const { order, formId } = route.params;
-
+	const { order, locationId, serviceDate, additionalInfo } = route.params;
+	const [loadingPayment, setLoadingPayment] = useState(false);
+	const [formId, setFormId] = useState();
+	const [paymentId, setPaymentId] = useState();
 	const [checked, setChecked] = useState("cash");
+
+	const navigateToHome = () => {
+		navigation.navigate("DrawerScreen");
+	};
+
+	const HandleServiceForm = async () => {
+		setLoadingPayment(true);
+		try {
+			const token = await getBearerToken();
+			const userData = {
+				location_id: locationId,
+				service_date: serviceDate,
+				additional_info: additionalInfo,
+				service_id: order.service_id,
+			};
+			const response = await axios.post(
+				"http://192.168.1.100:8000/api/StoreUserServiceForm",
+				userData,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+
+			console.log("Response:", response.data);
+			console.log(response.data.data.form_id);
+			const formid = response.data.data.form_id;
+			setFormId(formid);
+			const paymentid = await storePayment(); // Return payment ID from storePayment
+			await storeOrder(formid, paymentid); // Pass IDs directly
+			Alert.alert("Payment Successful");
+			navigateToHome();
+		} catch (error) {
+			console.error("Error:", error);
+		} finally {
+			setLoadingPayment(false);
+		}
+	};
 
 	const storePayment = async () => {
 		try {
@@ -35,7 +77,7 @@ const Checkout = ({ navigation, route }) => {
 			};
 			console.log(userData);
 			const response = await axios.post(
-				"http://192.168.1.104:8000/api/storePayment",
+				"http://192.168.1.100:8000/api/storePayment",
 				userData,
 				{
 					headers: {
@@ -47,24 +89,52 @@ const Checkout = ({ navigation, route }) => {
 
 			console.log("Response:", response.data);
 			console.log(response.data.data.payment_id);
-			storeOrder(response.data.data.payment_id);
-			// navigateToCheckout();
+			const paymentid = response.data.data.payment_id;
+			setPaymentId(paymentid);
+			return paymentid; // Return the payment ID
 		} catch (error) {
 			console.error("Error:", error);
-			throw error; // Throw the error to be caught by the caller
+			throw error;
 		}
 	};
 
-	const storeOrder = async (payment_id) => {
+	const storeOrder = async (formId, paymentId) => {
 		try {
 			const token = await getBearerToken();
 			const userData = {
-				payment_id: payment_id,
+				payment_id: paymentId,
 				form_id: formId,
 			};
 			console.log(userData);
 			const response = await axios.post(
-				"http://192.168.1.104:8000/api/storeOrder",
+				"http://192.168.1.100:8000/api/storeOrder",
+				userData,
+				{
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+			console.log("Response:", response.data);
+			console.log("YallaDone");
+
+			// navigateToCheckout();
+		} catch (error) {
+			console.error("Error:", error);
+			throw error;
+		}
+	};
+
+	const handleYallacoinPayement = async () => {
+		try {
+			const token = await getBearerToken();
+			const userData = {
+				service_id: order.service_id,
+			};
+			console.log(userData);
+			const response = await axios.post(
+				"http://192.168.1.100:8000/api/yallacoinPay",
 				userData,
 				{
 					headers: {
@@ -75,20 +145,20 @@ const Checkout = ({ navigation, route }) => {
 			);
 
 			console.log("Response:", response.data);
-			console.log("YallaDone");
-
-			// navigateToCheckout();
+			console.log("payed with yallacoins");
+			await HandleServiceForm();
 		} catch (error) {
 			console.error("Error:", error);
-			throw error; // Throw the error to be caught by the caller
+			throw error;
 		}
 	};
+
 	const navigate = () => {
 		navigation.goBack();
 	};
 
 	return (
-		<StripeProvider publishableKey="pk_test_51PLuxqCMBk4EIhlTekYU4C6wiVNiN5vy96D6ZBP8lp9COGcAh3ypvVOyFWrLiDvLoZhaAocYatT9BmIeSPI7bwjJ00zOnLBn3D">
+		<StripeProvider publishableKey="pk_test_51PMAhL07mb77Stj1OD3V96xsfMLd8bmWXNx8InMbwE1hcTkWjTTSHck6OqOVSlgOuOSPh3RhtxOP2s4hm1kDWuby00L073BzaE">
 			<SafeAreaView style={styles.container}>
 				<ScrollView style={styles.scroll}>
 					<TouchableOpacity style={styles.topView} onPress={navigate}>
@@ -103,7 +173,7 @@ const Checkout = ({ navigation, route }) => {
 					<View style={styles.serviceView}>
 						<ServiceItem service={order} />
 					</View>
-					<Text>Select your method of payement </Text>
+					<Text>Select your method of payment</Text>
 					<PaperProvider>
 						<View style={styles.RadioContainer}>
 							<View style={styles.optionContainer}>
@@ -155,10 +225,24 @@ const Checkout = ({ navigation, route }) => {
 							</View>
 						</View>
 					</PaperProvider>
-					{checked === "visa" && <StripeApp onStorePayment={storePayment} />}
-					<TouchableOpacity style={styles.button} onPress={storePayment}>
-						<Text style={styles.buttonText}>Create Order</Text>
-					</TouchableOpacity>
+					{checked === "visa" && (
+						<StripeApp onHandleServiceForm={HandleServiceForm} />
+					)}
+					{checked !== "visa" && (
+						<TouchableOpacity
+							style={[loadingPayment ? styles.loadingButton : styles.button]}
+							onPress={
+								checked === "cash" ? HandleServiceForm : handleYallacoinPayement
+							}
+							disabled={loadingPayment}
+						>
+							<Text style={styles.buttonText}>
+								{checked === "cash"
+									? "Pay With Cash On Delivery"
+									: "Pay With YALLACOINS"}
+							</Text>
+						</TouchableOpacity>
+					)}
 				</ScrollView>
 			</SafeAreaView>
 		</StripeProvider>
@@ -204,7 +288,24 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		marginVertical: 12,
 		marginHorizontal: 16,
-		marginBottom: 24,
+		shadowColor: "#000000",
+		shadowOpacity: 0.5,
+		shadowRadius: 5,
+		shadowOffset: { width: 3, height: 3 },
+	},
+	loadingButton: {
+		backgroundColor: myColors.red,
+		paddingHorizontal: 20,
+		paddingVertical: 16,
+		borderRadius: 8,
+		alignItems: "center",
+		marginVertical: 12,
+		marginHorizontal: 16,
+		shadowColor: "#000000",
+		shadowOpacity: 0.5,
+		shadowRadius: 5,
+		shadowOffset: { width: 3, height: 3 },
+		opacity: 0.5,
 	},
 	buttonText: {
 		fontFamily: "SF-bold",

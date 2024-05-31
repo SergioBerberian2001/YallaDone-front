@@ -89,7 +89,7 @@ const OrderForm = ({ navigation, route }) => {
 				try {
 					const token = await getBearerToken();
 					const response = await axios.get(
-						"http://192.168.1.104:8000/api/UserLocations",
+						"http://192.168.1.100:8000/api/UserLocations",
 						{
 							headers: {
 								Authorization: `Bearer ${token}`,
@@ -108,7 +108,7 @@ const OrderForm = ({ navigation, route }) => {
 		}, [])
 	);
 
-	const handleSubmit = async () => {
+	const HandleServiceForm = async () => {
 		try {
 			const token = await getBearerToken();
 			const userData = {
@@ -118,7 +118,7 @@ const OrderForm = ({ navigation, route }) => {
 				service_id: order.service_id,
 			};
 			const response = await axios.post(
-				"http://192.168.1.104:8000/api/StoreUserServiceForm",
+				"http://192.168.1.100:8000/api/StoreUserServiceForm",
 				userData,
 				{
 					headers: {
@@ -139,8 +139,16 @@ const OrderForm = ({ navigation, route }) => {
 		navigation.goBack();
 	};
 
-	const navigateToCheckout = (formId) => {
-		navigation.navigate("Checkout", { order, formId });
+	const navigateToCheckout = () => {
+		const locationId = selectedAddress.address_id;
+		const serviceDate = newDate + " " + time;
+
+		navigation.navigate("Checkout", {
+			order,
+			locationId,
+			serviceDate,
+			additionalInfo,
+		});
 	};
 
 	const handleAddAddress = (paramAddress) => {
@@ -241,7 +249,7 @@ const OrderForm = ({ navigation, route }) => {
 
 				<View style={styles.form}></View>
 
-				<TouchableOpacity style={styles.button} onPress={handleSubmit}>
+				<TouchableOpacity style={styles.button} onPress={navigateToCheckout}>
 					<Text style={styles.buttonText}>Create Order</Text>
 				</TouchableOpacity>
 			</ScrollView>

@@ -26,6 +26,8 @@ import OTP from "./Screens/OTP";
 import DrawerScreen from "./Screens/Drawer/DrawerScreen";
 import OrderForm from "./Screens/OrderForm";
 import Checkout from "./Screens/Checkout";
+import CategoryServices from "./Screens/CategoryServices";
+import AllCategories from "./Screens/AllCategories";
 
 import MyProfile from "./Screens/My-Account.js/MyProfile";
 import MyAddresses from "./Screens/My-Account.js/MyAddresses";
@@ -152,6 +154,28 @@ export default function App() {
 						component={Checkout}
 						options={{
 							title: "Checkout Screen",
+							headerStyle: {
+								backgroundColor: "#000000",
+							},
+							headerTintColor: "#fff",
+						}}
+					/>
+					<Stack.Screen
+						name="CategoryServices"
+						component={CategoryServices}
+						options={{
+							title: "CategoryServices Screen",
+							headerStyle: {
+								backgroundColor: "#000000",
+							},
+							headerTintColor: "#fff",
+						}}
+					/>
+					<Stack.Screen
+						name="AllCategories"
+						component={AllCategories}
+						options={{
+							title: "AllCategories Screen",
 							headerStyle: {
 								backgroundColor: "#000000",
 							},

@@ -52,7 +52,7 @@ const Signup = (props) => {
 			};
 
 			const response = await axios.post(
-				"http://192.168.1.104:8000/api/auth/register",
+				"http://192.168.1.100:8000/api/auth/register",
 				userData
 			);
 

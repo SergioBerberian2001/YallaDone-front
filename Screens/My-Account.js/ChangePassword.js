@@ -106,7 +106,7 @@ const ChangePassword = ({ navigation }) => {
 			};
 
 			const response = await axios.put(
-				"http://192.168.1.104:8000/api/updatePassword",
+				"http://192.168.1.100:8000/api/updatePassword",
 				userData,
 				{
 					headers: {
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
 	button: {
 		backgroundColor: myColors.red,
 		paddingHorizontal: 20,
-		paddingVertical: 12,
+		paddingVertical: 16,
 		borderRadius: 8,
 		alignItems: "center",
 		marginVertical: 12,

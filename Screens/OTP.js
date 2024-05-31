@@ -48,7 +48,7 @@ const OtpScreen = ({ navigation, route }) => {
 	const deleteUnverified = async () => {
 		try {
 			const response = await axios.delete(
-				"http://192.168.1.104:8000/api/unverified-users"
+				"http://192.168.1.100:8000/api/unverified-users"
 			);
 			// console.log(response.data);
 		} catch (error) {
@@ -71,7 +71,7 @@ const OtpScreen = ({ navigation, route }) => {
 			const token = await getBearerToken();
 
 			const response = await axios.post(
-				"http://192.168.1.104:8000/api/generate-otp",
+				"http://192.168.1.100:8000/api/generate-otp",
 				{},
 				{
 					headers: {
@@ -130,7 +130,7 @@ const OtpScreen = ({ navigation, route }) => {
 		try {
 			const paramToken = token;
 			const VerifyOTP = parseInt(otp);
-			const url = `http://192.168.1.104:8000/api/verify-otp/${VerifyOTP}`;
+			const url = `http://192.168.1.100:8000/api/verify-otp/${VerifyOTP}`;
 
 			const response = await axios.post(
 				url,
@@ -147,17 +147,17 @@ const OtpScreen = ({ navigation, route }) => {
 			navigateToOnboarding();
 			console.log("Response:", response.data);
 		} catch (error) {
-			console.error("Error:", error);
-			if (error.response) {
-				showPopup("OTPError");
-				console.error("Error Response Data:", error.response.data);
-				console.error("Error Response Status:", error.response.status);
-				console.error("Error Response Headers:", error.response.headers);
-			} else if (error.request) {
-				console.error("Error Request Data:", error.request);
-			} else {
-				console.error("Error Message:", error.message);
-			}
+			// console.error("Error:", error);
+			// if (error.response) {
+			// 	showPopup("OTPError");
+			// 	console.error("Error Response Data:", error.response.data);
+			// 	console.error("Error Response Status:", error.response.status);
+			// 	console.error("Error Response Headers:", error.response.headers);
+			// } else if (error.request) {
+			// 	console.error("Error Request Data:", error.request);
+			// } else {
+			// 	console.error("Error Message:", error.message);
+			// }
 		}
 	};
 	const handleOtpChange = (text) => setOtp(text);

@@ -53,7 +53,7 @@ const Home = ({ navigation, route }) => {
 		const fetchData = async () => {
 			try {
 				const response = await axios.get(
-					"http://192.168.1.104:8000/api/getAllServices"
+					"http://192.168.1.100:8000/api/getAllServices"
 				);
 				// console.log(response.data);
 				setServices(response.data);
@@ -85,6 +85,10 @@ const Home = ({ navigation, route }) => {
 
 	const handleOrder = (order) => {
 		navigation.navigate("OrderForm", order);
+	};
+
+	const navigateToCategory = (category, services) => {
+		navigation.navigate("CategoryServices", { category, services, loadCategory : false });
 	};
 
 	if (isLoading) {
@@ -136,14 +140,22 @@ const Home = ({ navigation, route }) => {
 				<View style={styles.serviceView}>
 					<View style={styles.serviceTopView}>
 						<Text style={styles.serviceText}>Car Services</Text>
-						<View style={styles.serviceTopView}>
+						<TouchableOpacity
+							style={styles.serviceTopView}
+							onPress={() => {
+								navigateToCategory(
+									"Car Services",
+									filterByCategory(services, "Car")
+								);
+							}}
+						>
 							<Text style={styles.serviceText}>See More</Text>
 							<MaterialCommunityIcons
 								name="arrow-right"
 								color={myColors.blue}
 								size={18}
 							/>
-						</View>
+						</TouchableOpacity>
 					</View>
 					<View style={styles.service}>
 						<FlatList
@@ -165,14 +177,22 @@ const Home = ({ navigation, route }) => {
 				<View style={styles.serviceView}>
 					<View style={styles.serviceTopView}>
 						<Text style={styles.serviceText}>Transportation Services</Text>
-						<View style={styles.serviceTopView}>
+						<TouchableOpacity
+							style={styles.serviceTopView}
+							onPress={() => {
+								navigateToCategory(
+									"Transportation Services",
+									filterByCategory(services, "Transportation")
+								);
+							}}
+						>
 							<Text style={styles.serviceText}>See More</Text>
 							<MaterialCommunityIcons
 								name="arrow-right"
 								color={myColors.blue}
 								size={18}
 							/>
-						</View>
+						</TouchableOpacity>
 					</View>
 					<View style={styles.service}>
 						<FlatList
@@ -194,14 +214,22 @@ const Home = ({ navigation, route }) => {
 				<View style={styles.serviceView}>
 					<View style={styles.serviceTopView}>
 						<Text style={styles.serviceText}>Paperwork Services</Text>
-						<View style={styles.serviceTopView}>
+						<TouchableOpacity
+							style={styles.serviceTopView}
+							onPress={() => {
+								navigateToCategory(
+									"Paperwork Services",
+									filterByCategory(services, "Paperwork")
+								);
+							}}
+						>
 							<Text style={styles.serviceText}>See More</Text>
 							<MaterialCommunityIcons
 								name="arrow-right"
 								color={myColors.blue}
 								size={18}
 							/>
-						</View>
+						</TouchableOpacity>
 					</View>
 					<View style={styles.service}>
 						<FlatList
@@ -223,14 +251,22 @@ const Home = ({ navigation, route }) => {
 				<View style={styles.serviceView}>
 					<View style={styles.serviceTopView}>
 						<Text style={styles.serviceText}>Delivery Services</Text>
-						<View style={styles.serviceTopView}>
+						<TouchableOpacity
+							style={styles.serviceTopView}
+							onPress={() => {
+								navigateToCategory(
+									"Delivery Services",
+									filterByCategory(services, "Delivery")
+								);
+							}}
+						>
 							<Text style={styles.serviceText}>See More</Text>
 							<MaterialCommunityIcons
 								name="arrow-right"
 								color={myColors.blue}
 								size={18}
 							/>
-						</View>
+						</TouchableOpacity>
 					</View>
 					<View style={styles.service}>
 						<FlatList

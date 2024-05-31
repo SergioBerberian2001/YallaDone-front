@@ -41,7 +41,7 @@ const Login = (props) => {
 			console.log(userData.password);
 			console.log(userData);
 			const response = await axios.post(
-				"http://192.168.1.104:8000/api/auth/login",
+				"http://192.168.1.100:8000/api/auth/login",
 				userData
 			);
 
@@ -62,7 +62,7 @@ const Login = (props) => {
 
 			// Make the API call with the Authorization header
 			const response = await axios.get(
-				"http://192.168.1.104:8000/api/profile",
+				"http://192.168.1.100:8000/api/profile",
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,
