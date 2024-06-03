@@ -50,7 +50,7 @@ const MyPoints = ({ navigation }) => {
 				);
 
 				const userData = response.data;
-				setUserPoints(response.data.points)
+				setUserPoints(response.data.points);
 
 				// setUserPoints()
 				setIsLoading(false);
@@ -120,11 +120,15 @@ const MyPoints = ({ navigation }) => {
 					</View>
 					<View>
 						<Text style={styles.midText}>
-						order new services so you can get points to be redeemed with a  service of your choice
+							order new services so you can get points to be redeemed with a
+							service of your choice
 						</Text>
 					</View>
 					<View style={styles.section}>
-						<TouchableOpacity style={styles.button} onPress={() => navigateToCategories()}>
+						<TouchableOpacity
+							style={styles.button}
+							onPress={() => navigateToCategories()}
+						>
 							<Text style={styles.buttonText}>REDEEM YALLACOINS</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
@@ -241,10 +245,10 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		color: myColors.white,
 		padding: 8,
-		textAlign:"center"
+		textAlign: "center",
 	},
-	section:{
-		width:"100%",
-		alignItems:"center"
-	}
+	section: {
+		width: "100%",
+		alignItems: "center",
+	},
 });

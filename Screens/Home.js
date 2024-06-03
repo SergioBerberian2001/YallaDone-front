@@ -22,6 +22,7 @@ import axios from "axios";
 import Loading from "../Components/Loading";
 import popupModes from "../utils/PopupModes";
 import UserContext from "../utils/UserContext";
+import { getBearerToken } from "../utils/bearer";
 
 const windowWidth = Dimensions.get("window").width;
 const Home = ({ navigation, route }) => {
@@ -31,6 +32,7 @@ const Home = ({ navigation, route }) => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [services, setServices] = useState();
 	const navigations = useNavigation();
+	const [reload, setReload] = useState(true);
 	const [activeItemIndex, setActiveItemIndex] = useState(0);
 	const carousel = [
 		{ id: 0, image: require("../assets/images/carousel.jpeg") },
@@ -49,23 +51,81 @@ const Home = ({ navigation, route }) => {
 		setPopupVisible(false);
 	};
 
+	const getFavServices = async () => {
+		try {
+			const token = await getBearerToken();
+			const response = await axios.get(
+				"http://192.168.1.100:8000/api/getFavService",
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+			return response.data;
+		} catch (error) {
+			console.error("Error fetching favorite services:", error);
+			if (error.response) {
+				console.error("Status:", error.response.status);
+				console.error("Data:", error.response.data);
+			}
+			return [];
+		}
+	};
+
+	const getServices = async () => {
+		try {
+			const response = await axios.get(
+				"http://192.168.1.100:8000/api/getAllServices"
+			);
+			return response.data;
+		} catch (error) {
+			console.error("Error fetching all services:", error);
+			if (error.response) {
+				console.error("Status:", error.response.status);
+				console.error("Data:", error.response.data);
+			}
+			return [];
+		}
+	};
+
+	const mergeServices = async () => {
+		const allServices = await getServices();
+		const favServicesResponse = await getFavServices();
+
+		// Extracting favorite service IDs
+		const favServiceIds = favServicesResponse.map(
+			(fav) => fav.service.service_id
+		);
+
+		// Mapping all services and marking favorites
+		const combinedServices = allServices.map((service) => ({
+			...service,
+			isFavorite: favServiceIds.includes(service.service_id),
+		}));
+
+		// Removing duplicate services based on service_name
+		const uniqueServices = combinedServices.filter(
+			(service, index, self) =>
+				index === self.findIndex((s) => s.service_name === service.service_name)
+		);
+
+		return uniqueServices;
+	};
+
+	// mergeServices()
+	// 	.then((services) => {
+	// 		// console.log(services);
+	// 	})
+	// 	.catch((error) => {
+	// 		console.error("Error merging services:", error);
+	// 	});
+
 	useEffect(() => {
 		const fetchData = async () => {
-			try {
-				const response = await axios.get(
-					"http://192.168.1.100:8000/api/getAllServices"
-				);
-				// console.log(response.data);
-				setServices(response.data);
-				setIsLoading(false);
-			} catch (error) {
-				console.error("Error fetching data:", error);
-				if (error.response) {
-					console.error("Status:", error.response.status);
-					console.error("Data:", error.response.data);
-				}
-				console.log(mydata);
-			}
+			const mergedServices = await mergeServices();
+			setServices(mergedServices);
+			setIsLoading(false);
 		};
 
 		fetchData();
@@ -75,12 +135,36 @@ const Home = ({ navigation, route }) => {
 		return data.filter((item) => item.category === category);
 	}
 
-	const onToggleFavorite = (serviceId, isFav) => {
-		// setServices(
-		// 	services.map((service) =>
-		// 		service.service_id === serviceId ? { ...service, isFav } : service
-		// 	)
-		// );
+	const handleFavService = async (id) => {
+		try {
+			const token = await getBearerToken();
+			const userData = {
+				service_id: id,
+			};
+			const response = await axios.post(
+				"http://192.168.1.100:8000/api/addFavService",
+				userData,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+			setReload(!reload);
+			// console.log("Response:", response.data);
+		} catch (error) {
+			console.error("Error:", error);
+			throw error; // Throw the error to be caught by the caller
+		}
+	};
+
+	const onToggleFavorite = (serviceId, isFavorite) => {
+		setServices(
+			services.map((service) =>
+				service.service_id === serviceId ? { ...service, isFavorite } : service
+			)
+		);
+		handleFavService(serviceId);
 	};
 
 	const handleOrder = (order) => {
@@ -88,7 +172,11 @@ const Home = ({ navigation, route }) => {
 	};
 
 	const navigateToCategory = (category, services) => {
-		navigation.navigate("CategoryServices", { category, services, loadCategory : false });
+		navigation.navigate("CategoryServices", {
+			category,
+			services,
+			loadCategory: false,
+		});
 	};
 
 	if (isLoading) {

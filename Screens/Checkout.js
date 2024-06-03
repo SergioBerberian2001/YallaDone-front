@@ -10,6 +10,7 @@ import {
 	ScrollView,
 	Image,
 	Alert,
+	Platform,
 } from "react-native";
 import axios from "axios";
 import { Ionicons } from "react-native-vector-icons";
@@ -59,7 +60,7 @@ const Checkout = ({ navigation, route }) => {
 			setFormId(formid);
 			const paymentid = await storePayment(); // Return payment ID from storePayment
 			await storeOrder(formid, paymentid); // Pass IDs directly
-			Alert.alert("Payment Successful");
+			Alert.alert("Order Successful");
 			navigateToHome();
 		} catch (error) {
 			console.error("Error:", error);
@@ -161,7 +162,12 @@ const Checkout = ({ navigation, route }) => {
 		<StripeProvider publishableKey="pk_test_51PMAhL07mb77Stj1OD3V96xsfMLd8bmWXNx8InMbwE1hcTkWjTTSHck6OqOVSlgOuOSPh3RhtxOP2s4hm1kDWuby00L073BzaE">
 			<SafeAreaView style={styles.container}>
 				<ScrollView style={styles.scroll}>
-					<TouchableOpacity style={styles.topView} onPress={navigate}>
+					<TouchableOpacity
+						style={
+							Platform.OS === "ios" ? styles.topView : styles.topViewAndroid
+						}
+						onPress={navigate}
+					>
 						<Ionicons
 							name="chevron-back-outline"
 							color={myColors.blue}
@@ -261,6 +267,13 @@ const styles = StyleSheet.create({
 		alignSelf: "flex-start",
 		flexDirection: "row",
 		alignItems: "center",
+	},
+	topViewAndroid: {
+		marginLeft: 10,
+		alignSelf: "flex-start",
+		flexDirection: "row",
+		alignItems: "center",
+		marginTop: "8%",
 	},
 	topText: {
 		fontFamily: "SF-medium",

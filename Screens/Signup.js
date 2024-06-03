@@ -26,13 +26,13 @@ const Signup = (props) => {
 	const [error, setError] = useState("");
 	const [modalVisible, setModalVisible] = useState(false);
 	const [user, setUser] = useState({
-		user_name: "sergio",
-		user_lastname: "berberian",
-		email: "sergioberberian909@hotmail.com",
-		password: "Qwerty1234",
-		confirmPass: "Qwerty1234",
-		birthday: "2001-09-04",
-		phone_number: "61112222",
+		user_name: "",
+		user_lastname: "",
+		email: "",
+		password: "",
+		confirmPass: "",
+		birthday: "",
+		phone_number: "",
 	});
 	const [acceptTerms, setAcceptTerms] = useState(false);
 	const [receiveEmails, setReceiveEmails] = useState(false);

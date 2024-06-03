@@ -15,7 +15,7 @@ const ServiceHome = (props) => {
 	const { service, onToggleFavorite, onOrder } = props;
 
 	const handleToggleFavorite = () => {
-		onToggleFavorite(service.service_id, !service.isFav);
+		onToggleFavorite(service.service_id, !service.isFavorite);
 	};
 
 	const handleOrder = (order) => {
@@ -49,7 +49,7 @@ const ServiceHome = (props) => {
 					</View>
 					<Text style={styles.description}>{truncatedDescription}</Text>
 					<View style={styles.row}>
-						{service.isFav ? (
+						{service.isFavorite ? (
 							<TouchableOpacity onPress={handleToggleFavorite}>
 								<MaterialCommunityIcons
 									name="heart"
@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.5,
 		shadowRadius: 5,
 		shadowOffset: { width: 2, height: 2 },
+		elevation: 10,
 	},
 	main: {
 		flexDirection: "row",

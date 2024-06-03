@@ -8,6 +8,7 @@ import {
 	SafeAreaView,
 	Button,
 	ScrollView,
+	Platform,
 } from "react-native";
 import axios from "axios";
 import { Ionicons } from "react-native-vector-icons";
@@ -162,7 +163,10 @@ const OrderForm = ({ navigation, route }) => {
 	return (
 		<SafeAreaView style={styles.container}>
 			<ScrollView>
-				<TouchableOpacity style={styles.topView} onPress={navigate}>
+				<TouchableOpacity
+					style={Platform.OS === "ios" ? styles.topView : styles.topViewAndroid}
+					onPress={navigate}
+				>
 					<Ionicons
 						name="chevron-back-outline"
 						color={myColors.blue}
@@ -195,7 +199,7 @@ const OrderForm = ({ navigation, route }) => {
 					<View style={styles.pickerView}>
 						<Picker
 							style={{
-								height: 50, // Adjust height as needed
+								// Adjust height as needed
 								backgroundColor: "#f0f0f0", // Set background color
 								borderRadius: 5, // Add border radius
 							}}
@@ -269,6 +273,13 @@ const styles = StyleSheet.create({
 		alignSelf: "flex-start",
 		flexDirection: "row",
 		alignItems: "center",
+	},
+	topViewAndroid: {
+		marginLeft: 10,
+		alignSelf: "flex-start",
+		flexDirection: "row",
+		alignItems: "center",
+		marginTop: "8%",
 	},
 	topText: {
 		fontFamily: "SF-medium",

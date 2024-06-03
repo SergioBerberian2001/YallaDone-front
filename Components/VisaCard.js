@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
 		marginTop: "10%",
 		alignItems: "center",
 		marginRight: 10,
-		width: "20%",
+		width: "25%",
 	},
 	cvvInfo: {
 		fontFamily: "SF-medium",

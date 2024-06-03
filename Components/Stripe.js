@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput, Button, Alert, TouchableOpacity } from "react-native";
+import {
+	View,
+	Text,
+	StyleSheet,
+	TextInput,
+	Button,
+	Alert,
+	TouchableOpacity,
+} from "react-native";
 import { CardField, useConfirmPayment } from "@stripe/stripe-react-native";
 import { getBearerToken } from "../utils/bearer";
 import VisaCard from "./VisaCard";
@@ -15,7 +23,7 @@ const StripeApp = (props) => {
 	const { confirmPayment, loading } = useConfirmPayment();
 	const [isLoadingPayment, setIsLoadingPayment] = useState();
 	const fetchPaymentIntentClientSecret = async () => {
-		setIsLoadingPayment(true)
+		setIsLoadingPayment(true);
 		try {
 			const token = await getBearerToken();
 			const response = await fetch(`${API_URL}/createPaymentIntent`, {
@@ -33,16 +41,16 @@ const StripeApp = (props) => {
 		} catch (error) {
 			console.error("Error fetching payment intent client secret:", error);
 			return { error: "Failed to fetch payment intent client secret" };
-			setIsLoadingPayment(false)
-		} finally{
-			setIsLoadingPayment(false)
+			setIsLoadingPayment(false);
+		} finally {
+			setIsLoadingPayment(false);
 		}
 	};
 
 	const handlePayPress = async () => {
-		setIsLoadingPayment(true)
+		setIsLoadingPayment(true);
 		if (!cardDetails?.complete || !email) {
-			setIsLoadingPayment(false)
+			setIsLoadingPayment(false);
 			Alert.alert("Please enter complete card details and email");
 			return;
 		}
@@ -53,7 +61,7 @@ const StripeApp = (props) => {
 			const { clientSecret, error } = await fetchPaymentIntentClientSecret();
 			if (error) {
 				Alert.alert("Unable to process payment", error);
-				setIsLoadingPayment(false)
+				setIsLoadingPayment(false);
 			} else if (clientSecret) {
 				const { paymentIntent, error: confirmError } = await confirmPayment(
 					clientSecret,
@@ -66,7 +74,7 @@ const StripeApp = (props) => {
 				);
 				if (confirmError) {
 					Alert.alert(`Payment Confirmation Error: ${confirmError.message}`);
-					setIsLoadingPayment(false)
+					setIsLoadingPayment(false);
 				} else if (paymentIntent) {
 					await onHandleServiceForm();
 					console.log("Payment successful:", paymentIntent);
@@ -75,8 +83,8 @@ const StripeApp = (props) => {
 		} catch (e) {
 			console.log("Payment error:", e);
 			Alert.alert("Payment error", e.message);
-			setIsLoadingPayment(false)
-		} 
+			setIsLoadingPayment(false);
+		}
 	};
 
 	return (
@@ -98,11 +106,14 @@ const StripeApp = (props) => {
 				style={styles.cardContainer}
 				onCardChange={(cardDetails) => setCardDetails(cardDetails)}
 			/>
-		
-			<TouchableOpacity style={[isLoadingPayment ? styles.loadingButton : styles.button]} onPress={handlePayPress} disabled={isLoadingPayment}>
-							<Text style={styles.buttonText}>Pay With VISA Card</Text>
-						</TouchableOpacity>
 
+			<TouchableOpacity
+				style={[isLoadingPayment ? styles.loadingButton : styles.button]}
+				onPress={handlePayPress}
+				disabled={isLoadingPayment}
+			>
+				<Text style={styles.buttonText}>Pay With VISA Card</Text>
+			</TouchableOpacity>
 		</View>
 	);
 };
@@ -129,7 +140,7 @@ const styles = StyleSheet.create({
 	cardContainer: {
 		height: 50,
 		marginVertical: 20,
-		flexDirection:"column"
+		flexDirection: "column",
 	},
 	button: {
 		backgroundColor: myColors.red,
@@ -144,7 +155,7 @@ const styles = StyleSheet.create({
 		shadowRadius: 5,
 		shadowOffset: { width: 3, height: 3 },
 	},
-	loadingButton:{
+	loadingButton: {
 		backgroundColor: myColors.red,
 		paddingHorizontal: 20,
 		paddingVertical: 16,
@@ -156,7 +167,7 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.5,
 		shadowRadius: 5,
 		shadowOffset: { width: 3, height: 3 },
-		opacity:0.5
+		opacity: 0.5,
 	},
 	buttonText: {
 		fontFamily: "SF-bold",

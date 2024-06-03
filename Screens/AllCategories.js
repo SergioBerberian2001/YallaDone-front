@@ -5,6 +5,7 @@ import {
 	FlatList,
 	SafeAreaView,
 	TouchableOpacity,
+	Platform
 } from "react-native";
 import React from "react";
 import ServiceHome from "../Components/ServiceHome";
@@ -34,7 +35,7 @@ const AllCategories = ({ navigation, route }) => {
 	};
 	return (
 		<SafeAreaView style={styles.container}>
-			<TouchableOpacity style={styles.topView} onPress={navigate}>
+			<TouchableOpacity style={Platform.OS === "ios" ? styles.topView : styles.topViewAndroid} onPress={navigate}>
 				<Ionicons name="chevron-back-outline" color={myColors.blue} size={32} />
 				<Text style={styles.topText}>Back</Text>
 			</TouchableOpacity>
@@ -100,6 +101,13 @@ const styles = StyleSheet.create({
 		alignSelf: "flex-start",
 		flexDirection: "row",
 		alignItems: "center",
+	},
+	topViewAndroid: {
+		marginLeft: 10,
+		alignSelf: "flex-start",
+		flexDirection: "row",
+		alignItems: "center",
+		marginTop:"8%"
 	},
 	topText: {
 		fontFamily: "SF-medium",

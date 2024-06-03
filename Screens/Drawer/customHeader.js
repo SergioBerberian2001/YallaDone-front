@@ -6,6 +6,7 @@ import {
 	TouchableOpacity,
 	SafeAreaView,
 	Dimensions,
+	Platform
 } from "react-native";
 import { MaterialCommunityIcons } from "react-native-vector-icons";
 import myColors from "../../utils/myColors";
@@ -27,7 +28,7 @@ const CustomHeader = ({ navigation }) => {
 	};
 
 	return (
-		<SafeAreaView style={styles.topView}>
+		<SafeAreaView style={Platform.OS === "ios" ? styles.topView : styles.topViewAndroid}>
 			<TouchableOpacity onPress={openDrawer} style={styles.buttons}>
 				<MaterialCommunityIcons name="menu" color={myColors.blue} size={32} />
 			</TouchableOpacity>
@@ -55,6 +56,18 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.1,
 		shadowRadius: 3,
 		shadowOffset: { width: 1, height: 1 },
+	},
+	topViewAndroid: {
+		flexDirection: "row",
+		width: "100%",
+		justifyContent: "space-between",
+		alignItems: "center",
+		backgroundColor: myColors.white,
+		shadowColor: "#000000",
+		shadowOpacity: 0.1,
+		shadowRadius: 3,
+		shadowOffset: { width: 1, height: 1 },
+		paddingTop:"8%"
 	},
 	buttons: {
 		paddingHorizontal: 16,

@@ -20,8 +20,10 @@ const Login = (props) => {
 	const { saveUser } = useContext(UserContext);
 	const [error, setError] = useState("");
 	const [user, setUser] = useState({
-		email: "81384086",
-		password: "Qwerty1234",
+		email: "",
+		//81384086
+		password: "",
+		// /Qwerty1234
 	});
 
 	const onUpdateField = (fieldName, value) => {
