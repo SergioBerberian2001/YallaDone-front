@@ -16,9 +16,10 @@ import axios from "axios";
 import { getBearerToken } from "../utils/bearer";
 
 const CategoryServices = ({ navigation, route }) => {
-	const { category, services, loadCategory } = route.params;
+	const { category, services, loadCategory, getEmergency } = route.params;
 	const [myServices, setMyServices] = useState();
 	const [isLoading, setIsLoading] = useState();
+	const [showFav, setShowFav] = useState(true);
 
 	const updateUrl = async () => {
 		if (category === "Car Services") {
@@ -74,38 +75,68 @@ const CategoryServices = ({ navigation, route }) => {
 	const mergeServices = async () => {
 		const allServices = await getServices();
 		const favServicesResponse = await getFavServices();
-
+	
 		// Extracting favorite service IDs
 		const favServiceIds = favServicesResponse.map(
 			(fav) => fav.service.service_id
 		);
-
+	
 		// Mapping all services and marking favorites
 		const combinedServices = allServices.map((service) => ({
 			...service,
 			isFavorite: favServiceIds.includes(service.service_id),
 		}));
-
+	
+		// Filtering favorite and non-favorite services
+		const favoriteServices = combinedServices.filter(service => service.isFavorite);
+		const nonFavoriteServices = combinedServices.filter(service => !service.isFavorite);
+	
+		// Concatenating favorite services first
+		const sortedServices = [...favoriteServices, ...nonFavoriteServices];
+	
 		// Removing duplicate services based on service_name
-		const uniqueServices = combinedServices.filter(
+		const uniqueServices = sortedServices.filter(
 			(service, index, self) =>
 				index === self.findIndex((s) => s.service_name === service.service_name)
 		);
-
+	
 		return uniqueServices;
 	};
 
+	const getEmergencyServices = async () => {
+		const categoryUrl = await updateUrl();
+		try {
+			const response = await axios.get("http://192.168.1.100:8000/api/EmergencyService");
+			// console.log(response.data);
+			return response.data;
+			// setIsLoading(false);
+		} catch (error) {
+			console.error("Error fetching data:", error);
+			if (error.response) {
+				console.error("Status:", error.response.status);
+				console.error("Data:", error.response.data);
+			}
+			console.log(mydata);
+		}
+	};
 
 	useEffect(() => {
 		if (services) {
 			setMyServices(services);
+		} else if (getEmergency) {
+			const fetchData = async () => {
+				const emergencyServices = await getEmergencyServices();
+				setShowFav(false)
+				setMyServices(emergencyServices);
+			};
+			fetchData();
 		} else if (loadCategory) {
 			const fetchData = async () => {
 				const mergedServices = await mergeServices();
 				setMyServices(mergedServices);
 				setIsLoading(false);
 			};
-	
+
 			fetchData();
 		}
 	}, []);
@@ -113,12 +144,35 @@ const CategoryServices = ({ navigation, route }) => {
 		navigation.goBack();
 	};
 
-	const onToggleFavorite = (serviceId, isFav) => {
-		// setServices(
-		// 	services.map((service) =>
-		// 		service.service_id === serviceId ? { ...service, isFav } : service
-		// 	)
-		// );
+	const handleFavService = async (id) => {
+		try {
+			const token = await getBearerToken();
+			const userData = {
+				service_id: id,
+			};
+			const response = await axios.post(
+				"http://192.168.1.100:8000/api/addFavService",
+				userData,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+			// console.log("Response:", response.data);
+		} catch (error) {
+			console.error("Error:", error);
+			throw error; // Throw the error to be caught by the caller
+		}
+	};
+
+	const onToggleFavorite = async (serviceId, isFavorite) => {
+		await handleFavService(serviceId)
+		setMyServices(
+			myServices.map((service) =>
+				service.service_id === serviceId ? { ...service, isFavorite } : service
+			)
+		);
 	};
 
 	const handleOrder = (order) => {
@@ -149,6 +203,7 @@ const CategoryServices = ({ navigation, route }) => {
 							service={item}
 							onToggleFavorite={onToggleFavorite}
 							onOrder={handleOrder}
+							showFav={showFav}
 						/>
 					)}
 				/>
@@ -194,4 +249,7 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		color: myColors.blue,
 	},
+	carousel:{
+		height:"90%"
+	}
 });

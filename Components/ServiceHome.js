@@ -12,7 +12,7 @@ import myColors from "../utils/myColors";
 
 const windowWidth = Dimensions.get("window").width;
 const ServiceHome = (props) => {
-	const { service, onToggleFavorite, onOrder } = props;
+	const { service, onToggleFavorite, onOrder, showFav } = props;
 
 	const handleToggleFavorite = () => {
 		onToggleFavorite(service.service_id, !service.isFavorite);
@@ -49,19 +49,21 @@ const ServiceHome = (props) => {
 					</View>
 					<Text style={styles.description}>{truncatedDescription}</Text>
 					<View style={styles.row}>
-						{service.isFavorite ? (
-							<TouchableOpacity onPress={handleToggleFavorite}>
-								<MaterialCommunityIcons
-									name="heart"
-									color={myColors.red}
-									size={26}
-								/>
-							</TouchableOpacity>
-						) : (
-							<TouchableOpacity onPress={handleToggleFavorite}>
-								<MaterialCommunityIcons name="heart" color="#ccc" size={26} />
-							</TouchableOpacity>
-						)}
+						{showFav ?  <TouchableOpacity>
+							{service.isFavorite ? (
+								<TouchableOpacity onPress={handleToggleFavorite}>
+									<MaterialCommunityIcons
+										name="heart"
+										color={myColors.red}
+										size={26}
+									/>
+								</TouchableOpacity>
+							) : (
+								<TouchableOpacity onPress={handleToggleFavorite}>
+									<MaterialCommunityIcons name="heart" color="#ccc" size={26} />
+								</TouchableOpacity>
+							)}
+						</TouchableOpacity> : null}
 
 						<TouchableOpacity
 							style={styles.orderButton}
@@ -81,7 +83,7 @@ export default ServiceHome;
 const styles = StyleSheet.create({
 	shadowView: {
 		shadowColor: "#cccccc",
-		shadowOpacity: 0.5,
+		shadowOpacity: 0.3,
 		shadowRadius: 5,
 		shadowOffset: { width: 2, height: 2 },
 		elevation: 10,
@@ -89,7 +91,7 @@ const styles = StyleSheet.create({
 	main: {
 		flexDirection: "row",
 		borderWidth: 1,
-		borderRadius: 20,
+		borderRadius: 25,
 		borderColor: "white",
 		marginHorizontal: 8,
 		width: (windowWidth * 9) / 10,
@@ -133,7 +135,7 @@ const styles = StyleSheet.create({
 	},
 	orderButton: {
 		backgroundColor: myColors.red,
-		padding: 6,
+		padding: 8,
 		borderRadius: 32,
 	},
 	orderText: {

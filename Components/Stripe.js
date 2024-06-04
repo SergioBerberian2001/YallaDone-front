@@ -40,8 +40,8 @@ const StripeApp = (props) => {
 			return { clientSecret: data.clientSecret, error: data.error };
 		} catch (error) {
 			console.error("Error fetching payment intent client secret:", error);
-			return { error: "Failed to fetch payment intent client secret" };
 			setIsLoadingPayment(false);
+			return { error: "Failed to fetch payment intent client secret" };
 		} finally {
 			setIsLoadingPayment(false);
 		}
@@ -127,15 +127,37 @@ const styles = StyleSheet.create({
 		margin: 20,
 	},
 	input: {
-		backgroundColor: "#efefef",
-		borderRadius: 8,
+		
 		fontSize: 16,
+		borderRadius: 8,
+		marginVertical: 8,
+		padding: 14,
+		backgroundColor: myColors.dirtyWhite90,
 		fontFamily: "SF",
-		height: 50,
-		padding: 10,
+		borderRadius: 10,
+		borderWidth: 1,
+		borderColor: myColors.blue,
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
+		color:myColors.blue,
+		fontFamily:"SF"
 	},
 	card: {
-		backgroundColor: "#efefef",
+		
+		fontSize: 16,
+		borderRadius: 8,
+		marginVertical: 8,
+		marginHorizontal: 16,
+		padding: 14,
+		backgroundColor: "#F2F2F7",
+		fontFamily: "SF",
+		borderRadius: 10,
+		borderWidth: 1,
+		borderColor: myColors.blue,
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
 	},
 	cardContainer: {
 		height: 50,

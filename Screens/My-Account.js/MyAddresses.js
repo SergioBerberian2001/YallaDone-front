@@ -9,6 +9,7 @@ import {
 	TouchableOpacity,
 	useWindowDimensions,
 	FlatList,
+	KeyboardAvoidingView
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Logo from "../../Components/Logo";

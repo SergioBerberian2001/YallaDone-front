@@ -11,7 +11,7 @@ import {
 	ActivityIndicator,
 	useWindowDimensions,
 } from "react-native";
-import { React, useState, useEffect, useContext } from "react";
+import { React, useState, useEffect, useContext, useCallback } from "react";
 import { MaterialCommunityIcons } from "react-native-vector-icons";
 import myColors from "../utils/myColors";
 import ServiceHome from "../Components/ServiceHome";
@@ -23,6 +23,7 @@ import Loading from "../Components/Loading";
 import popupModes from "../utils/PopupModes";
 import UserContext from "../utils/UserContext";
 import { getBearerToken } from "../utils/bearer";
+import { useFocusEffect } from "@react-navigation/native";
 
 const windowWidth = Dimensions.get("window").width;
 const Home = ({ navigation, route }) => {
@@ -104,8 +105,19 @@ const Home = ({ navigation, route }) => {
 			isFavorite: favServiceIds.includes(service.service_id),
 		}));
 
+		// Filtering favorite and non-favorite services
+		const favoriteServices = combinedServices.filter(
+			(service) => service.isFavorite
+		);
+		const nonFavoriteServices = combinedServices.filter(
+			(service) => !service.isFavorite
+		);
+
+		// Concatenating favorite services first
+		const sortedServices = [...favoriteServices, ...nonFavoriteServices];
+
 		// Removing duplicate services based on service_name
-		const uniqueServices = combinedServices.filter(
+		const uniqueServices = sortedServices.filter(
 			(service, index, self) =>
 				index === self.findIndex((s) => s.service_name === service.service_name)
 		);
@@ -113,23 +125,17 @@ const Home = ({ navigation, route }) => {
 		return uniqueServices;
 	};
 
-	// mergeServices()
-	// 	.then((services) => {
-	// 		// console.log(services);
-	// 	})
-	// 	.catch((error) => {
-	// 		console.error("Error merging services:", error);
-	// 	});
+	useFocusEffect(
+		useCallback(() => {
+			const fetchData = async () => {
+				const mergedServices = await mergeServices();
+				setServices(mergedServices);
+				setIsLoading(false);
+			};
 
-	useEffect(() => {
-		const fetchData = async () => {
-			const mergedServices = await mergeServices();
-			setServices(mergedServices);
-			setIsLoading(false);
-		};
-
-		fetchData();
-	}, []);
+			fetchData();
+		}, [])
+	);
 
 	function filterByCategory(data, category) {
 		return data.filter((item) => item.category === category);
@@ -178,6 +184,14 @@ const Home = ({ navigation, route }) => {
 			loadCategory: false,
 		});
 	};
+	const navigateToEmergencyCategory = (category) => {
+		const getEmergency = true;
+		navigation.navigate("CategoryServices", {
+			category,
+			getEmergency,
+			loadCategory: false,
+		});
+	};
 
 	if (isLoading) {
 		return <Loading />;
@@ -220,7 +234,9 @@ const Home = ({ navigation, route }) => {
 				<View style={styles.emergencyView}>
 					<TouchableOpacity
 						style={styles.emergencyButton}
-						onPress={() => showPopup("error")}
+						onPress={() => {
+							navigateToEmergencyCategory("Emergency Services");
+						}}
 					>
 						<Text style={styles.emergencyText}>Emergency Services</Text>
 					</TouchableOpacity>
@@ -257,6 +273,8 @@ const Home = ({ navigation, route }) => {
 									service={item}
 									onToggleFavorite={onToggleFavorite}
 									onOrder={handleOrder}
+									const
+									showFav={true}
 								/>
 							)}
 						/>
@@ -294,6 +312,8 @@ const Home = ({ navigation, route }) => {
 									service={item}
 									onToggleFavorite={onToggleFavorite}
 									onOrder={handleOrder}
+									const
+									showFav={true}
 								/>
 							)}
 						/>
@@ -331,6 +351,8 @@ const Home = ({ navigation, route }) => {
 									service={item}
 									onToggleFavorite={onToggleFavorite}
 									onOrder={handleOrder}
+									const
+									showFav={true}
 								/>
 							)}
 						/>
@@ -368,6 +390,8 @@ const Home = ({ navigation, route }) => {
 									service={item}
 									onToggleFavorite={onToggleFavorite}
 									onOrder={handleOrder}
+									const
+									showFav={true}
 								/>
 							)}
 						/>
@@ -394,22 +418,16 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: "white",
 	},
-	topView: {
-		flexDirection: "row",
-		width: "100%",
-		justifyContent: "space-between",
-		padding: 8,
-	},
 	carouselImageView: {
 		width: windowWidth,
-		paddingVertical: 8,
+		paddingBottom: 8,
 		justifyContent: "center",
 		alignItems: "center",
 	},
 	carouselImage: {
-		width: "90%",
-		height: 180,
-		borderRadius: 10,
+		width: windowWidth,
+		height:windowWidth / 2
+		
 	},
 
 	dotsContainer: {
@@ -462,7 +480,7 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 	},
 	carouselView: {
-		marginTop: 8,
+		// marginTop: 8,
 	},
 	loadingcontainer: {
 		flex: 1,

@@ -9,10 +9,10 @@ const NewsListItem = (props) => {
 	const { news } = props;
 	return (
 		<View style={styles.container}>
-			<Image source={news.image} style={styles.image} />
+			<Image source={require('../assets/images/carousel.jpeg')} style={styles.image} />
 			<View style={styles.bottomContainer}>
 				<View style={styles.titleDate}>
-					<Text style={styles.title}>{news.title}</Text>
+					<Text style={styles.title}>{news.Title}</Text>
 					<View style={styles.dateView}>
 						<MaterialCommunityIcons
 							name="calendar"
@@ -22,7 +22,7 @@ const NewsListItem = (props) => {
 						<Text style={styles.date}>{news.news_date}</Text>
 					</View>
 				</View>
-				<Text style={styles.description}>{news.description}</Text>
+				<Text style={styles.description}>{news.news_description}</Text>
 			</View>
 		</View>
 	);

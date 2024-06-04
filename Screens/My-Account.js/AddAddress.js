@@ -12,6 +12,8 @@ import {
 	ActivityIndicator,
 	ScrollView,
 	Alert,
+	KeyboardAvoidingView,
+	Dimensions
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Logo from "../../Components/Logo";
@@ -22,6 +24,7 @@ import { saveBearerToken, getBearerToken, logout } from "../../utils/bearer.js";
 import Loading from "../../Components/Loading.js";
 import MyMap from "../../Components/MyMap.js";
 
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const AddAddress = ({ navigation, route }) => {
 	const { paramAddress, isCreating } = route.params;
 	const { width } = useWindowDimensions();
@@ -224,12 +227,13 @@ const AddAddress = ({ navigation, route }) => {
 	}
 
 	return (
+		<KeyboardAvoidingView style={styles.background1} behavior="position" >
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
 			<ImageBackground
 				source={require("../../assets/images/splash-bg.jpg")}
 				style={styles.background}
 			>
-				<ScrollView style={styles.scroll}>
+				<ScrollView style={styles.scroll} showsVerticalScrollIndicator={false} >
 					<View style={styles.topViewContainer}>
 						<TouchableOpacity style={styles.topView} onPress={navigate}>
 							<Ionicons
@@ -408,16 +412,22 @@ const AddAddress = ({ navigation, route }) => {
 				</ScrollView>
 			</ImageBackground>
 		</TouchableWithoutFeedback>
+		</KeyboardAvoidingView>
 	);
 };
 
 export default AddAddress;
 
 const styles = StyleSheet.create({
-	background: {
+	background: { 
 		flex: 1,
-		width: "100%",
+		width: SCREEN_WIDTH,
 		opacity: 1,
+		alignItems: "center",
+	},
+	background1:{
+		flex: 1,
+		width: SCREEN_WIDTH,
 		alignItems: "center",
 	},
 	scroll: {

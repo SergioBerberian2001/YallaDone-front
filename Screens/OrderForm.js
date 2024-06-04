@@ -30,6 +30,7 @@ const OrderForm = ({ navigation, route }) => {
 	const [additionalInfo, setAdditionalInfo] = useState("");
 	const [newDate, setNewDate] = useState("Set date and time");
 	const [time, setTime] = useState();
+	const [error, setError] = useState("")
 	const pickerRef = useRef();
 	const newAddress = {
 		address_id: 0,
@@ -109,33 +110,6 @@ const OrderForm = ({ navigation, route }) => {
 		}, [])
 	);
 
-	const HandleServiceForm = async () => {
-		try {
-			const token = await getBearerToken();
-			const userData = {
-				location_id: selectedAddress.address_id,
-				service_date: newDate + " " + time,
-				additional_info: additionalInfo,
-				service_id: order.service_id,
-			};
-			const response = await axios.post(
-				"http://192.168.1.100:8000/api/StoreUserServiceForm",
-				userData,
-				{
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				}
-			);
-
-			console.log("Response:", response.data);
-			navigateToCheckout(response.data.data.form_id);
-		} catch (error) {
-			console.error("Error:", error);
-			throw error; // Throw the error to be caught by the caller
-		}
-	};
-
 	const navigate = () => {
 		navigation.goBack();
 	};
@@ -155,6 +129,17 @@ const OrderForm = ({ navigation, route }) => {
 	const handleAddAddress = (paramAddress) => {
 		navigation.navigate("AddAddress", { paramAddress, isCreating: true });
 	};
+
+	const handleError = () => {
+		if(selectedAddress === null){
+			setError("Please fill out address field")
+		} else if(newDate === "Set date and time"){
+			setError("Please pick a date and time")
+		} else {
+			setError("")
+			navigateToCheckout();
+		}
+	}
 
 	if (isLoading) {
 		return <Loading />;
@@ -194,6 +179,7 @@ const OrderForm = ({ navigation, route }) => {
 						Phone Number: <Text style={styles.infos}>{user.phone_number}</Text>
 					</Text>
 				</View>
+				<Text style={styles.errorText}>{error}</Text>
 				<Text style={styles.formTitle}>Address</Text>
 				<View style={styles.addressView}>
 					<View style={styles.pickerView}>
@@ -253,7 +239,7 @@ const OrderForm = ({ navigation, route }) => {
 
 				<View style={styles.form}></View>
 
-				<TouchableOpacity style={styles.button} onPress={navigateToCheckout}>
+				<TouchableOpacity style={styles.button} onPress={handleError}>
 					<Text style={styles.buttonText}>Create Order</Text>
 				</TouchableOpacity>
 			</ScrollView>
@@ -315,7 +301,7 @@ const styles = StyleSheet.create({
 		marginTop: 10,
 	},
 	pickerView: {
-		width: "65%",
+		width: "68%",
 		fontSize: 16,
 		borderRadius: 8,
 		marginVertical: 8,
@@ -329,14 +315,14 @@ const styles = StyleSheet.create({
 	addressView: {
 		width: "100%",
 		flexDirection: "row",
-		paddingHorizontal: 10,
+		paddingHorizontal: 16,
 		justifyContent: "space-between",
 	},
 	addAddressButton: {
 		width: "30%",
 		padding: 4,
 		marginVertical: 8,
-		marginHorizontal: 8,
+		
 		backgroundColor: myColors.blue,
 		borderRadius: 8,
 		padding: 4,
@@ -374,7 +360,7 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 	},
 	dateField: {
-		width: "90%",
+		// width: "100%",
 		fontSize: 16,
 		borderRadius: 8,
 		marginVertical: 8,
@@ -395,9 +381,13 @@ const styles = StyleSheet.create({
 		paddingVertical: 16,
 		borderRadius: 8,
 		alignItems: "center",
-		marginVertical: 12,
+		marginVertical: 24,
 		marginHorizontal: 16,
-		marginBottom: 24,
+		shadowColor: "#000000",
+		shadowOpacity: 0.3,
+		shadowRadius: 5,
+		shadowOffset: { width: 3, height: 5 },
+		
 	},
 	buttonText: {
 		fontFamily: "SF-bold",
@@ -419,4 +409,11 @@ const styles = StyleSheet.create({
 		color: myColors.blue,
 		fontSize: 16,
 	},
+	errorText:{
+		fontFamily: "SF-medium",
+		color: myColors.red,
+		fontSize: 16,
+		alignSelf:"center",
+		padding:4
+	}
 });

@@ -113,7 +113,7 @@ const NotificationsSheet = (props) => {
 				<View style={styles.bg}>
 					<View style={styles.topView}>
 						<TouchableOpacity style={styles.back} onPress={toggleSheet}>
-							<Ionicons name="chevron-back" color={myColors.blue} size={32} />
+							<Ionicons name="chevron-down" color={myColors.blue} size={28} />
 							<Text style={styles.topText}>Close</Text>
 						</TouchableOpacity>
 						<TouchableOpacity style={styles.clear}>

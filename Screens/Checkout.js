@@ -11,6 +11,8 @@ import {
 	Image,
 	Alert,
 	Platform,
+	KeyboardAvoidingView,
+	Dimensions,
 } from "react-native";
 import axios from "axios";
 import { Ionicons } from "react-native-vector-icons";
@@ -23,6 +25,7 @@ import { RadioButton, Provider as PaperProvider } from "react-native-paper";
 import StripeApp from "../Components/Stripe";
 import { StripeProvider } from "@stripe/stripe-react-native";
 
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const Checkout = ({ navigation, route }) => {
 	const { order, locationId, serviceDate, additionalInfo } = route.params;
 	const [loadingPayment, setLoadingPayment] = useState(false);
@@ -160,97 +163,101 @@ const Checkout = ({ navigation, route }) => {
 
 	return (
 		<StripeProvider publishableKey="pk_test_51PMAhL07mb77Stj1OD3V96xsfMLd8bmWXNx8InMbwE1hcTkWjTTSHck6OqOVSlgOuOSPh3RhtxOP2s4hm1kDWuby00L073BzaE">
-			<SafeAreaView style={styles.container}>
-				<ScrollView style={styles.scroll}>
-					<TouchableOpacity
-						style={
-							Platform.OS === "ios" ? styles.topView : styles.topViewAndroid
-						}
-						onPress={navigate}
-					>
-						<Ionicons
-							name="chevron-back-outline"
-							color={myColors.blue}
-							size={32}
-						/>
-						<Text style={styles.topText}>Back</Text>
-					</TouchableOpacity>
-					<Text>You ordered {order.service_name}</Text>
-					<View style={styles.serviceView}>
-						<ServiceItem service={order} />
-					</View>
-					<Text>Select your method of payment</Text>
-					<PaperProvider>
-						<View style={styles.RadioContainer}>
-							<View style={styles.optionContainer}>
-								<RadioButton
-									value="cash"
-									status={checked === "cash" ? "checked" : "unchecked"}
-									onPress={() => setChecked("cash")}
-								/>
-								<Ionicons name="wallet" color={myColors.blue} size={20} />
-								<Text
-									style={styles.optionText}
-									onPress={() => setChecked("cash")}
-								>
-									Cash On Delivery
-								</Text>
-							</View>
-
-							<View style={styles.optionContainer}>
-								<RadioButton
-									value="visa"
-									status={checked === "visa" ? "checked" : "unchecked"}
-									onPress={() => setChecked("visa")}
-								/>
-								<Ionicons name="card" color={myColors.blue} size={20} />
-								<Text
-									style={styles.optionText}
-									onPress={() => setChecked("visa")}
-								>
-									VISA Card
-								</Text>
-							</View>
-
-							<View style={styles.optionContainer}>
-								<RadioButton
-									value="yallacoin"
-									status={checked === "yallacoin" ? "checked" : "unchecked"}
-									onPress={() => setChecked("yallacoin")}
-								/>
-								<Image
-									source={require("../assets/images/YallaCoin.png")}
-									style={styles.yallacoin}
-								/>
-								<Text
-									style={styles.optionText}
-									onPress={() => setChecked("yallacoin")}
-								>
-									Redeem YALLACOINS
-								</Text>
-							</View>
-						</View>
-					</PaperProvider>
-					{checked === "visa" && (
-						<StripeApp onHandleServiceForm={HandleServiceForm} />
-					)}
-					{checked !== "visa" && (
+			<KeyboardAvoidingView style={styles.background1} behavior="position">
+				<SafeAreaView style={styles.container}>
+					<ScrollView style={styles.scroll}>
 						<TouchableOpacity
-							style={[loadingPayment ? styles.loadingButton : styles.button]}
-							onPress={
-								checked === "cash" ? HandleServiceForm : handleYallacoinPayement
+							style={
+								Platform.OS === "ios" ? styles.topView : styles.topViewAndroid
 							}
-							disabled={loadingPayment}
+							onPress={navigate}
 						>
-							<Text style={styles.buttonText}>
-								{checked === "cash"
-									? "Pay With Cash On Delivery"
-									: "Pay With YALLACOINS"}
-							</Text>
+							<Ionicons
+								name="chevron-back-outline"
+								color={myColors.blue}
+								size={32}
+							/>
+							<Text style={styles.topText}>Back</Text>
 						</TouchableOpacity>
-					)}
-				</ScrollView>
-			</SafeAreaView>
+						<Text style={styles.title}>You ordered our {order.service_name} service</Text>
+						<View style={styles.serviceView}>
+							<ServiceItem service={order} />
+						</View>
+						<Text style={styles.title}>Select your method of payment</Text>
+						<PaperProvider>
+							<View style={styles.RadioContainer}>
+								<View style={styles.optionContainer}>
+									<RadioButton
+										value="cash"
+										status={checked === "cash" ? "checked" : "unchecked"}
+										color={myColors.red}
+									/>
+									<TouchableOpacity
+										style={styles.optionTouchable}
+										onPress={() => setChecked("cash")}
+									>
+										<Ionicons name="wallet" color={myColors.blue} size={20} />
+										<Text style={styles.optionText}>Cash On Delivery</Text>
+									</TouchableOpacity>
+								</View>
+
+								<View style={styles.optionContainer}>
+									<RadioButton
+										value="visa"
+										status={checked === "visa" ? "checked" : "unchecked"}
+										color={myColors.red}
+									/>
+									<TouchableOpacity
+										style={styles.optionTouchable}
+										onPress={() => setChecked("visa")}
+									>
+										<Ionicons name="card" color={myColors.blue} size={20} />
+										<Text style={styles.optionText}>VISA Card</Text>
+									</TouchableOpacity>
+								</View>
+
+								<View style={styles.optionContainer}>
+									<RadioButton
+										value="yallacoin"
+										status={checked === "yallacoin" ? "checked" : "unchecked"}
+										color={myColors.red}
+									/>
+									<TouchableOpacity
+										style={styles.optionTouchable}
+										onPress={() => setChecked("yallacoin")}
+									>
+										<Image
+											source={require("../assets/images/YallaCoin.png")}
+											style={styles.yallacoin}
+										/>
+										<Text style={styles.optionText}>Redeem YALLACOINS</Text>
+									</TouchableOpacity>
+								</View>
+							</View>
+						</PaperProvider>
+						{checked === "visa" && (
+							<StripeApp onHandleServiceForm={HandleServiceForm} />
+						)}
+						{checked !== "visa" && (
+							<TouchableOpacity
+								style={[loadingPayment ? styles.loadingButton : styles.button]}
+								onPress={
+									checked === "cash"
+										? HandleServiceForm
+										: handleYallacoinPayement
+								}
+								disabled={loadingPayment}
+							>
+								<Text style={styles.buttonText}>
+									{checked === "cash"
+										? "Pay With Cash On Delivery"
+										: "Pay With YALLACOINS"}
+								</Text>
+							</TouchableOpacity>
+						)}
+					</ScrollView>
+				</SafeAreaView>
+			</KeyboardAvoidingView>
 		</StripeProvider>
 	);
 };
@@ -261,6 +268,11 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: myColors.white,
+	},
+	background1: {
+		flex: 1,
+		width: SCREEN_WIDTH,
+		alignItems: "center",
 	},
 	topView: {
 		marginLeft: 10,
@@ -284,10 +296,22 @@ const styles = StyleSheet.create({
 	optionContainer: {
 		flexDirection: "row",
 		alignItems: "center",
-		marginBottom: 10,
+		padding: 8,
+	},
+	optionTouchable: {
+		flexDirection: "row",
+		alignItems: "center",
+		borderBottomWidth: 1,
+		borderColor: "#cccccc",
+		marginLeft: 16,
+		width: "100%",
+		paddingVertical: 8,
 	},
 	optionText: {
+		fontFamily: "SF-medium",
 		fontSize: 16,
+		paddingHorizontal: 8,
+		color: myColors.blue,
 	},
 	yallacoin: {
 		width: 20,
@@ -299,12 +323,13 @@ const styles = StyleSheet.create({
 		paddingVertical: 16,
 		borderRadius: 8,
 		alignItems: "center",
-		marginVertical: 12,
+		marginVertical: 24,
 		marginHorizontal: 16,
 		shadowColor: "#000000",
 		shadowOpacity: 0.5,
 		shadowRadius: 5,
 		shadowOffset: { width: 3, height: 3 },
+		
 	},
 	loadingButton: {
 		backgroundColor: myColors.red,
@@ -312,7 +337,7 @@ const styles = StyleSheet.create({
 		paddingVertical: 16,
 		borderRadius: 8,
 		alignItems: "center",
-		marginVertical: 12,
+		marginVertical: 24,
 		marginHorizontal: 16,
 		shadowColor: "#000000",
 		shadowOpacity: 0.5,
@@ -323,6 +348,13 @@ const styles = StyleSheet.create({
 	buttonText: {
 		fontFamily: "SF-bold",
 		color: myColors.white,
+		fontSize: 16,
+	},
+	title: {
+		margin: 8,
+		marginHorizontal: 16,
+		fontFamily: "SF-bold",
+		color: myColors.blue,
 		fontSize: 16,
 	},
 });
