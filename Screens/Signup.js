@@ -9,6 +9,8 @@ import {
 	Modal,
 	Pressable,
 	Platform,
+	KeyboardAvoidingView,
+	Dimensions,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -17,7 +19,7 @@ import axios from "axios";
 import { saveBearerToken, getBearerToken, logout } from "../utils/bearer.js";
 import { Ionicons } from "react-native-vector-icons";
 // import { differenceInYears } from 'date-fns';
-
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const Signup = (props) => {
 	const { onNavigate } = props;
 	const [dateOfBirth, setDateOfBirth] = useState("");
@@ -183,171 +185,177 @@ const Signup = (props) => {
 	};
 
 	return (
-		<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-			<View>
-				<View style={styles.formView}>
-					<Text style={styles.errorText}>{error}</Text>
-					<TextInput
-						placeholder="Email"
-						placeholderTextColor="rgba(60,60,67,0.3)"
-						style={styles.textInput}
-						onChangeText={(value) => onUpdateField("email", value)}
-						value={user.email}
-					/>
-					<TextInput
-						placeholder="Phone Number"
-						placeholderTextColor="rgba(60,60,67,0.3)"
-						style={styles.textInput}
-						onChangeText={(value) => onUpdateField("phone_number", value)}
-						value={user.phone_number}
-						keyboardType="numeric"
-					/>
-					<TextInput
-						secureTextEntry
-						placeholder="Password"
-						placeholderTextColor="rgba(60,60,67,0.3)"
-						style={styles.textInput}
-						onChangeText={(value) => onUpdateField("password", value)}
-						value={user.password}
-					/>
-					<TextInput
-						secureTextEntry
-						placeholder="Confirm Password"
-						placeholderTextColor="rgba(60,60,67,0.3)"
-						style={styles.textInput}
-						onChangeText={(value) => onUpdateField("confirmPass", value)}
-						value={user.confirmPass}
-					/>
-				</View>
-				<TouchableOpacity
-					style={styles.signupButton}
-					onPress={handleSignupFirst}
-				>
-					<Text style={styles.signupText}>Signup</Text>
-				</TouchableOpacity>
+		
+			<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
 				<View>
-					<View style={styles.radioView}>
-						<TouchableOpacity
-							style={[
-								styles.radiobutton,
-								acceptTerms && styles.radioButtonSelected,
-							]}
-							onPress={handleToggleAcceptTerms}
+					<View style={styles.formView}>
+						<Text style={styles.errorText}>{error}</Text>
+						<TextInput
+							placeholder="Email"
+							placeholderTextColor="rgba(60,60,67,0.3)"
+							style={styles.textInput}
+							onChangeText={(value) => onUpdateField("email", value)}
+							value={user.email}
 						/>
-						<Text style={styles.radioText}>
-							I accept the term of service and the privacy policy
-						</Text>
-					</View>
-					<View style={styles.radioView}>
-						<TouchableOpacity
-							style={[
-								styles.radiobutton,
-								receiveEmails && styles.radioButtonSelected,
-							]}
-							onPress={handleToggleReceiveEmails}
+						<TextInput
+							placeholder="Phone Number"
+							placeholderTextColor="rgba(60,60,67,0.3)"
+							style={styles.textInput}
+							onChangeText={(value) => onUpdateField("phone_number", value)}
+							value={user.phone_number}
+							keyboardType="numeric"
 						/>
-						<Text style={styles.radioText}>
-							I would like to receive emails about news and events
-						</Text>
+						<TextInput
+							secureTextEntry
+							placeholder="Password"
+							placeholderTextColor="rgba(60,60,67,0.3)"
+							style={styles.textInput}
+							onChangeText={(value) => onUpdateField("password", value)}
+							value={user.password}
+						/>
+						<TextInput
+							secureTextEntry
+							placeholder="Confirm Password"
+							placeholderTextColor="rgba(60,60,67,0.3)"
+							style={styles.textInput}
+							onChangeText={(value) => onUpdateField("confirmPass", value)}
+							value={user.confirmPass}
+						/>
 					</View>
-					<View style={styles.loginView}>
-						<Text style={styles.loginMainText}>Already have an account? </Text>
-						<TouchableOpacity style={styles.loginTouchable}>
-							<Text style={styles.loginText}>Login</Text>
-						</TouchableOpacity>
-					</View>
-				</View>
-				<Modal
-					animationType="slide"
-					transparent={true}
-					visible={modalVisible}
-					onRequestClose={() => {
-						Alert.alert("Modal has been closed.");
-						ToggleModal();
-					}}
-				>
-					<TouchableWithoutFeedback
-						onPress={Keyboard.dismiss}
-						accessible={false}
+					<TouchableOpacity
+						style={styles.signupButton}
+						onPress={handleSignupFirst}
 					>
-						<View style={styles.centeredView}>
-							<TouchableOpacity style={styles.topView} onPress={ToggleModal}>
-								<Ionicons
-									name="chevron-back-outline"
-									color={myColors.blue}
-									size={24}
-								/>
-								<Text style={styles.topText}>Back</Text>
-							</TouchableOpacity>
-							<Text style={styles.modalText}>Please give us your name:</Text>
-							<TextInput
-								placeholder="First Name"
-								placeholderTextColor="rgba(60,60,67,0.3)"
-								style={styles.textInput}
-								onChangeText={(value) => onUpdateField("user_name", value)}
-								value={user.user_name}
-							/>
-							<TextInput
-								placeholder="Last Name"
-								placeholderTextColor="rgba(60,60,67,0.3)"
-								style={styles.textInput}
-								onChangeText={(value) => onUpdateField("user_lastname", value)}
-								value={user.user_lastname}
-							/>
-							<Text style={styles.modalText}>Date Of Birth:</Text>
-							{showPicker && (
-								<DateTimePicker
-									mode="date"
-									display="spinner"
-									value={date}
-									onChange={onDateChange}
-									style={styles.datePicker}
-									themeVariant="light"
-								/>
-							)}
-							{showPicker && Platform.OS === "ios" && (
-								<View style={styles.dateButtonsView}>
-									<TouchableOpacity
-										onPress={toggleDatePicker}
-										style={styles.dateCancelButton}
-									>
-										<Text style={styles.dateCancelText}>Cancel</Text>
-									</TouchableOpacity>
-									<TouchableOpacity
-										onPress={confirmIOSDate}
-										style={styles.dateConfirmButton}
-									>
-										<Text style={styles.dateConfirmText}>Confirm</Text>
-									</TouchableOpacity>
-								</View>
-							)}
-
-							{!showPicker && (
-								<Pressable onPress={toggleDatePicker}>
-									<TextInput
-										style={styles.textInput}
-										placeholder="Birthday"
-										value={dateOfBirth}
-										onChangeText={setDateOfBirth}
-										placeholderTextColor="rgba(60,60,67,0.3)"
-										editable={false}
-										onPressIn={toggleDatePicker}
-									></TextInput>
-								</Pressable>
-							)}
-
-							<Text style={styles.errorText}>{error}</Text>
+						<Text style={styles.signupText}>Signup</Text>
+					</TouchableOpacity>
+					<View>
+						<View style={styles.radioView}>
 							<TouchableOpacity
-								style={styles.signup2Button}
-								onPress={handleSignupSecond}
-							>
-								<Text style={styles.signup2Text}>Signup</Text>
+								style={[
+									styles.radiobutton,
+									acceptTerms && styles.radioButtonSelected,
+								]}
+								onPress={handleToggleAcceptTerms}
+							/>
+							<Text style={styles.radioText}>
+								I accept the term of service and the privacy policy
+							</Text>
+						</View>
+						<View style={styles.radioView}>
+							<TouchableOpacity
+								style={[
+									styles.radiobutton,
+									receiveEmails && styles.radioButtonSelected,
+								]}
+								onPress={handleToggleReceiveEmails}
+							/>
+							<Text style={styles.radioText}>
+								I would like to receive emails about news and events
+							</Text>
+						</View>
+						<View style={styles.loginView}>
+							<Text style={styles.loginMainText}>
+								Already have an account?{" "}
+							</Text>
+							<TouchableOpacity style={styles.loginTouchable}>
+								<Text style={styles.loginText}>Login</Text>
 							</TouchableOpacity>
 						</View>
-					</TouchableWithoutFeedback>
-				</Modal>
-			</View>
-		</TouchableWithoutFeedback>
+					</View>
+					<Modal
+						animationType="slide"
+						transparent={true}
+						visible={modalVisible}
+						onRequestClose={() => {
+							Alert.alert("Modal has been closed.");
+							ToggleModal();
+						}}
+					>
+						<TouchableWithoutFeedback
+							onPress={Keyboard.dismiss}
+							accessible={false}
+						>
+							<View style={styles.centeredView}>
+								<TouchableOpacity style={styles.topView} onPress={ToggleModal}>
+									<Ionicons
+										name="chevron-back-outline"
+										color={myColors.blue}
+										size={24}
+									/>
+									<Text style={styles.topText}>Back</Text>
+								</TouchableOpacity>
+								<Text style={styles.modalText}>Please give us your name:</Text>
+								<TextInput
+									placeholder="First Name"
+									placeholderTextColor="rgba(60,60,67,0.3)"
+									style={styles.textInput}
+									onChangeText={(value) => onUpdateField("user_name", value)}
+									value={user.user_name}
+								/>
+								<TextInput
+									placeholder="Last Name"
+									placeholderTextColor="rgba(60,60,67,0.3)"
+									style={styles.textInput}
+									onChangeText={(value) =>
+										onUpdateField("user_lastname", value)
+									}
+									value={user.user_lastname}
+								/>
+								<Text style={styles.modalText}>Date Of Birth:</Text>
+								{showPicker && (
+									<DateTimePicker
+										mode="date"
+										display="spinner"
+										value={date}
+										onChange={onDateChange}
+										style={styles.datePicker}
+										themeVariant="light"
+									/>
+								)}
+								{showPicker && Platform.OS === "ios" && (
+									<View style={styles.dateButtonsView}>
+										<TouchableOpacity
+											onPress={toggleDatePicker}
+											style={styles.dateCancelButton}
+										>
+											<Text style={styles.dateCancelText}>Cancel</Text>
+										</TouchableOpacity>
+										<TouchableOpacity
+											onPress={confirmIOSDate}
+											style={styles.dateConfirmButton}
+										>
+											<Text style={styles.dateConfirmText}>Confirm</Text>
+										</TouchableOpacity>
+									</View>
+								)}
+
+								{!showPicker && (
+									<Pressable onPress={toggleDatePicker}>
+										<TextInput
+											style={styles.textInput}
+											placeholder="Birthday"
+											value={dateOfBirth}
+											onChangeText={setDateOfBirth}
+											placeholderTextColor="rgba(60,60,67,0.3)"
+											editable={false}
+											onPressIn={toggleDatePicker}
+										></TextInput>
+									</Pressable>
+								)}
+
+								<Text style={styles.errorText}>{error}</Text>
+								<TouchableOpacity
+									style={styles.signup2Button}
+									onPress={handleSignupSecond}
+								>
+									<Text style={styles.signup2Text}>Signup</Text>
+								</TouchableOpacity>
+							</View>
+						</TouchableWithoutFeedback>
+					</Modal>
+				</View>
+			</TouchableWithoutFeedback>
+	
 	);
 };
 
@@ -363,6 +371,12 @@ const styles = StyleSheet.create({
 		backgroundColor: myColors.dirtyWhite90,
 		// backgroundColor: "lightgreen",
 		fontFamily: "SF",
+	},
+	background: { 
+		flex: 1,
+		width: SCREEN_WIDTH,
+		opacity: 1,
+		alignItems: "center",
 	},
 	formView: {
 		width: "100%",
@@ -533,6 +547,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		marginBottom: 8,
+		width:"30%"
 	},
 	topText: {
 		fontFamily: "SF-medium",

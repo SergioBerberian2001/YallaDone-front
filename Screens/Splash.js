@@ -18,21 +18,28 @@ import Loading from "../Components/Loading.js";
 const Splash = ({ navigation, route }) => {
 	const { width } = useWindowDimensions();
 	const height = width / 8;
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [isLoading, setIsLoading] = useState(true); // Loading state
 
 	useEffect(() => {
 		const checkLogin = async () => {
 			const token = await getBearerToken();
+			return token;
+		};
+
+		const initialize = async () => {
+			const tokenPromise = checkLogin();
+			const delayPromise = new Promise((resolve) => setTimeout(resolve, 2000)); // Minimum 3 seconds delay
+
+			const [token] = await Promise.all([tokenPromise, delayPromise]);
+
 			if (token) {
 				navigation.navigate("DrawerScreen");
-				setIsLoading(false);
-			} else if (!token) {
-				setIsLoading(false);
 			}
+			setIsLoading(false);
 		};
-		checkLogin();
-	});
+
+		initialize();
+	}, [navigation]);
 
 	const navigateToSignup = () => {
 		navigation.navigate("Form", { isCreating: true });
@@ -44,30 +51,20 @@ const Splash = ({ navigation, route }) => {
 
 	if (isLoading) {
 		// Render a loading indicator while fetching the token
-		return <Loading />;
+		return <Loading isSplash={true} />;
 	}
 
 	return (
-		<ImageBackground
-			source={require("../assets/images/splash-bg.jpg")}
-			style={styles.background}
-		>
-			<View style={styles.main}>
-				<Logo width={width * 0.75} height={height * 0.75} />
-				<Text style={styles.welcomeText}>
-					Welcome to YALLA DONE. Get ready to make your life easier. Get all the
-					services you want, whenever you want. Sign up to get started.
-				</Text>
-				<View style={styles.buttonsView}>
-					<TouchableOpacity style={styles.buttons} onPress={navigateToSignup}>
-						<Text style={styles.buttonsText}>Sign up</Text>
-					</TouchableOpacity>
-					<TouchableOpacity style={styles.buttons} onPress={navigateToLogin}>
-						<Text style={styles.buttonsText}>Sign in</Text>
-					</TouchableOpacity>
-				</View>
-			</View>
-		</ImageBackground>
+		<Loading isSplash={true}  isNew={true} onLogin={navigateToLogin} onSignup={navigateToSignup} />
+				// {/* <View style={styles.buttonsView}>
+				// 	<TouchableOpacity style={styles.buttons} onPress={navigateToSignup}>
+				// 		<Text style={styles.buttonsText}>Sign up</Text>
+				// 	</TouchableOpacity>
+				// 	<TouchableOpacity style={styles.buttons} onPress={navigateToLogin}>
+				// 		<Text style={styles.buttonsText}>Sign in</Text>
+				// 	</TouchableOpacity>
+				// </View> */}
+				
 	);
 };
 

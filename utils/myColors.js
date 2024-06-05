@@ -1,4 +1,4 @@
-const myColors = {
+ export const myColors = {
 	blue: "#2F3D7E",
 	red: "#FD2121",
 	white: "#FFFFFF",
@@ -8,4 +8,14 @@ const myColors = {
 	grey: "#919191",
 };
 
-export default myColors;
+export const myDarkColors = {
+	blue: "#2F3D7E",
+	red: "#FD2121",
+	white: "#000000",
+	dirtyWhite: "#444444",
+	dirtyWhite90: "rgba(242,242,247,0.9)",
+	black: "#FFFFFF",
+	grey: "#919191",
+};
+
+

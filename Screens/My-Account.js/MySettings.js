@@ -7,12 +7,14 @@ import { useNavigation } from "@react-navigation/native";
 import ToggleButton from "../../Components/ToggleButton.js";
 import Loading from "../../Components/Loading.js";
 import UserContext from "../../utils/UserContext.js";
+import { useTheme } from "../../utils/ThemeContext"; // Import useTheme hook
 
 const MySettings = (props) => {
 	const { user, clearUser } = useContext(UserContext);
 	const { onToggle } = props;
 	const navigation = useNavigation();
 	const [isLoading, setIsLoading] = useState(false);
+	const { isDarkMode, toggleTheme } = useTheme(); // Use useTheme hook
 
 	const logoutAxios = async () => {
 		try {
@@ -87,6 +89,11 @@ const MySettings = (props) => {
 		);
 	};
 
+	const switchTheme = () => {
+		toggleTheme(); // Toggle theme
+		// console.log("Current theme:", isDarkMode ? "dark" : "light"); // Log current theme
+	};
+
 	if (isLoading) {
 		return <Loading />;
 	}
@@ -103,14 +110,14 @@ const MySettings = (props) => {
 				<Text style={styles.text}>Turn Off Notifications</Text>
 				<ToggleButton
 					label="Turn Off Notifications"
-					onToggle={(value) => console.log(value)}
+					onToggle={(value) => console.log(hello)}
 				/>
 			</View>
 			<View style={styles.row}>
 				<Text style={styles.text}>Switch Theme</Text>
 				<ToggleButton
 					label="Switch Theme"
-					onToggle={(value) => console.log(value)}
+					onToggle={switchTheme} // Call switchTheme function
 				/>
 			</View>
 			<View style={styles.row}>

@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { React, useState, useEffect, useContext, useCallback } from "react";
 import { MaterialCommunityIcons } from "react-native-vector-icons";
-import myColors from "../utils/myColors";
+import { myColors, myDarkColors } from "../utils/myColors";
 import ServiceHome from "../Components/ServiceHome";
 import Logo from "../Components/Logo";
 import { useNavigation } from "@react-navigation/native";

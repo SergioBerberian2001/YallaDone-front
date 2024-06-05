@@ -6,11 +6,13 @@ import {
 	TouchableOpacity,
 	Modal,
 } from "react-native";
-import { React, useState } from "react";
+import { useState } from "react";
 import myColors from "../../utils/myColors";
 import MySettings from "../My-Account.js/MySettings";
+import { useTheme } from "../../utils/ThemeContext";
 
 const MyAccount = ({ navigation, route }) => {
+	const { isDarkMode } = useTheme();
 	const [modalVisible, setModalVisible] = useState(false);
 
 	const ToggleModal = () => {

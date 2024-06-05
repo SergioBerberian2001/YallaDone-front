@@ -7,6 +7,8 @@ import {
 	TouchableWithoutFeedback,
 	Keyboard,
 	TouchableOpacity,
+	KeyboardAvoidingView,
+	Dimensions,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Logo from "../Components/Logo";
@@ -15,6 +17,7 @@ import Login from "./Login";
 import myColors from "../utils/myColors";
 import slides from "../assets/data/slides";
 
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const Form = ({ navigation, route }) => {
 	const width = 280;
 	const height = 35;
@@ -46,6 +49,7 @@ const Form = ({ navigation, route }) => {
 	};
 
 	return (
+		<KeyboardAvoidingView style={styles.background1} behavior="padding">
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
 			<ImageBackground
 				source={require("../assets/images/splash-bg.jpg")}
@@ -93,7 +97,7 @@ const Form = ({ navigation, route }) => {
 					)}
 				</View>
 			</ImageBackground>
-		</TouchableWithoutFeedback>
+		</TouchableWithoutFeedback></KeyboardAvoidingView>
 	);
 };
 
@@ -102,9 +106,14 @@ export default Form;
 const styles = StyleSheet.create({
 	background: {
 		flex: 1,
-		width: "100%",
+		width: SCREEN_WIDTH,
 		opacity: 1,
 		justifyContent: "center",
+		alignItems: "center",
+	},
+	background1:{
+		flex: 1,
+		width: SCREEN_WIDTH,
 		alignItems: "center",
 	},
 	logoView: {
