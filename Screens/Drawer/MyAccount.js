@@ -7,12 +7,13 @@ import {
 	Modal,
 } from "react-native";
 import { useState } from "react";
-import myColors from "../../utils/myColors";
+import { myColors, myDarkColors } from "../../utils/myColors";
 import MySettings from "../My-Account.js/MySettings";
-import { useTheme } from "../../utils/ThemeContext";
+import { useMyColorTheme } from "../../utils/ThemeContext";
 
 const MyAccount = ({ navigation, route }) => {
-	const { isDarkMode } = useTheme();
+	const { isDarkMode } = useMyColorTheme();
+	const theme = isDarkMode ? dark : styles;
 	const [modalVisible, setModalVisible] = useState(false);
 
 	const ToggleModal = () => {
@@ -24,40 +25,40 @@ const MyAccount = ({ navigation, route }) => {
 	};
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<Text style={styles.title}>My Account</Text>
+		<SafeAreaView style={theme.container}>
+			<Text style={theme.title}>My Account</Text>
 			<TouchableOpacity
-				style={styles.button}
+				style={theme.button}
 				onPress={() => navigate("MyProfile")}
 			>
-				<Text style={styles.text}>MY PROFILE</Text>
+				<Text style={theme.text}>MY PROFILE</Text>
 			</TouchableOpacity>
 			<TouchableOpacity
-				style={styles.button}
+				style={theme.button}
 				onPress={() => navigate("MyAddresses")}
 			>
-				<Text style={styles.text}>MY ADDRESSES</Text>
+				<Text style={theme.text}>MY ADDRESSES</Text>
 			</TouchableOpacity>
 			<TouchableOpacity
-				style={styles.button}
+				style={theme.button}
 				onPress={() => navigate("OrdersHistory")}
 			>
-				<Text style={styles.text}>ORDERS HISTORY</Text>
+				<Text style={theme.text}>ORDERS HISTORY</Text>
 			</TouchableOpacity>
 			<TouchableOpacity
-				style={styles.button}
+				style={theme.button}
 				onPress={() => navigate("MyPoints")}
 			>
-				<Text style={styles.text}>MY POINTS</Text>
+				<Text style={theme.text}>MY POINTS</Text>
 			</TouchableOpacity>
 			<TouchableOpacity
-				style={styles.button}
+				style={theme.button}
 				onPress={() => navigate("ChangePassword")}
 			>
-				<Text style={styles.text}>CHANGE PASSWORD</Text>
+				<Text style={theme.text}>CHANGE PASSWORD</Text>
 			</TouchableOpacity>
-			<TouchableOpacity style={styles.button} onPress={ToggleModal}>
-				<Text style={styles.text}>SETTINGS</Text>
+			<TouchableOpacity style={theme.button} onPress={ToggleModal}>
+				<Text style={theme.text}>SETTINGS</Text>
 			</TouchableOpacity>
 
 			<Modal
@@ -69,7 +70,7 @@ const MyAccount = ({ navigation, route }) => {
 					ToggleModal();
 				}}
 			>
-				<View style={styles.centeredView}>
+				<View style={theme.centeredView}>
 					<MySettings onToggle={ToggleModal} />
 				</View>
 			</Modal>
@@ -105,7 +106,7 @@ const styles = StyleSheet.create({
 		color: myColors.white,
 	},
 	centeredView: {
-		height: "30%",
+		height: "40%",
 		width: "100%",
 		backgroundColor: myColors.white,
 		position: "absolute",
@@ -117,3 +118,43 @@ const styles = StyleSheet.create({
 		// alignItems: "center",
 	},
 });
+
+const dark = StyleSheet.create({
+	container: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "space-evenly",
+		backgroundColor: myDarkColors.white,
+	},
+	title: {
+		fontFamily: "SF-medium",
+		fontSize: 20,
+		color: myDarkColors.blue,
+	},
+	button: {
+		width: "90%",
+		aspectRatio: 9 / 2,
+		backgroundColor: myDarkColors.blue,
+		alignItems: "center",
+		justifyContent: "center",
+		borderRadius: 10,
+	},
+	text: {
+		fontFamily: "SF-bold",
+		fontSize: 20,
+		color: myDarkColors.black,
+	},
+	centeredView: {
+		height: "40%",
+		width: "100%",
+		backgroundColor: myDarkColors.white,
+		position: "absolute",
+		bottom: 0,
+		borderTopLeftRadius: 20,
+		borderTopRightRadius: 20,
+
+		// justifyContent: "center",
+		// alignItems: "center",
+	},
+});
+

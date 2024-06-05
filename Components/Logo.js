@@ -1,9 +1,11 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Svg, { Path } from "react-native-svg";
+import { useMyColorTheme } from "../utils/ThemeContext";
 
 const Logo = (props) => {
-	const { width, height } = props;
+	
+	const { width, height,color } = props;
 	return (
 		<View style={styles.main}>
 			<Svg
@@ -24,7 +26,8 @@ const Logo = (props) => {
 						strokeDashoffset: 0,
 						strokeLinejoin: "miter",
 						strokeMiterlimit: 4,
-						fill: "#2f3d7e",
+						
+						fill: color ? color : "#2f3d7e",
 						fillRule: "nonzero",
 						opacity: 1,
 					}}
@@ -40,7 +43,7 @@ const Logo = (props) => {
 						strokeDashoffset: 0,
 						strokeLinejoin: "miter",
 						strokeMiterlimit: 4,
-						fill: "#2f3d7e",
+						fill: color ? color : "#2f3d7e",
 						fillRule: "nonzero",
 						opacity: 1,
 					}}
@@ -56,7 +59,7 @@ const Logo = (props) => {
 						strokeDashoffset: 0,
 						strokeLinejoin: "miter",
 						strokeMiterlimit: 4,
-						fill: "#2f3d7e",
+						fill: color ? color : "#2f3d7e",
 						fillRule: "nonzero",
 						opacity: 1,
 					}}
@@ -72,7 +75,7 @@ const Logo = (props) => {
 						strokeDashoffset: 0,
 						strokeLinejoin: "miter",
 						strokeMiterlimit: 4,
-						fill: "#2f3d7e",
+						fill: color ? color : "#2f3d7e",
 						fillRule: "nonzero",
 						opacity: 1,
 					}}
@@ -88,7 +91,7 @@ const Logo = (props) => {
 						strokeDashoffset: 0,
 						strokeLinejoin: "miter",
 						strokeMiterlimit: 4,
-						fill: "#2f3d7e",
+						fill: color ? color : "#2f3d7e",
 						fillRule: "nonzero",
 						opacity: 1,
 					}}

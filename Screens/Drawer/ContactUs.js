@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import splashBg from "../../assets/images/splash-bg.jpg";
-import myColors from "../../utils/myColors";
+import { myColors, myDarkColors } from "../../utils/myColors";
 import { Ionicons } from "react-native-vector-icons";
 import { getBearerToken } from "../../utils/bearer";
 import axios from "axios";

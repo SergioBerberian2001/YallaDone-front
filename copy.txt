@@ -1,0 +1,5 @@
+import { useMyColorTheme } from "../utils/ThemeContext";
+
+
+const { isDarkMode } = useMyColorTheme();
+const theme = isDarkMode ? dark : styles;

@@ -5,9 +5,12 @@ import { format, utcToZonedTime } from "date-fns-tz";
 import axios from "axios";
 import { Ionicons } from "react-native-vector-icons";
 import { getBearerToken } from "../utils/bearer";
-import myColors from "../utils/myColors";
+import { myColors, myDarkColors } from "../utils/myColors";
+import { useMyColorTheme } from "../utils/ThemeContext";
 
 const NotificationListItem = (props) => {
+	const { isDarkMode } = useMyColorTheme();
+	const theme = isDarkMode ? dark : styles;
 	const { notification } = props;
 	// const inputTimestamp = "2024-05-30T19:20:49.000000Z";
 	const timeZone = "America/New_York";
@@ -29,18 +32,19 @@ const NotificationListItem = (props) => {
 		}
 	};
 	return (
-		<TouchableOpacity style={styles.container}>
-			<View style={styles.leftCont}>
-                <View style={styles.icon}>
-				<Ionicons name={handleShowIcon()} color={myColors.blue} size={40} /></View>
-			</View>
-			<View style={styles.rightCont}>
-				<View style={styles.topCont}>
-					<Text style={styles.title}>{notification.title}</Text>
-					{!notification.isRead && <View style={styles.dot}></View>}
+		<TouchableOpacity style={theme.container}>
+			<View style={theme.leftCont}>
+				<View style={theme.icon}>
+					<Ionicons name={handleShowIcon()} color={myColors.blue} size={40} />
 				</View>
-				<Text style={styles.description}>{notification.description}</Text>
-				<Text style={styles.date}>{formattedDate}</Text>
+			</View>
+			<View style={theme.rightCont}>
+				<View style={theme.topCont}>
+					<Text style={theme.title}>{notification.title}</Text>
+					{!notification.isRead && <View style={theme.dot}></View>}
+				</View>
+				<Text style={theme.description}>{notification.description}</Text>
+				<Text style={theme.date}>{formattedDate}</Text>
 			</View>
 		</TouchableOpacity>
 	);
@@ -49,53 +53,104 @@ const NotificationListItem = (props) => {
 export default NotificationListItem;
 
 const styles = StyleSheet.create({
-    container:{
-        flexDirection:"row",
-        alignItems:"center",
-        justifyContent:"center",
-        
-        width:"100%"
-    },
-    dot:{
-        width:8,
-        height:8,
-        backgroundColor:myColors.red,
-        borderRadius:"100%"
-    },
-    topCont:{
-        flexDirection:"row",
-        alignItems:"center",
-        width:"100%",
-        justifyContent:"space-between"
-    },
-    leftCont:{
-        width:"15%",
-        alignItems:"center",
-        justifyContent:"center"
-    },
-    rightCont:{
-        width:"85%",
-        padding:8,
-        borderBottomWidth:1,
-        borderColor:"#c1c1c1"
-    },
-    title:{
-        fontSize:18,
-        fontFamily:"SF-medium",
-        color:myColors.blue,
-        paddingVertical:4
-    },
-    description:{
-        fontSize:14,
-        fontFamily:"SF",
-        color:"#717171",
-        paddingBottom:4
+	container: {
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "center",
 
-    },
-    date:{
-        fontSize:14,
-        fontFamily:"SF",
-        color:"#717171",
-        alignSelf:"flex-end"
-    }
+		width: "100%",
+	},
+	dot: {
+		width: 8,
+		height: 8,
+		backgroundColor: myColors.red,
+		borderRadius: "100%",
+	},
+	topCont: {
+		flexDirection: "row",
+		alignItems: "center",
+		width: "100%",
+		justifyContent: "space-between",
+	},
+	leftCont: {
+		width: "15%",
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	rightCont: {
+		width: "85%",
+		padding: 8,
+		borderBottomWidth: 1,
+		borderColor: "#c1c1c1",
+	},
+	title: {
+		fontSize: 18,
+		fontFamily: "SF-medium",
+		color: myColors.blue,
+		paddingVertical: 4,
+	},
+	description: {
+		fontSize: 14,
+		fontFamily: "SF",
+		color: "#717171",
+		paddingBottom: 4,
+	},
+	date: {
+		fontSize: 14,
+		fontFamily: "SF",
+		color: "#717171",
+		alignSelf: "flex-end",
+	},
+});
+
+
+const dark = StyleSheet.create({
+	container: {
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "center",
+
+		width: "100%",
+	},
+	dot: {
+		width: 8,
+		height: 8,
+		backgroundColor: myDarkColors.red,
+		borderRadius: "100%",
+	},
+	topCont: {
+		flexDirection: "row",
+		alignItems: "center",
+		width: "100%",
+		justifyContent: "space-between",
+	},
+	leftCont: {
+		width: "15%",
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	rightCont: {
+		width: "85%",
+		padding: 8,
+		borderBottomWidth: 1,
+		borderColor: "#c1c1c1",
+	},
+	title: {
+		fontSize: 18,
+		fontFamily: "SF-medium",
+		color: myDarkColors.blue,
+		paddingVertical: 4,
+	},
+	description: {
+		fontSize: 14,
+		fontFamily: "SF",
+		color: "#717171",
+		paddingBottom: 4,
+	},
+	date: {
+		fontSize: 14,
+		fontFamily: "SF",
+		color: "#717171",
+		alignSelf: "flex-end",
+	},
 });

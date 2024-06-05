@@ -12,7 +12,7 @@ import {
 	useWindowDimensions,
 } from "react-native";
 import { React, useState, useEffect, useContext, useCallback } from "react";
-import { MaterialCommunityIcons } from "react-native-vector-icons";
+import { MaterialCommunityIcons, Ionicons } from "react-native-vector-icons";
 import { myColors, myDarkColors } from "../utils/myColors";
 import ServiceHome from "../Components/ServiceHome";
 import Logo from "../Components/Logo";
@@ -24,9 +24,12 @@ import popupModes from "../utils/PopupModes";
 import UserContext from "../utils/UserContext";
 import { getBearerToken } from "../utils/bearer";
 import { useFocusEffect } from "@react-navigation/native";
+import { useMyColorTheme } from "../utils/ThemeContext";
 
 const windowWidth = Dimensions.get("window").width;
 const Home = ({ navigation, route }) => {
+	const { isDarkMode } = useMyColorTheme();
+	const theme = isDarkMode ? dark : styles;
 	const { user, clearUser } = useContext(UserContext);
 	const { width } = useWindowDimensions();
 	const height = width / 8;
@@ -197,17 +200,17 @@ const Home = ({ navigation, route }) => {
 		return <Loading />;
 	}
 	return (
-		<SafeAreaView style={styles.container}>
-			<ScrollView style={styles.container}>
-				<View style={styles.carouselView}>
+		<SafeAreaView style={theme.container}>
+			<ScrollView style={theme.container}>
+				<View style={theme.carouselView}>
 					<FlatList
-						style={styles.carousel}
+						style={theme.carousel}
 						horizontal
 						data={carousel}
 						keyExtractor={(item) => item.id.toString()}
 						renderItem={({ item }) => (
-							<View style={styles.carouselImageView}>
-								<Image source={item.image} style={styles.carouselImage} />
+							<View style={theme.carouselImageView}>
+								<Image source={item.image} style={theme.carouselImage} />
 							</View>
 						)}
 						snapToInterval={windowWidth} // Replace with actual item width
@@ -219,33 +222,33 @@ const Home = ({ navigation, route }) => {
 							setActiveItemIndex(Math.floor(currentIndex));
 						}}
 					/>
-					<View style={styles.dotsContainer}>
+					<View style={theme.dotsContainer}>
 						{carousel.map((_, index) => (
 							<View
 								key={index}
 								style={[
-									styles.dot,
-									index === activeItemIndex && styles.activeDot,
+									theme.dot,
+									index === activeItemIndex && theme.activeDot,
 								]}
 							/>
 						))}
 					</View>
 				</View>
-				<View style={styles.emergencyView}>
+				<View style={theme.emergencyView}>
 					<TouchableOpacity
-						style={styles.emergencyButton}
+						style={theme.emergencyButton}
 						onPress={() => {
 							navigateToEmergencyCategory("Emergency Services");
 						}}
 					>
-						<Text style={styles.emergencyText}>Emergency Services</Text>
+						<Text style={theme.emergencyText}>Emergency Services</Text>
 					</TouchableOpacity>
 				</View>
-				<View style={styles.serviceView}>
-					<View style={styles.serviceTopView}>
-						<Text style={styles.serviceText}>Car Services</Text>
+				<View style={theme.serviceView}>
+					<View style={theme.serviceTopView}>
+						<Text style={theme.serviceText}>Car Services</Text>
 						<TouchableOpacity
-							style={styles.serviceTopView}
+							style={theme.serviceTopView}
 							onPress={() => {
 								navigateToCategory(
 									"Car Services",
@@ -253,17 +256,17 @@ const Home = ({ navigation, route }) => {
 								);
 							}}
 						>
-							<Text style={styles.serviceText}>See More</Text>
-							<MaterialCommunityIcons
-								name="arrow-right"
-								color={myColors.blue}
-								size={18}
+							<Text style={theme.serviceText}>See More</Text>
+							<Ionicons
+								name="chevron-forward-outline"
+								color={isDarkMode? myDarkColors.blue : myColors.blue}
+								size={20}
 							/>
 						</TouchableOpacity>
 					</View>
-					<View style={styles.service}>
+					<View style={theme.service}>
 						<FlatList
-							style={styles.carousel}
+							style={theme.carousel}
 							horizontal
 							showsHorizontalScrollIndicator={false}
 							data={filterByCategory(services, "Car")}
@@ -280,11 +283,11 @@ const Home = ({ navigation, route }) => {
 						/>
 					</View>
 				</View>
-				<View style={styles.serviceView}>
-					<View style={styles.serviceTopView}>
-						<Text style={styles.serviceText}>Transportation Services</Text>
+				<View style={theme.serviceView}>
+					<View style={theme.serviceTopView}>
+						<Text style={theme.serviceText}>Transportation Services</Text>
 						<TouchableOpacity
-							style={styles.serviceTopView}
+							style={theme.serviceTopView}
 							onPress={() => {
 								navigateToCategory(
 									"Transportation Services",
@@ -292,17 +295,17 @@ const Home = ({ navigation, route }) => {
 								);
 							}}
 						>
-							<Text style={styles.serviceText}>See More</Text>
-							<MaterialCommunityIcons
-								name="arrow-right"
-								color={myColors.blue}
-								size={18}
+							<Text style={theme.serviceText}>See More</Text>
+							<Ionicons
+								name="chevron-forward-outline"
+								color={isDarkMode? myDarkColors.blue : myColors.blue}
+								size={20}
 							/>
 						</TouchableOpacity>
 					</View>
-					<View style={styles.service}>
+					<View style={theme.service}>
 						<FlatList
-							style={styles.carousel}
+							style={theme.carousel}
 							horizontal
 							showsHorizontalScrollIndicator={false}
 							data={filterByCategory(services, "Transportation")}
@@ -319,11 +322,11 @@ const Home = ({ navigation, route }) => {
 						/>
 					</View>
 				</View>
-				<View style={styles.serviceView}>
-					<View style={styles.serviceTopView}>
-						<Text style={styles.serviceText}>Paperwork Services</Text>
+				<View style={theme.serviceView}>
+					<View style={theme.serviceTopView}>
+						<Text style={theme.serviceText}>Paperwork Services</Text>
 						<TouchableOpacity
-							style={styles.serviceTopView}
+							style={theme.serviceTopView}
 							onPress={() => {
 								navigateToCategory(
 									"Paperwork Services",
@@ -331,17 +334,17 @@ const Home = ({ navigation, route }) => {
 								);
 							}}
 						>
-							<Text style={styles.serviceText}>See More</Text>
-							<MaterialCommunityIcons
-								name="arrow-right"
-								color={myColors.blue}
-								size={18}
+							<Text style={theme.serviceText}>See More</Text>
+							<Ionicons
+								name="chevron-forward-outline"
+								color={isDarkMode? myDarkColors.blue : myColors.blue}
+								size={20}
 							/>
 						</TouchableOpacity>
 					</View>
-					<View style={styles.service}>
+					<View style={theme.service}>
 						<FlatList
-							style={styles.carousel}
+							style={theme.carousel}
 							horizontal
 							showsHorizontalScrollIndicator={false}
 							data={filterByCategory(services, "Paperwork")}
@@ -358,11 +361,11 @@ const Home = ({ navigation, route }) => {
 						/>
 					</View>
 				</View>
-				<View style={styles.serviceView}>
-					<View style={styles.serviceTopView}>
-						<Text style={styles.serviceText}>Delivery Services</Text>
+				<View style={theme.serviceView}>
+					<View style={theme.serviceTopView}>
+						<Text style={theme.serviceText}>Delivery Services</Text>
 						<TouchableOpacity
-							style={styles.serviceTopView}
+							style={theme.serviceTopView}
 							onPress={() => {
 								navigateToCategory(
 									"Delivery Services",
@@ -370,17 +373,17 @@ const Home = ({ navigation, route }) => {
 								);
 							}}
 						>
-							<Text style={styles.serviceText}>See More</Text>
-							<MaterialCommunityIcons
-								name="arrow-right"
-								color={myColors.blue}
-								size={18}
+							<Text style={theme.serviceText}>See More</Text>
+							<Ionicons
+								name="chevron-forward-outline"
+								color={isDarkMode? myDarkColors.blue : myColors.blue}
+								size={20}
 							/>
 						</TouchableOpacity>
 					</View>
-					<View style={styles.service}>
+					<View style={theme.service}>
 						<FlatList
-							style={styles.carousel}
+							style={theme.carousel}
 							horizontal
 							showsHorizontalScrollIndicator={false}
 							data={filterByCategory(services, "Delivery")}
@@ -426,8 +429,7 @@ const styles = StyleSheet.create({
 	},
 	carouselImage: {
 		width: windowWidth,
-		height:windowWidth / 2
-		
+		height: windowWidth / 2,
 	},
 
 	dotsContainer: {
@@ -476,6 +478,81 @@ const styles = StyleSheet.create({
 	},
 	serviceText: {
 		color: myColors.blue,
+		fontFamily: "SF-medium",
+		fontSize: 16,
+	},
+	carouselView: {
+		// marginTop: 8,
+	},
+	loadingcontainer: {
+		flex: 1,
+		alignItems: "center",
+		justifyContent: "space-evenly",
+	},
+});
+
+const dark = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: myDarkColors.white,
+	},
+	carouselImageView: {
+		width: windowWidth,
+		paddingBottom: 8,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	carouselImage: {
+		width: windowWidth,
+		height: windowWidth / 2,
+	},
+
+	dotsContainer: {
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+		width: "100%",
+		marginBottom: 8,
+	},
+	dot: {
+		width: 8,
+		height: 8,
+		borderRadius: 5,
+		marginHorizontal: 3,
+		backgroundColor: myDarkColors.red,
+	},
+	activeDot: {
+		backgroundColor: myDarkColors.blue,
+	},
+	emergencyView: {
+		width: "100%",
+		alignItems: "center",
+		marginVertical: 8,
+	},
+	emergencyButton: {
+		alignItems: "center",
+		paddingVertical: 16,
+		paddingHorizontal: 24,
+		borderRadius: 10,
+		backgroundColor: myDarkColors.red,
+	},
+	emergencyText: {
+		fontFamily: "SF-bold",
+		color: "white",
+		fontSize: 24,
+	},
+	serviceView: {
+		width: "100%",
+	},
+	serviceTopView: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		paddingHorizontal: 8,
+		marginVertical: 4,
+	},
+	serviceText: {
+		color: myDarkColors.blue,
 		fontFamily: "SF-medium",
 		fontSize: 16,
 	},

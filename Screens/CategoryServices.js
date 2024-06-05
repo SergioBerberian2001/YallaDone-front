@@ -9,13 +9,16 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import ServiceHome from "../Components/ServiceHome";
-import myColors from "../utils/myColors";
+import { myColors, myDarkColors } from "../utils/myColors";
 import { Ionicons } from "react-native-vector-icons";
 import Loading from "../Components/Loading";
 import axios from "axios";
 import { getBearerToken } from "../utils/bearer";
+import { useMyColorTheme } from "../utils/ThemeContext";
 
 const CategoryServices = ({ navigation, route }) => {
+	const { isDarkMode } = useMyColorTheme();
+	const theme = isDarkMode ? dark : styles;
 	const { category, services, loadCategory, getEmergency } = route.params;
 	const [myServices, setMyServices] = useState();
 	const [isLoading, setIsLoading] = useState();
@@ -75,38 +78,44 @@ const CategoryServices = ({ navigation, route }) => {
 	const mergeServices = async () => {
 		const allServices = await getServices();
 		const favServicesResponse = await getFavServices();
-	
+
 		// Extracting favorite service IDs
 		const favServiceIds = favServicesResponse.map(
 			(fav) => fav.service.service_id
 		);
-	
+
 		// Mapping all services and marking favorites
 		const combinedServices = allServices.map((service) => ({
 			...service,
 			isFavorite: favServiceIds.includes(service.service_id),
 		}));
-	
+
 		// Filtering favorite and non-favorite services
-		const favoriteServices = combinedServices.filter(service => service.isFavorite);
-		const nonFavoriteServices = combinedServices.filter(service => !service.isFavorite);
-	
+		const favoriteServices = combinedServices.filter(
+			(service) => service.isFavorite
+		);
+		const nonFavoriteServices = combinedServices.filter(
+			(service) => !service.isFavorite
+		);
+
 		// Concatenating favorite services first
 		const sortedServices = [...favoriteServices, ...nonFavoriteServices];
-	
+
 		// Removing duplicate services based on service_name
 		const uniqueServices = sortedServices.filter(
 			(service, index, self) =>
 				index === self.findIndex((s) => s.service_name === service.service_name)
 		);
-	
+
 		return uniqueServices;
 	};
 
 	const getEmergencyServices = async () => {
 		const categoryUrl = await updateUrl();
 		try {
-			const response = await axios.get("http://192.168.1.100:8000/api/EmergencyService");
+			const response = await axios.get(
+				"http://192.168.1.100:8000/api/EmergencyService"
+			);
 			// console.log(response.data);
 			return response.data;
 			// setIsLoading(false);
@@ -126,7 +135,7 @@ const CategoryServices = ({ navigation, route }) => {
 		} else if (getEmergency) {
 			const fetchData = async () => {
 				const emergencyServices = await getEmergencyServices();
-				setShowFav(false)
+				setShowFav(false);
 				setMyServices(emergencyServices);
 			};
 			fetchData();
@@ -167,7 +176,7 @@ const CategoryServices = ({ navigation, route }) => {
 	};
 
 	const onToggleFavorite = async (serviceId, isFavorite) => {
-		await handleFavService(serviceId)
+		await handleFavService(serviceId);
 		setMyServices(
 			myServices.map((service) =>
 				service.service_id === serviceId ? { ...service, isFavorite } : service
@@ -183,18 +192,18 @@ const CategoryServices = ({ navigation, route }) => {
 		return <Loading />;
 	}
 	return (
-		<SafeAreaView style={styles.container}>
+		<SafeAreaView style={theme.container}>
 			<TouchableOpacity
-				style={Platform.OS === "ios" ? styles.topView : styles.topViewAndroid}
+				style={Platform.OS === "ios" ? theme.topView : theme.topViewAndroid}
 				onPress={navigate}
 			>
 				<Ionicons name="chevron-back-outline" color={myColors.blue} size={32} />
-				<Text style={styles.topText}>Back</Text>
+				<Text style={theme.topText}>Back</Text>
 			</TouchableOpacity>
-			<Text style={styles.title}>{category}</Text>
-			<View style={styles.ServiceContainer}>
+			<Text style={theme.title}>{category}</Text>
+			<View style={theme.ServiceContainer}>
 				<FlatList
-					style={styles.carousel}
+					style={theme.carousel}
 					showsVerticalScrollIndicator={false}
 					data={myServices}
 					keyExtractor={(item) => item.service_id.toString()}
@@ -249,7 +258,47 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		color: myColors.blue,
 	},
-	carousel:{
-		height:"90%"
-	}
+	carousel: {
+		height: "90%",
+	},
+});
+
+const dark = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: myDarkColors.white,
+	},
+	title: {
+		fontFamily: "SF-medium",
+		fontSize: 20,
+		color: myDarkColors.blue,
+		alignSelf: "center",
+		margin: 16,
+	},
+	ServiceContainer: {
+		alignItems: "center",
+		width: "100%",
+	},
+	topView: {
+		marginTop: 8,
+		marginLeft: 10,
+		alignSelf: "flex-start",
+		flexDirection: "row",
+		alignItems: "center",
+	},
+	topViewAndroid: {
+		marginLeft: 10,
+		alignSelf: "flex-start",
+		flexDirection: "row",
+		alignItems: "center",
+		marginTop: "8%",
+	},
+	topText: {
+		fontFamily: "SF-medium",
+		fontSize: 16,
+		color: myDarkColors.blue,
+	},
+	carousel: {
+		height: "90%",
+	},
 });

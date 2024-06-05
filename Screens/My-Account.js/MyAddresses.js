@@ -9,11 +9,11 @@ import {
 	TouchableOpacity,
 	useWindowDimensions,
 	FlatList,
-	KeyboardAvoidingView
+	KeyboardAvoidingView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Logo from "../../Components/Logo";
-import myColors from "../../utils/myColors";
+import { myColors, myDarkColors } from "../../utils/myColors";
 import { Ionicons } from "react-native-vector-icons";
 import Loading from "../../Components/Loading";
 import { saveBearerToken, getBearerToken, logout } from "../../utils/bearer.js";

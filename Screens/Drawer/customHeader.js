@@ -6,15 +6,18 @@ import {
 	TouchableOpacity,
 	SafeAreaView,
 	Dimensions,
-	Platform
+	Platform,
 } from "react-native";
 import { MaterialCommunityIcons } from "react-native-vector-icons";
-import myColors from "../../utils/myColors";
+import { myColors, myDarkColors } from "../../utils/myColors";
 import Logo from "../../Components/Logo";
 import NotificationsSheet from "../../Components/NotificationsSheet";
+import { useMyColorTheme } from "../../utils/ThemeContext";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const CustomHeader = ({ navigation }) => {
+	const { isDarkMode } = useMyColorTheme();
+	const theme = isDarkMode ? dark : styles;
 	const width = SCREEN_WIDTH / 3;
 	const height = width / 8;
 	const [showNotifications, setShowNotifications] = useState(false);
@@ -28,13 +31,23 @@ const CustomHeader = ({ navigation }) => {
 	};
 
 	return (
-		<SafeAreaView style={Platform.OS === "ios" ? styles.topView : styles.topViewAndroid}>
-			<TouchableOpacity onPress={openDrawer} style={styles.buttons}>
-				<MaterialCommunityIcons name="menu" color={myColors.blue} size={32} />
+		<SafeAreaView
+			style={Platform.OS === "ios" ? theme.topView : theme.topViewAndroid}
+		>
+			<TouchableOpacity onPress={openDrawer} style={theme.buttons}>
+				<MaterialCommunityIcons
+					name="menu"
+					color={isDarkMode ? myDarkColors.black : myColors.blue}
+					size={32}
+				/>
 			</TouchableOpacity>
-			<Logo width={width} height={height} />
-			<TouchableOpacity style={styles.buttons} onPress={toggleNotifications}>
-				<MaterialCommunityIcons name="bell" color={myColors.blue} size={32} />
+			{isDarkMode ? <Logo width={width} height={height} color="#FFFFFF"/> : <Logo width={width} height={height}/>}
+			<TouchableOpacity style={theme.buttons} onPress={toggleNotifications}>
+				<MaterialCommunityIcons
+					name="bell"
+					color={isDarkMode ? myDarkColors.black : myColors.blue}
+					size={32}
+				/>
 			</TouchableOpacity>
 			{showNotifications && (
 				<NotificationsSheet onToggle={toggleNotifications} />
@@ -67,7 +80,37 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.1,
 		shadowRadius: 3,
 		shadowOffset: { width: 1, height: 1 },
-		paddingTop:"8%"
+		paddingTop: "8%",
+	},
+	buttons: {
+		paddingHorizontal: 16,
+		paddingBottom: 6,
+	},
+});
+
+const dark = StyleSheet.create({
+	topView: {
+		flexDirection: "row",
+		width: "100%",
+		justifyContent: "space-between",
+		alignItems: "center",
+		backgroundColor: myDarkColors.white,
+		shadowColor: "#000000",
+		shadowOpacity: 0.1,
+		shadowRadius: 3,
+		shadowOffset: { width: 1, height: 1 },
+	},
+	topViewAndroid: {
+		flexDirection: "row",
+		width: "100%",
+		justifyContent: "space-between",
+		alignItems: "center",
+		backgroundColor: myDarkColors.white,
+		shadowColor: "#000000",
+		shadowOpacity: 0.1,
+		shadowRadius: 3,
+		shadowOffset: { width: 1, height: 1 },
+		paddingTop: "8%",
 	},
 	buttons: {
 		paddingHorizontal: 16,

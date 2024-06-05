@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import myColors from "../utils/myColors";
+import { myColors, myDarkColors } from "../utils/myColors";
 import axios from "axios";
 import { saveBearerToken, getBearerToken, logout } from "../utils/bearer.js";
 import { Ionicons } from "react-native-vector-icons";

@@ -14,7 +14,7 @@ import React, { useEffect, useState } from "react";
 import Logo from "../Components/Logo";
 import Signup from "./Signup";
 import Login from "./Login";
-import myColors from "../utils/myColors";
+import { myColors, myDarkColors } from "../utils/myColors";
 import slides from "../assets/data/slides";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -50,54 +50,55 @@ const Form = ({ navigation, route }) => {
 
 	return (
 		<KeyboardAvoidingView style={styles.background1} behavior="padding">
-		<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-			<ImageBackground
-				source={require("../assets/images/splash-bg.jpg")}
-				style={styles.background}
-			>
-				<View style={styles.logoView}>
-					<Logo width={width} height={height} />
-				</View>
-				<View style={styles.container}>
-					{isSigningUp ? (
-						<View style={styles.swapMainContainer}>
-							<TouchableOpacity
-								style={styles.swapContainerOn}
-								onPress={handleIsSigningUp}
-							>
-								<Text style={styles.swapText}>Register</Text>
-							</TouchableOpacity>
-							<TouchableOpacity
-								style={styles.swapContainerOff}
-								onPress={handleIsSigningIn}
-							>
-								<Text style={styles.swapText}>Login</Text>
-							</TouchableOpacity>
-						</View>
-					) : (
-						<View style={styles.swapMainContainer}>
-							<TouchableOpacity
-								style={styles.swapContainerOff}
-								onPress={handleIsSigningUp}
-							>
-								<Text style={styles.swapText}>Register</Text>
-							</TouchableOpacity>
-							<TouchableOpacity
-								style={styles.swapContainerOn}
-								onPress={handleIsSigningIn}
-							>
-								<Text style={styles.swapText}>Login</Text>
-							</TouchableOpacity>
-						</View>
-					)}
-					{isSigningUp ? (
-						<Signup onNavigate={navigateToOTP} />
-					) : (
-						<Login onNavigate={navigateToHome} />
-					)}
-				</View>
-			</ImageBackground>
-		</TouchableWithoutFeedback></KeyboardAvoidingView>
+			<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+				<ImageBackground
+					source={require("../assets/images/splash-bg.jpg")}
+					style={styles.background}
+				>
+					<View style={styles.logoView}>
+						<Logo width={width} height={height} />
+					</View>
+					<View style={styles.container}>
+						{isSigningUp ? (
+							<View style={styles.swapMainContainer}>
+								<TouchableOpacity
+									style={styles.swapContainerOn}
+									onPress={handleIsSigningUp}
+								>
+									<Text style={styles.swapText}>Register</Text>
+								</TouchableOpacity>
+								<TouchableOpacity
+									style={styles.swapContainerOff}
+									onPress={handleIsSigningIn}
+								>
+									<Text style={styles.swapText}>Login</Text>
+								</TouchableOpacity>
+							</View>
+						) : (
+							<View style={styles.swapMainContainer}>
+								<TouchableOpacity
+									style={styles.swapContainerOff}
+									onPress={handleIsSigningUp}
+								>
+									<Text style={styles.swapText}>Register</Text>
+								</TouchableOpacity>
+								<TouchableOpacity
+									style={styles.swapContainerOn}
+									onPress={handleIsSigningIn}
+								>
+									<Text style={styles.swapText}>Login</Text>
+								</TouchableOpacity>
+							</View>
+						)}
+						{isSigningUp ? (
+							<Signup onNavigate={navigateToOTP} />
+						) : (
+							<Login onNavigate={navigateToHome} />
+						)}
+					</View>
+				</ImageBackground>
+			</TouchableWithoutFeedback>
+		</KeyboardAvoidingView>
 	);
 };
 
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems: "center",
 	},
-	background1:{
+	background1: {
 		flex: 1,
 		width: SCREEN_WIDTH,
 		alignItems: "center",

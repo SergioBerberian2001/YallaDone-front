@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import Logo from "../../Components/Logo";
-import myColors from "../../utils/myColors";
+import { myColors, myDarkColors } from "../../utils/myColors";
 import { Ionicons } from "react-native-vector-icons";
 import axios from "axios";
 import { getBearerToken } from "../../utils/bearer.js";

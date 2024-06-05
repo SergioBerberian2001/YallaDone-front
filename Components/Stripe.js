@@ -11,12 +11,15 @@ import {
 import { CardField, useConfirmPayment } from "@stripe/stripe-react-native";
 import { getBearerToken } from "../utils/bearer";
 import VisaCard from "./VisaCard";
-import myColors from "../utils/myColors";
+import { myColors, myDarkColors } from "../utils/myColors";
+import { useMyColorTheme } from "../utils/ThemeContext";
 
 // Change this to the address of your Laravel backend
 const API_URL = "http://192.168.1.100:8000/api";
 
 const StripeApp = (props) => {
+	const { isDarkMode } = useMyColorTheme();
+	const theme = isDarkMode ? dark : styles;
 	const { onHandleServiceForm } = props;
 	const [email, setEmail] = useState();
 	const [cardDetails, setCardDetails] = useState();
@@ -88,31 +91,31 @@ const StripeApp = (props) => {
 	};
 
 	return (
-		<View style={styles.container}>
+		<View style={theme.container}>
 			<VisaCard cardDetails={cardDetails} />
 			<TextInput
 				autoCapitalize="none"
 				placeholder="E-mail"
 				keyboardType="email-address"
 				onChange={(value) => setEmail(value.nativeEvent.text)}
-				style={styles.input}
+				style={theme.input}
 			/>
 			<CardField
 				postalCodeEnabled={true}
 				placeholders={{
 					number: "4242 4242 4242 4242",
 				}}
-				cardStyle={styles.card}
-				style={styles.cardContainer}
+				cardStyle={theme.card}
+				style={theme.cardContainer}
 				onCardChange={(cardDetails) => setCardDetails(cardDetails)}
 			/>
 
 			<TouchableOpacity
-				style={[isLoadingPayment ? styles.loadingButton : styles.button]}
+				style={[isLoadingPayment ? theme.loadingButton : theme.button]}
 				onPress={handlePayPress}
 				disabled={isLoadingPayment}
 			>
-				<Text style={styles.buttonText}>Pay With VISA Card</Text>
+				<Text style={theme.buttonText}>Pay With VISA Card</Text>
 			</TouchableOpacity>
 		</View>
 	);
@@ -127,7 +130,6 @@ const styles = StyleSheet.create({
 		margin: 20,
 	},
 	input: {
-		
 		fontSize: 16,
 		borderRadius: 8,
 		marginVertical: 8,
@@ -140,11 +142,10 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "space-between",
-		color:myColors.blue,
-		fontFamily:"SF"
+		color: myColors.blue,
+		fontFamily: "SF",
 	},
 	card: {
-		
 		fontSize: 16,
 		borderRadius: 8,
 		marginVertical: 8,
@@ -194,6 +195,81 @@ const styles = StyleSheet.create({
 	buttonText: {
 		fontFamily: "SF-bold",
 		color: myColors.white,
+		fontSize: 16,
+	},
+});
+
+const dark = StyleSheet.create({
+	container: {
+		flex: 1,
+		justifyContent: "center",
+		margin: 20,
+	},
+	input: {
+		fontSize: 16,
+		borderRadius: 8,
+		marginVertical: 8,
+		padding: 14,
+		backgroundColor: myColors.dirtyWhite90,
+		fontFamily: "SF",
+		borderRadius: 10,
+		borderWidth: 1,
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
+		fontFamily: "SF",
+	},
+	card: {
+		fontSize: 16,
+		borderRadius: 8,
+		marginVertical: 8,
+		marginHorizontal: 16,
+		padding: 14,
+		backgroundColor: "#F2F2F7",
+		borderWidth: 1,
+		borderColor: "#F2F2F7",
+		fontFamily: "SF",
+		borderRadius: 10,
+		borderWidth: 1,
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "space-between",
+	},
+	cardContainer: {
+		height: 50,
+		marginVertical: 20,
+		flexDirection: "column",
+	},
+	button: {
+		backgroundColor: myDarkColors.red,
+		paddingHorizontal: 20,
+		paddingVertical: 16,
+		borderRadius: 8,
+		alignItems: "center",
+		marginVertical: 12,
+		width: "100%",
+		shadowColor: "#000000",
+		shadowOpacity: 0.5,
+		shadowRadius: 5,
+		shadowOffset: { width: 3, height: 3 },
+	},
+	loadingButton: {
+		backgroundColor: myDarkColors.red,
+		paddingHorizontal: 20,
+		paddingVertical: 16,
+		borderRadius: 8,
+		alignItems: "center",
+		marginVertical: 12,
+		width: "100%",
+		shadowColor: "#000000",
+		shadowOpacity: 0.5,
+		shadowRadius: 5,
+		shadowOffset: { width: 3, height: 3 },
+		opacity: 0.5,
+	},
+	buttonText: {
+		fontFamily: "SF-bold",
+		color: myDarkColors.black,
 		fontSize: 16,
 	},
 });

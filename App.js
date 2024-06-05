@@ -13,7 +13,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import myColors from "./utils/myColors";
+import { myColors, myDarkColors } from "./utils/myColors";
 
 import Logo from "./Components/Logo";
 import Splash from "./Screens/Splash";
