@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import {
 	View,
 	Text,
@@ -13,6 +13,7 @@ import { getBearerToken } from "../utils/bearer";
 import VisaCard from "./VisaCard";
 import { myColors, myDarkColors } from "../utils/myColors";
 import { useMyColorTheme } from "../utils/ThemeContext";
+import UserContext from "../utils/UserContext";
 
 // Change this to the address of your Laravel backend
 const API_URL = "http://192.168.1.100:8000/api";
@@ -21,7 +22,8 @@ const StripeApp = (props) => {
 	const { isDarkMode } = useMyColorTheme();
 	const theme = isDarkMode ? dark : styles;
 	const { onHandleServiceForm } = props;
-	const [email, setEmail] = useState();
+	const { user } = useContext(UserContext);
+	const [email, setEmail] = useState(user.email);
 	const [cardDetails, setCardDetails] = useState();
 	const { confirmPayment, loading } = useConfirmPayment();
 	const [isLoadingPayment, setIsLoadingPayment] = useState();
@@ -97,8 +99,10 @@ const StripeApp = (props) => {
 				autoCapitalize="none"
 				placeholder="E-mail"
 				keyboardType="email-address"
+				value={email}
 				onChange={(value) => setEmail(value.nativeEvent.text)}
 				style={theme.input}
+				editable={false}
 			/>
 			<CardField
 				postalCodeEnabled={true}

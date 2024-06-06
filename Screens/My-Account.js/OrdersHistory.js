@@ -58,8 +58,12 @@ const OrdersHistory = ({ navigation, route }) => {
 		fetchData();
 	}, []);
 
+	const navigateToOrder = (order) => {
+		navigation.navigate("OrderInfo", order);
+	};
+
 	return (
-		<SafeAreaView style={styles.container}>
+		<SafeAreaView style={theme.container}>
 			<View
 				style={Platform.OS === "ios" ? theme.topView : theme.topViewAndroid}
 			>
@@ -77,7 +81,9 @@ const OrdersHistory = ({ navigation, route }) => {
 					showsVerticalScrollIndicator={false}
 					data={ordersHistory}
 					keyExtractor={(item) => item.order_id.toString()}
-					renderItem={({ item }) => <OrderListItem notification={item} />}
+					renderItem={({ item }) => (
+						<OrderListItem notification={item} onNavigate={navigateToOrder} />
+					)}
 				/>
 			</View>
 		</SafeAreaView>
@@ -87,9 +93,7 @@ const OrdersHistory = ({ navigation, route }) => {
 export default OrdersHistory;
 
 const styles = StyleSheet.create({
-	container:{
-
-	},
+	container: {},
 	title: {
 		fontSize: 20,
 		fontFamily: "SF-medium",
@@ -130,14 +134,14 @@ const styles = StyleSheet.create({
 		padding: 8,
 	},
 	list: {
-		height: "70%",
+		height: "90%",
 	},
 });
 
 const dark = StyleSheet.create({
-	container:{
-		flex:1,
-		backgroundColor:myDarkColors.white
+	container: {
+		flex: 1,
+		backgroundColor: myDarkColors.white,
 	},
 	title: {
 		fontSize: 20,
@@ -179,6 +183,6 @@ const dark = StyleSheet.create({
 		padding: 8,
 	},
 	list: {
-		height: "70%",
+		height: "90%",
 	},
 });

@@ -9,6 +9,8 @@ import {
 	Button,
 	ScrollView,
 	Platform,
+	KeyboardAvoidingView,
+	Dimensions,
 } from "react-native";
 import axios from "axios";
 import { Ionicons } from "react-native-vector-icons";
@@ -22,6 +24,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useFocusEffect } from "@react-navigation/native";
 import { useMyColorTheme } from "../utils/ThemeContext";
 
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const OrderForm = ({ navigation, route }) => {
 	const { isDarkMode } = useMyColorTheme();
 	const theme = isDarkMode ? dark : styles;
@@ -149,110 +152,111 @@ const OrderForm = ({ navigation, route }) => {
 	}
 
 	return (
-		<SafeAreaView style={theme.container}>
-			<ScrollView>
-				<TouchableOpacity
-					style={Platform.OS === "ios" ? theme.topView : theme.topViewAndroid}
-					onPress={navigate}
-				>
-					<Ionicons
-						name="chevron-back-outline"
-						color={myColors.blue}
-						size={32}
-					/>
-					<Text style={theme.topText}>Back</Text>
-				</TouchableOpacity>
-				<View style={theme.topCard}>
-					<ServiceForm order={order} />
-				</View>
-				<Text style={theme.intro}>
-					Please fill out this form to order your service:
-				</Text>
-				<View style={theme.userInfoCont}>
-					<Text style={theme.titles}>
-						Name:{" "}
-						<Text style={theme.infos}>
-							{user.user_name} {user.user_lastname}
+		<KeyboardAvoidingView style={styles.background1} behavior="position">
+			<SafeAreaView style={theme.container}>
+				<ScrollView>
+					<TouchableOpacity
+						style={Platform.OS === "ios" ? theme.topView : theme.topViewAndroid}
+						onPress={navigate}
+					>
+						<Ionicons
+							name="chevron-back-outline"
+							color={myColors.blue}
+							size={32}
+						/>
+						<Text style={theme.topText}>Back</Text>
+					</TouchableOpacity>
+					<View style={theme.topCard}>
+						<ServiceForm order={order} />
+					</View>
+					<Text style={theme.intro}>
+						Please fill out this form to order your service:
+					</Text>
+					<View style={theme.userInfoCont}>
+						<Text style={theme.titles}>
+							Name:{" "}
+							<Text style={theme.infos}>
+								{user.user_name} {user.user_lastname}
+							</Text>
 						</Text>
-					</Text>
-					<Text style={theme.titles}>
-						Email: <Text style={theme.infos}>{user.email}</Text>
-					</Text>
-					<Text style={theme.titles}>
-						Phone Number: <Text style={theme.infos}>{user.phone_number}</Text>
-					</Text>
-				</View>
-				<Text style={theme.errorText}>{error}</Text>
-				<Text style={theme.formTitle}>Address</Text>
-				<View style={theme.addressView}>
-					<View style={theme.pickerView}>
-						<Picker
-							style={{
-								// Adjust height as needed
-								backgroundColor: "#f0f0f0", // Set background color
-								borderRadius: 5, // Add border radius
-								
-							}}
-							placeholder={{ label: "Select your address", value: null }}
-							// value={selectedAddress ? selectedAddress.address_id : null}
-							onValueChange={(itemValue) => {
-								const selected = addresses[itemValue];
-								setSelectedAddress(selected);
-							}}
-							items={addresses.map((address, index) => ({
-								label: address.name,
-								value: index,
-							}))}
-							itemStyle={theme.inputIOS} // Apply custom theme
-							placeholderStyle={theme.placeholder} // Apply custom theme (optional)
+						<Text style={theme.titles}>
+							Email: <Text style={theme.infos}>{user.email}</Text>
+						</Text>
+						<Text style={theme.titles}>
+							Phone Number: <Text style={theme.infos}>{user.phone_number}</Text>
+						</Text>
+					</View>
+					<Text style={theme.errorText}>{error}</Text>
+					<Text style={theme.formTitle}>Address</Text>
+					<View style={theme.addressView}>
+						<View style={theme.pickerView}>
+							<Picker
+								style={{
+									// Adjust height as needed
+									backgroundColor: "#f0f0f0", // Set background color
+									borderRadius: 5, // Add border radius
+								}}
+								placeholder={{ label: "Select your address", value: null }}
+								// value={selectedAddress ? selectedAddress.address_id : null}
+								onValueChange={(itemValue) => {
+									const selected = addresses[itemValue];
+									setSelectedAddress(selected);
+								}}
+								items={addresses.map((address, index) => ({
+									label: address.name,
+									value: index,
+								}))}
+								itemStyle={theme.inputIOS} // Apply custom theme
+								placeholderStyle={theme.placeholder} // Apply custom theme (optional)
+							/>
+						</View>
+						<TouchableOpacity
+							onPress={() => handleAddAddress(newAddress)}
+							style={theme.addAddressButton}
+						>
+							<Text style={theme.addAddressText}>New Address</Text>
+						</TouchableOpacity>
+					</View>
+					<Text style={theme.formTitle}>Date & Time:</Text>
+					<View style={theme.dateView}>
+						<TouchableOpacity onPress={showDatePicker} style={theme.dateField}>
+							<Text style={theme.dateText}>
+								{newDate} - {time}{" "}
+							</Text>
+							<Ionicons
+								name="calendar"
+								color={isDarkMode ? myDarkColors.blue : myColors.blue}
+								size={20}
+							/>
+						</TouchableOpacity>
+						<DateTimePickerModal
+							isVisible={isDatePickerVisible}
+							mode="datetime"
+							onConfirm={handleConfirm}
+							onCancel={hideDatePicker}
+							themeVariant="light"
+							is24Hour={true} // Use false for 12-hour format (optional)
+							display="spinner" // Choose 'spinner' or 'calendar' for display style (optional)
 						/>
 					</View>
-					<TouchableOpacity
-						onPress={() => handleAddAddress(newAddress)}
-						style={theme.addAddressButton}
-					>
-						<Text style={theme.addAddressText}>New Address</Text>
-					</TouchableOpacity>
-				</View>
-				<Text style={theme.formTitle}>Date & Time:</Text>
-				<View style={theme.dateView}>
-					<TouchableOpacity onPress={showDatePicker} style={theme.dateField}>
-						<Text style={theme.dateText}>
-							{newDate} - {time}{" "}
-						</Text>
-						<Ionicons
-							name="calendar"
-							color={isDarkMode ? myDarkColors.blue : myColors.blue}
-							size={20}
-						/>
-					</TouchableOpacity>
-					<DateTimePickerModal
-						isVisible={isDatePickerVisible}
-						mode="datetime"
-						onConfirm={handleConfirm}
-						onCancel={hideDatePicker}
-						themeVariant="light"
-						is24Hour={true} // Use false for 12-hour format (optional)
-						display="spinner" // Choose 'spinner' or 'calendar' for display style (optional)
+
+					<Text style={theme.formTitle}>Additional Info (Optional)</Text>
+					<TextInput
+						style={theme.dateField}
+						onChangeText={(text) => setAdditionalInfo(text)}
+						value={additionalInfo}
+						placeholder="Additional Information"
+						placeholderTextColor={isDarkMode && myDarkColors.black}
 					/>
-				</View>
 
-				<Text style={theme.formTitle}>Additional Info (Optional)</Text>
-				<TextInput
-					style={theme.dateField}
-					onChangeText={(text) => setAdditionalInfo(text)}
-					value={additionalInfo}
-					placeholder="Additional Information"
-					placeholderTextColor={isDarkMode && myDarkColors.black}
-				/>
+					<View style={theme.form}></View>
 
-				<View style={theme.form}></View>
-
-				<TouchableOpacity style={theme.button} onPress={handleError}>
-					<Text style={theme.buttonText}>Create Order</Text>
-				</TouchableOpacity>
-			</ScrollView>
-		</SafeAreaView>
+					<TouchableOpacity style={theme.button} onPress={handleError}>
+						<Text style={theme.buttonText}>Create Order</Text>
+					</TouchableOpacity>
+				</ScrollView>
+			</SafeAreaView>
+		</KeyboardAvoidingView>
 	);
 };
 
@@ -262,6 +266,13 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: myColors.white,
+	},
+	background1: {
+		flex: 1,
+		width: SCREEN_WIDTH,
+		opacity: 1,
+		justifyContent: "center",
+		alignItems: "center",
 	},
 	topView: {
 		marginLeft: 10,
@@ -430,6 +441,13 @@ const dark = StyleSheet.create({
 		flex: 1,
 		backgroundColor: myDarkColors.white,
 	},
+	background1: {
+		flex: 1,
+		width: SCREEN_WIDTH,
+		opacity: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
 	topView: {
 		marginLeft: 10,
 		alignSelf: "flex-start",
@@ -550,7 +568,7 @@ const dark = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "space-between",
-		color:"white"
+		color: "white",
 	},
 	button: {
 		backgroundColor: myDarkColors.red,

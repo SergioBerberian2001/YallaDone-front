@@ -77,7 +77,7 @@ const dark = StyleSheet.create({
 		width: "90%",
 		borderRadius: 10,
 		borderWidth: 1,
-		borderColor: myColors.blue,
+		borderColor: myDarkColors.blue,
 	},
 	imageCont: {
 		width: "100%",
@@ -90,7 +90,7 @@ const dark = StyleSheet.create({
 		aspectRatio: 1,
 	},
 	textCont: {
-		backgroundColor: myColors.blue,
+		backgroundColor: myDarkColors.blue,
 		borderBottomRightRadius: 9,
 		borderBottomLeftRadius: 9,
 		justifyContent: "space-between",

@@ -56,7 +56,7 @@ import { useMyColorTheme } from "../utils/ThemeContext";
 const OrderListItem = (props) => {
 	const { isDarkMode } = useMyColorTheme();
 	const theme = isDarkMode ? dark : styles;
-	const { notification } = props;
+	const { notification, onNavigate } = props;
 	// console.log(notification)
 	// const inputTimestamp = "2024-05-30T19:20:49.000000Z";
 	const timeZone = "America/New_York";
@@ -69,6 +69,10 @@ const OrderListItem = (props) => {
 
 	// Step 3: Format the timestamp into the desired output format
 	const formattedDate = format(date, "dd/MM/yyyy - hh:mm a");
+
+	const handleNavigation = (order) => {
+		onNavigate(order);
+	};
 
 	const handleShowIcon = () => {
 		if (notification.service.category === "Car") {
@@ -84,11 +88,11 @@ const OrderListItem = (props) => {
 
 	const handleDotColor = () => {
 		if (notification.status === "waiting") {
-			return "#FF0000";
+			return myColors.red;
 		} else if (notification.status === "inprogress") {
-			return "#00aaaa";
+			return myDarkColors.blue;
 		} else if (notification.status === "done") {
-			return "#00FF00";
+			return "#00cc00";
 		}
 	};
 
@@ -103,10 +107,13 @@ const OrderListItem = (props) => {
 	};
 
 	return (
-		<TouchableOpacity style={theme.container}>
+		<TouchableOpacity
+			style={theme.container}
+			onPress={() => handleNavigation(notification)}
+		>
 			<View style={theme.leftCont}>
 				<View style={theme.icon}>
-					<Ionicons name={handleShowIcon()} color={myColors.blue} size={40} />
+					<Ionicons name={handleShowIcon()} color={isDarkMode? myDarkColors.black : myColors.blue} size={40} />
 				</View>
 			</View>
 			<View style={theme.rightCont}>
@@ -181,7 +188,6 @@ const dark = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "center",
-
 		width: "100%",
 	},
 	dot: {
@@ -216,13 +222,15 @@ const dark = StyleSheet.create({
 	description: {
 		fontSize: 14,
 		fontFamily: "SF",
-		color: "#717171",
+		color: myDarkColors.black,
 		paddingBottom: 4,
+		opacity:0.9
 	},
 	date: {
 		fontSize: 14,
 		fontFamily: "SF",
-		color: "#717171",
+		color: myDarkColors.black,
 		alignSelf: "flex-end",
+		opacity:0.9
 	},
 });

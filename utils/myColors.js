@@ -9,11 +9,11 @@
 };
 
 export const myDarkColors = {
-	blue: "#4999f5",
+	blue: "#6460e6",
 	red: "#FF3131",
-	white: "#121212",
-	dirtyWhite: "#1d1d1d",
-	dirtyWhite90: "1d1d1d",
+	white: "#181C20",
+	dirtyWhite: "#202429",
+	dirtyWhite90: "202429",
 	black: "#FFFFFF",
 	grey: "#919191",
 };
