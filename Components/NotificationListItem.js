@@ -11,12 +11,13 @@ import { useMyColorTheme } from "../utils/ThemeContext";
 const NotificationListItem = (props) => {
 	const { isDarkMode } = useMyColorTheme();
 	const theme = isDarkMode ? dark : styles;
-	const { notification } = props;
+	const { notification,onNavigate } = props;
+
 	// const inputTimestamp = "2024-05-30T19:20:49.000000Z";
 	const timeZone = "America/New_York";
 
 	// Step 1: Parse the input timestamp
-	const date = parseISO(notification.created_at);
+	const date = parseISO(notification.updated_at);
 
 	// Step 2: Convert the timestamp to the desired time zone
 	//   const zonedDate = utcToZonedTime(date, timeZone);
@@ -24,26 +25,94 @@ const NotificationListItem = (props) => {
 	// Step 3: Format the timestamp into the desired output format
 	const formattedDate = format(date, "dd/MM/yyyy - hh:mm a");
 
-	const handleShowIcon = () => {
-		if (notification.type === "order") {
-			return "car-outline";
-		} else if (notification.type === "email") {
-			return "mail-outline";
+	// const handleShowIcon = () => {
+	// 	if (notification.service.category === "Car") {
+	// 		return "car-sport-sharp";
+	// 	} else if (notification.service.category === "Delivery") {
+	// 		return "gift-outline";
+	// 	} else if (notification.service.category === "Paperwork") {
+	// 		return "document-sharp";
+	// 	} else if (notification.service.category === "Transportation") {
+	// 		return "bus-sharp";
+	// 	}
+	// };
+
+	const handleDotColor = () => {
+		if (notification.data[0].status === "waiting") {
+			return myColors.red;
+		} else if (notification.data[0].status === "inprogress") {
+			return myDarkColors.blue;
+		} else if (notification.data[0].status === "done") {
+			return "#00cc00";
+		}
+	};
+	const handleTitle = () => {
+		if (notification.type === "App\\Notifications\\OrderNotification") {
+			if (notification.data[0].status === "waiting") {
+				return (
+					"Order for " +
+					notification.data[0].payments.service_name +
+					" placed"
+				);
+			} else if (notification.data[0].status === "inprogress") {
+				return (
+					"Order for " +
+					notification.data[0].payments.service_name +
+					" in progress"
+				);
+			} else if (notification.data[0].status === "done") {
+				return (
+					"Order for " +
+					notification.data[0].payments.service_name +
+					" is complete"
+				);
+			}
+		}
+	};
+
+	const navigate = (notification)=> {
+		onNavigate(notification)
+	}
+	const handleDescription = () => {
+		if (notification.type === "App\\Notifications\\OrderNotification") {
+			if (notification.data[0].status === "waiting") {
+				const description =
+					"Your order for " +
+					notification.data[0].payments.service_name +
+					" was placed successfully, Please wait for it to be accepted";
+				return description;
+			} else if (notification.data[0].status === "inprogress") {
+				const description =
+					"Your order for " +
+					notification.data[0].payments.service_name +
+					" is in Progress, Click to track the driver";
+				return description;
+			} else if (notification.data[0].status === "done") {
+				const description =
+					"Your order for " +
+					notification.data[0].payments.service_name +
+					" is in Complete";
+				return description;
+			}
 		}
 	};
 	return (
-		<TouchableOpacity style={theme.container}>
+		<TouchableOpacity style={theme.container} onPress={() => navigate(notification)}>
 			<View style={theme.leftCont}>
 				<View style={theme.icon}>
-					<Ionicons name={handleShowIcon()} color={myColors.blue} size={40} />
+					<Ionicons name="chevron-back" color={myColors.blue} size={40} />
 				</View>
 			</View>
 			<View style={theme.rightCont}>
 				<View style={theme.topCont}>
-					<Text style={theme.title}>{notification.title}</Text>
-					{!notification.isRead && <View style={theme.dot}></View>}
+					<Text style={theme.title}>{handleTitle()}</Text>
+					{!notification.isRead && (
+						<View
+							style={[theme.dot, { backgroundColor: handleDotColor() }]}
+						></View>
+					)}
 				</View>
-				<Text style={theme.description}>{notification.description}</Text>
+				<Text style={theme.description}>{handleDescription()}</Text>
 				<Text style={theme.date}>{formattedDate}</Text>
 			</View>
 		</TouchableOpacity>
@@ -102,7 +171,6 @@ const styles = StyleSheet.create({
 		alignSelf: "flex-end",
 	},
 });
-
 
 const dark = StyleSheet.create({
 	container: {

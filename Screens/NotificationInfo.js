@@ -8,10 +8,10 @@ import {
 	Image,
 } from "react-native";
 import React from "react";
-import { useMyColorTheme } from "../../utils/ThemeContext";
+import { useMyColorTheme } from "../utils/ThemeContext";
 import { Ionicons } from "react-native-vector-icons";
-import { myColors, myDarkColors } from "../../utils/myColors";
-import ServiceItem from "../../Components/ServiceItem";
+import { myColors, myDarkColors } from "../utils/myColors";
+import ServiceItem from "../Components/ServiceItem";
 import { parseISO } from "date-fns";
 import { format, utcToZonedTime } from "date-fns-tz";
 
@@ -59,12 +59,12 @@ import { format, utcToZonedTime } from "date-fns-tz";
 //         "laravel_through_key": 1
 //     }
 // },
-const OrderInfo = ({ navigation, route }) => {
-	const order = route.params;
+const NotificationInfo = ({ navigation, route }) => {
+	const notification = route.params;
 	const { isDarkMode } = useMyColorTheme();
 	const theme = isDarkMode ? dark : styles;
 
-    const date = parseISO(order.created_at);
+    const date = parseISO(notification.created_at);
 
 	// // Step 2: Convert the timestamp to the desired time zone
 	// //   const zonedDate = utcToZonedTime(date, timeZone);
@@ -77,29 +77,29 @@ const OrderInfo = ({ navigation, route }) => {
 	};
 
 	const handleTitle = () => {
-		if (order.status === "waiting") {
+		if (notification.data[0].status === "waiting") {
 			return "Your order has been placed";
-		} else if (order.status === "inprogress") {
+		} else if (notification.data[0].status === "inprogress") {
 			return "Your order is in Progress";
-		} else if (order.status === "done") {
+		} else if (notification.data[0].status === "done") {
 			return "Your order is complete";
 		}
 	};
 
 	const handleType = () => {
-		if (order.payment.type === "visa") {
+		if (notification.data[0].payments.type === "visa") {
 			return "Visa Card";
-		} else if (order.payment.type === "cash") {
+		} else if (notification.data[0].payments.type === "cash") {
 			return "Cash On Delivery";
-		} else if (order.payment.type === "yallacoin") {
+		} else if (notification.data[0].payments.type === "yallacoin") {
 			return "YALLACOINS";
 		}
 	};
 
 	const handleTypeIcon = () => {
-		if (order.payment.type === "visa") {
+		if (notification.data[0].payments.type === "visa") {
 			return "card";
-		} else if (order.payment.type === "cash") {
+		} else if (notification.data[0].payments.type === "cash") {
 			return "wallet";
 		}
 	};
@@ -118,12 +118,12 @@ const OrderInfo = ({ navigation, route }) => {
 			</TouchableOpacity>
 			<Text style={theme.mainTitle}>{handleTitle()}</Text>
 			<Text style={theme.title}>Order Info:</Text>
-			<ServiceItem service={order.service} />
+			<ServiceItem service={notification.data[0].service_forms.services} />
 			<View style={theme.row}>
 				<Text style={theme.title}>Method of payment: </Text>
-				{order.payment.type === "yallacoin" ? (
+				{notification.data[0].payments.type === "yallacoin" ? (
 					<Image
-						source={require("../../assets/images/YallaCoin.png")}
+						source={require("../assets/images/YallaCoin.png")}
 						style={theme.yallacoin}
 					/>
 				) : (
@@ -143,9 +143,9 @@ const OrderInfo = ({ navigation, route }) => {
 				<View
 					style={[
 						theme.circle,
-						(order.status === "waiting") |
-							(order.status === "inprogress") |
-							(order.status === "done") && {
+						(notification.data[0].status === "waiting") |
+							(notification.data[0].status === "inprogress") |
+							(notification.data[0].status === "done") && {
 							backgroundColor: isDarkMode ? myDarkColors.blue : myColors.blue,
 						},
 					]}
@@ -153,7 +153,7 @@ const OrderInfo = ({ navigation, route }) => {
 				<View
 					style={[
 						theme.circle,
-						(order.status === "inprogress") | (order.status === "done") && {
+						(notification.data[0].status === "inprogress") | (notification.data[0].status === "done") && {
 							backgroundColor: isDarkMode ? myDarkColors.blue : myColors.blue,
 						},
 					]}
@@ -161,7 +161,7 @@ const OrderInfo = ({ navigation, route }) => {
 				<View
 					style={[
 						theme.circle,
-						order.status === "done" && {
+						notification.data[0].status === "done" && {
 							backgroundColor: isDarkMode ? myDarkColors.blue : myColors.blue,
 						},
 					]}
@@ -169,7 +169,7 @@ const OrderInfo = ({ navigation, route }) => {
 				<View
 					style={[
 						theme.rectangle,
-						(order.status === "inprogress") | (order.status === "done") && {
+						(notification.data[0].status === "inprogress") | (notification.data[0].status === "done") && {
 							backgroundColor: isDarkMode ? myDarkColors.blue : myColors.blue,
 						},
 					]}
@@ -178,7 +178,7 @@ const OrderInfo = ({ navigation, route }) => {
 					style={[
 						theme.rectangle,
 						{ left: "50%" },
-						order.status === "done" && {
+						notification.data[0].status === "done" && {
 							backgroundColor: isDarkMode ? myDarkColors.blue : myColors.blue,
 						},
 					]}
@@ -193,7 +193,7 @@ const OrderInfo = ({ navigation, route }) => {
 	);
 };
 
-export default OrderInfo;
+export default NotificationInfo;
 
 const styles = StyleSheet.create({
 	container: {

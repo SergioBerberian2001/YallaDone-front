@@ -5,8 +5,9 @@ import {
 	TouchableOpacity,
 	View,
 	FlatList,
+	ActivityIndicator,
 } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
 	useAnimatedStyle,
@@ -18,10 +19,11 @@ import Animated, {
 import { myColors, myDarkColors } from "../utils/myColors";
 import NotificationListItem from "./NotificationListItem";
 import { Ionicons } from "react-native-vector-icons";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { getBearerToken } from "../utils/bearer";
 import { useMyColorTheme } from "../utils/ThemeContext";
+import { isLabeledStatement } from "typescript";
 
 const notifications = [
 	{
@@ -52,16 +54,61 @@ const notifications = [
 		isRead: true,
 	},
 ];
+
+// {
+// 	"id": "68141c51-51aa-4d87-bc23-638c039650ae",
+// 	"type": "App\\Notifications\\OrderNotification",
+// 	"notifiable_type": "App\\Models\\users",
+// 	"notifiable_id": 6,
+// 	"data": [
+// 		{
+// 			"user_id": 6,
+// 			"payment_id": 14,
+// 			"form_id": 14,
+// 			"status": "waiting",
+// 			"updated_at": "2024-06-06T16:08:53.000000Z",
+// 			"created_at": "2024-06-06T16:08:53.000000Z",
+// 			"order_id": 14,
+// 			"payments": {
+// 				"payment_id": 14,
+// 				"created_at": "2024-06-06T16:08:51.000000Z",
+// 				"updated_at": "2024-06-06T16:08:51.000000Z",
+// 				"user_id": 6,
+// 				"type": "cash",
+// 				"service_name": "Car Detailing",
+// 				"price": 50
+// 			},
+// 			"service_forms": {
+// 				"form_id": 14,
+// 				"created_at": "2024-06-06T16:08:51.000000Z",
+// 				"updated_at": "2024-06-06T16:08:51.000000Z",
+// 				"user_id": 6,
+// 				"Service_id": 1,
+// 				"service_date": "2024-06-06 18:58:00",
+// 				"user_name": "Sergio",
+// 				"user_lastname": "Berberian",
+// 				"email": "sergio@gmail.com",
+// 				"phone_number": 78945623,
+// 				"location": "Gggg",
+// 				"additional_info": "Ggggg"
+// 			}
+// 		}
+// 	],
+// 	"read_at": null,
+// 	"created_at": "2024-06-06T16:08:53.000000Z",
+// 	"updated_at": "2024-06-06T16:08:53.000000Z"
+// }
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const MAX_TRANSLATE_Y = -SCREEN_HEIGHT + 50;
 const NotificationsSheet = (props) => {
 	const { isDarkMode } = useMyColorTheme();
 	const theme = isDarkMode ? dark : styles;
 	const { onToggle } = props;
+	const navigation = useNavigation();
+	const [myNotifications, setMyNotifications] = useState();
 	const translateY = useSharedValue(0);
-
 	const context = useSharedValue({ y: 0 });
-
+	const [isLoading, setIsLoading] = useState(true);
 	useFocusEffect(
 		React.useCallback(() => {
 			const fetchData = async () => {
@@ -75,8 +122,9 @@ const NotificationsSheet = (props) => {
 							},
 						}
 					);
-					console.log(response.data);
-					// setIsLoading(false);
+
+					setMyNotifications(response.data);
+					setIsLoading(false);
 				} catch (error) {
 					console.error("Error fetching data:", error);
 					// Handle errors appropriately
@@ -110,34 +158,50 @@ const NotificationsSheet = (props) => {
 		};
 	});
 
+	const navigateToNotificationInfo = (notification) => {
+		navigation.navigate("NotificationInfo", notification);
+	};
+
 	return (
 		<GestureDetector gesture={gesture}>
 			<Animated.View style={[theme.bottmSheetCont, rBottomSheetStyle]}>
-				<View style={theme.bg}>
-					<View style={theme.topView}>
-						<TouchableOpacity style={theme.back} onPress={toggleSheet}>
-							<Ionicons name="chevron-down" color={myColors.blue} size={28} />
-							<Text style={theme.topText}>Close</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={theme.clear}>
-							<Text style={theme.topText}>Clear all</Text>
-						</TouchableOpacity>
-					</View>
-					<View style={theme.titleCont}>
-						<Text style={theme.title}>Notifications</Text>
-					</View>
-					<View>
-						<FlatList
-							style={theme.list}
-							showsVerticalScrollIndicator={false}
-							data={notifications}
-							keyExtractor={(item) => item.id.toString()}
-							renderItem={({ item }) => (
-								<NotificationListItem notification={item} />
-							)}
+				{isLoading ? (
+					<View style={theme.indicatorView}>
+						<ActivityIndicator
+							color={isDarkMode ? "white" : "gray"}
+							size={30}
 						/>
 					</View>
-				</View>
+				) : (
+					<View style={theme.bg}>
+						<View style={theme.topView}>
+							<TouchableOpacity style={theme.back} onPress={toggleSheet}>
+								<Ionicons name="chevron-down" color={myColors.blue} size={28} />
+								<Text style={theme.topText}>Close</Text>
+							</TouchableOpacity>
+							<TouchableOpacity style={theme.clear}>
+								<Text style={theme.topText}>Clear all</Text>
+							</TouchableOpacity>
+						</View>
+						<View style={theme.titleCont}>
+							<Text style={theme.title}>Notifications</Text>
+						</View>
+						<View>
+							<FlatList
+								style={theme.list}
+								showsVerticalScrollIndicator={false}
+								data={myNotifications}
+								keyExtractor={(item) => item.id.toString()}
+								renderItem={({ item }) => (
+									<NotificationListItem
+										notification={item}
+										onNavigate={navigateToNotificationInfo}
+									/>
+								)}
+							/>
+						</View>
+					</View>
+				)}
 			</Animated.View>
 		</GestureDetector>
 	);
@@ -197,8 +261,10 @@ const styles = StyleSheet.create({
 	list: {
 		height: "70%",
 	},
+	indicatorView: {
+		paddingTop: "20%",
+	},
 });
-
 
 const dark = StyleSheet.create({
 	bottmSheetCont: {
@@ -251,5 +317,8 @@ const dark = StyleSheet.create({
 	},
 	list: {
 		height: "70%",
+	},
+	indicatorView: {
+		paddingTop: "20%",
 	},
 });

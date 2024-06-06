@@ -14,7 +14,7 @@ export const myDarkColors = {
 	white: "#181C20",
 	dirtyWhite: "#202429",
 	dirtyWhite90: "202429",
-	black: "#FFFFFF",
+	black: "#F0F0F0",
 	grey: "#919191",
 };
 

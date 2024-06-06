@@ -15,6 +15,7 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { myColors, myDarkColors } from "./utils/myColors";
 
+
 import Logo from "./Components/Logo";
 import Splash from "./Screens/Splash";
 import Signup from "./Screens/Signup";
@@ -38,6 +39,7 @@ import ChangePassword from "./Screens/My-Account.js/ChangePassword";
 import MySettings from "./Screens/My-Account.js/MySettings";
 import AddAddress from "./Screens/My-Account.js/AddAddress";
 import Loading from "./Components/Loading";
+import NotificationInfo from "./Screens/NotificationInfo";
 
 import { UserProvider } from "./utils/UserContext";
 import { ThemeProvider } from "./utils/ThemeContext";
@@ -190,6 +192,17 @@ export default function App() {
 							component={OrderInfo}
 							options={{
 								title: "OrderInfo Screen",
+								headerStyle: {
+									backgroundColor: "#000000",
+								},
+								headerTintColor: "#fff",
+							}}
+						/>
+						<Stack.Screen
+							name="NotificationInfo"
+							component={NotificationInfo}
+							options={{
+								title: "NotificationInfo Screen",
 								headerStyle: {
 									backgroundColor: "#000000",
 								},
