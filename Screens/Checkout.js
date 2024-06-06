@@ -18,15 +18,18 @@ import axios from "axios";
 import { Ionicons } from "react-native-vector-icons";
 import { getBearerToken } from "../utils/bearer";
 import UserContext from "../utils/UserContext";
-import myColors from "../utils/myColors";
+import { myColors, myDarkColors } from "../utils/myColors";
 import Loading from "../Components/Loading";
 import ServiceItem from "../Components/ServiceItem.js";
 import { RadioButton, Provider as PaperProvider } from "react-native-paper";
 import StripeApp from "../Components/Stripe";
 import { StripeProvider } from "@stripe/stripe-react-native";
+import { useMyColorTheme } from "../utils/ThemeContext.js";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const Checkout = ({ navigation, route }) => {
+	const { isDarkMode } = useMyColorTheme();
+	const theme = isDarkMode ? dark : styles;
 	const { order, locationId, serviceDate, additionalInfo } = route.params;
 	const [loadingPayment, setLoadingPayment] = useState(false);
 	const [formId, setFormId] = useState();
@@ -163,74 +166,84 @@ const Checkout = ({ navigation, route }) => {
 
 	return (
 		<StripeProvider publishableKey="pk_test_51PMAhL07mb77Stj1OD3V96xsfMLd8bmWXNx8InMbwE1hcTkWjTTSHck6OqOVSlgOuOSPh3RhtxOP2s4hm1kDWuby00L073BzaE">
-			<KeyboardAvoidingView style={styles.background1} behavior="position">
-				<SafeAreaView style={styles.container}>
-					<ScrollView style={styles.scroll}>
+			<KeyboardAvoidingView style={theme.background1} behavior="position">
+				<SafeAreaView style={theme.container}>
+					<ScrollView style={theme.scroll}>
 						<TouchableOpacity
 							style={
-								Platform.OS === "ios" ? styles.topView : styles.topViewAndroid
+								Platform.OS === "ios" ? theme.topView : theme.topViewAndroid
 							}
 							onPress={navigate}
 						>
 							<Ionicons
 								name="chevron-back-outline"
-								color={myColors.blue}
+								color={isDarkMode? myDarkColors.blue : myColors.blue}
 								size={32}
 							/>
-							<Text style={styles.topText}>Back</Text>
+							<Text style={theme.topText}>Back</Text>
 						</TouchableOpacity>
-						<Text style={styles.title}>You ordered our {order.service_name} service</Text>
-						<View style={styles.serviceView}>
+						<Text style={theme.title}>
+							You ordered our {order.service_name} service
+						</Text>
+						<View style={theme.serviceView}>
 							<ServiceItem service={order} />
 						</View>
-						<Text style={styles.title}>Select your method of payment</Text>
+						<Text style={theme.title}>Select your method of payment</Text>
 						<PaperProvider>
-							<View style={styles.RadioContainer}>
-								<View style={styles.optionContainer}>
+							<View style={theme.RadioContainer}>
+								<View style={theme.optionContainer}>
 									<RadioButton
 										value="cash"
 										status={checked === "cash" ? "checked" : "unchecked"}
 										color={myColors.red}
 									/>
 									<TouchableOpacity
-										style={styles.optionTouchable}
+										style={theme.optionTouchable}
 										onPress={() => setChecked("cash")}
 									>
-										<Ionicons name="wallet" color={myColors.blue} size={20} />
-										<Text style={styles.optionText}>Cash On Delivery</Text>
+										<Ionicons
+											name="wallet"
+											color={isDarkMode ? myDarkColors.blue : myColors.blue}
+											size={20}
+										/>
+										<Text style={theme.optionText}>Cash On Delivery</Text>
 									</TouchableOpacity>
 								</View>
 
-								<View style={styles.optionContainer}>
+								<View style={theme.optionContainer}>
 									<RadioButton
 										value="visa"
 										status={checked === "visa" ? "checked" : "unchecked"}
 										color={myColors.red}
 									/>
 									<TouchableOpacity
-										style={styles.optionTouchable}
+										style={theme.optionTouchable}
 										onPress={() => setChecked("visa")}
 									>
-										<Ionicons name="card" color={myColors.blue} size={20} />
-										<Text style={styles.optionText}>VISA Card</Text>
+										<Ionicons
+											name="card"
+											color={isDarkMode ? myDarkColors.blue : myColors.blue}
+											size={20}
+										/>
+										<Text style={theme.optionText}>VISA Card</Text>
 									</TouchableOpacity>
 								</View>
 
-								<View style={styles.optionContainer}>
+								<View style={theme.optionContainer}>
 									<RadioButton
 										value="yallacoin"
 										status={checked === "yallacoin" ? "checked" : "unchecked"}
 										color={myColors.red}
 									/>
 									<TouchableOpacity
-										style={styles.optionTouchable}
+										style={theme.optionTouchable}
 										onPress={() => setChecked("yallacoin")}
 									>
 										<Image
 											source={require("../assets/images/YallaCoin.png")}
-											style={styles.yallacoin}
+											style={theme.yallacoin}
 										/>
-										<Text style={styles.optionText}>Redeem YALLACOINS</Text>
+										<Text style={theme.optionText}>Redeem YALLACOINS</Text>
 									</TouchableOpacity>
 								</View>
 							</View>
@@ -240,7 +253,7 @@ const Checkout = ({ navigation, route }) => {
 						)}
 						{checked !== "visa" && (
 							<TouchableOpacity
-								style={[loadingPayment ? styles.loadingButton : styles.button]}
+								style={[loadingPayment ? theme.loadingButton : theme.button]}
 								onPress={
 									checked === "cash"
 										? HandleServiceForm
@@ -248,7 +261,7 @@ const Checkout = ({ navigation, route }) => {
 								}
 								disabled={loadingPayment}
 							>
-								<Text style={styles.buttonText}>
+								<Text style={theme.buttonText}>
 									{checked === "cash"
 										? "Pay With Cash On Delivery"
 										: "Pay With YALLACOINS"}
@@ -329,7 +342,6 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.5,
 		shadowRadius: 5,
 		shadowOffset: { width: 3, height: 3 },
-		
 	},
 	loadingButton: {
 		backgroundColor: myColors.red,
@@ -355,6 +367,100 @@ const styles = StyleSheet.create({
 		marginHorizontal: 16,
 		fontFamily: "SF-bold",
 		color: myColors.blue,
+		fontSize: 16,
+	},
+});
+
+const dark = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: myDarkColors.white,
+	},
+	background1: {
+		flex: 1,
+		width: SCREEN_WIDTH,
+		alignItems: "center",
+	},
+	topView: {
+		marginLeft: 10,
+		alignSelf: "flex-start",
+		flexDirection: "row",
+		alignItems: "center",
+	},
+	topViewAndroid: {
+		marginLeft: 10,
+		alignSelf: "flex-start",
+		flexDirection: "row",
+		alignItems: "center",
+		marginTop: "8%",
+	},
+	topText: {
+		fontFamily: "SF-medium",
+		fontSize: 16,
+		color: myDarkColors.blue,
+	},
+
+	optionContainer: {
+		flexDirection: "row",
+		alignItems: "center",
+		padding: 8,
+	},
+	optionTouchable: {
+		flexDirection: "row",
+		alignItems: "center",
+		borderBottomWidth: 1,
+		borderColor: "#cccccc",
+		marginLeft: 16,
+		width: "100%",
+		paddingVertical: 8,
+	},
+	optionText: {
+		fontFamily: "SF-medium",
+		fontSize: 16,
+		paddingHorizontal: 8,
+		color: myDarkColors.black,
+	},
+	yallacoin: {
+		width: 20,
+		height: 20,
+	},
+	button: {
+		backgroundColor: myDarkColors.red,
+		paddingHorizontal: 20,
+		paddingVertical: 16,
+		borderRadius: 8,
+		alignItems: "center",
+		marginVertical: 24,
+		marginHorizontal: 16,
+		shadowColor: "#000000",
+		shadowOpacity: 0.5,
+		shadowRadius: 5,
+		shadowOffset: { width: 3, height: 3 },
+	},
+	loadingButton: {
+		backgroundColor: myDarkColors.red,
+		paddingHorizontal: 20,
+		paddingVertical: 16,
+		borderRadius: 8,
+		alignItems: "center",
+		marginVertical: 24,
+		marginHorizontal: 16,
+		shadowColor: "#000000",
+		shadowOpacity: 0.5,
+		shadowRadius: 5,
+		shadowOffset: { width: 3, height: 3 },
+		opacity: 0.5,
+	},
+	buttonText: {
+		fontFamily: "SF-bold",
+		color: myDarkColors.black,
+		fontSize: 16,
+	},
+	title: {
+		margin: 8,
+		marginHorizontal: 16,
+		fontFamily: "SF-bold",
+		color: myDarkColors.black,
 		fontSize: 16,
 	},
 });

@@ -1,4 +1,4 @@
-import myColors from "./myColors";
+import { myColors, myDarkColors } from "./myColors";
 
 // popupModes.js
 const popupModes = {

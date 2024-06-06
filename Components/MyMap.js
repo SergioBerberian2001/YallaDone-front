@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Platform, ActivityIndicator, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
-import myColors from "../utils/myColors";
+import { myColors, myDarkColors } from "../utils/myColors";
 
 const MyMap = (props) => {
 	const { updateCoordinates, initialLocation } = props;

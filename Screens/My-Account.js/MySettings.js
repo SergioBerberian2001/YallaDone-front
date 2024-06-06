@@ -1,20 +1,21 @@
 import React, { useState, useContext } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
-import myColors from "../../utils/myColors";
+import { myColors, myDarkColors } from "../../utils/myColors";
 import { saveBearerToken, getBearerToken, logout } from "../../utils/bearer.js";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import ToggleButton from "../../Components/ToggleButton.js";
 import Loading from "../../Components/Loading.js";
 import UserContext from "../../utils/UserContext.js";
-import { useTheme } from "../../utils/ThemeContext"; // Import useTheme hook
+import { useMyColorTheme } from "../../utils/ThemeContext"; 
 
 const MySettings = (props) => {
 	const { user, clearUser } = useContext(UserContext);
 	const { onToggle } = props;
 	const navigation = useNavigation();
 	const [isLoading, setIsLoading] = useState(false);
-	const { isDarkMode, toggleTheme } = useTheme(); // Use useTheme hook
+	const { isDarkMode, toggleTheme } = useMyColorTheme(); 
+	const theme = isDarkMode ? dark : styles;
 
 	const logoutAxios = async () => {
 		try {
@@ -99,35 +100,36 @@ const MySettings = (props) => {
 	}
 
 	return (
-		<View style={styles.container}>
-			<View style={styles.topRow}>
-				<TouchableOpacity onPress={toggleModal}>
-					<Text style={styles.text}>Close</Text>
+		<View style={theme.container}>
+			<View style={theme.topRow}>
+				<TouchableOpacity onPress={toggleModal} style={theme.closeButton}>
+					<Text style={theme.closeText}>Close</Text>
 				</TouchableOpacity>
 			</View>
 
-			<View style={styles.row}>
-				<Text style={styles.text}>Turn Off Notifications</Text>
+			<View style={theme.row}>
+				<Text style={theme.text}>Turn Off Notifications</Text>
 				<ToggleButton
 					label="Turn Off Notifications"
-					onToggle={(value) => console.log(hello)}
+					onToggle={(value) => console.log('hello')}
 				/>
 			</View>
-			<View style={styles.row}>
-				<Text style={styles.text}>Switch Theme</Text>
+			<View style={theme.row}>
+				<Text style={theme.text}>Switch Theme</Text>
 				<ToggleButton
 					label="Switch Theme"
 					onToggle={switchTheme} // Call switchTheme function
+					isTheme={true}
 				/>
 			</View>
-			<View style={styles.row}>
+			<View style={theme.row}>
 				<TouchableOpacity onPress={handleLogout}>
-					<Text style={styles.text}>Log Out</Text>
+					<Text style={theme.text}>Log Out</Text>
 				</TouchableOpacity>
 			</View>
-			<View style={styles.BottomRow}>
+			<View style={theme.BottomRow}>
 				<TouchableOpacity onPress={showDeleteConfirmation}>
-					<Text style={[styles.text, { color: "red" }]}>Delete account</Text>
+					<Text style={[theme.text, { color: "red" }]}>Delete account</Text>
 				</TouchableOpacity>
 			</View>
 		</View>
@@ -175,4 +177,61 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		color: myColors.blue,
 	},
+	closeText:{
+		fontFamily: "SF-medium",
+		fontSize: 18,
+		color: myColors.blue,
+	},
+	closeButton:{
+		padding:4
+	},
+});
+
+const dark = StyleSheet.create({
+	container: {
+		flex: 1,
+		width: "100%",
+		alignItems: "flex-start",
+		backgroundColor: myDarkColors.dirtyWhite,
+		borderTopLeftRadius: 20,
+		borderTopRightRadius: 20,
+	},
+	closeButton:{
+		padding:4
+	},
+	topRow: {
+		flexDirection: "row",
+		width: "100%",
+		alignItems: "center",
+		justifyContent: "flex-end",
+		paddingHorizontal: 16,
+		paddingTop: 8,
+	},
+	row: {
+		flex: 0.2,
+		flexDirection: "row",
+		justifyContent: "space-between",
+		borderBottomWidth: 1,
+		width: "100%",
+		borderBottomColor: "rgba(255,255,255,0.1)",
+		alignItems: "center",
+		padding: 16,
+	},
+	BottomRow: {
+		flex: 0.2,
+		flexDirection: "row",
+		width: "100%",
+		alignItems: "center",
+		padding: 16,
+	},
+	text: {
+		fontFamily: "SF-medium",
+		fontSize: 16,
+		color: myDarkColors.black,
+	},
+	closeText:{
+		fontFamily: "SF-medium",
+		fontSize: 18,
+		color: myDarkColors.blue,
+	}
 });

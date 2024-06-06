@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useEffect, useRef } from "react";
 import Logo from "./Logo";
-import myColors from "../utils/myColors";
+import { myColors, myDarkColors } from "../utils/myColors";
 
 const Loading = (props) => {
 	const { isSplash, isNew, onLogin, onSignup } = props;
@@ -22,49 +22,57 @@ const Loading = (props) => {
 	const textOpacity = useRef(new Animated.Value(0)).current;
 	const indicatorOpacity = useRef(new Animated.Value(0)).current;
 
-	isSplash && useEffect(() => {
-		// Sequence of animations
-		Animated.sequence([
-			// Logo fade in
-			Animated.timing(logoOpacity, {
-				toValue: 1,
-				duration: 800,
-				useNativeDriver: true,
-			}),
-			// Text fade in
-			 Animated.timing(textOpacity, {
-				toValue: 1,
-				duration: 800,
-				useNativeDriver: true,
-			}),
-			// Delay for activity indicator
-			Animated.delay(800),
-			// Activity indicator fade in
-			Animated.timing(indicatorOpacity, {
-				toValue: 1,
-				duration: 500,
-				useNativeDriver: true,
-			}),
-		]).start();
-	}, [logoOpacity, textOpacity, indicatorOpacity]);
+	isSplash &&
+		useEffect(() => {
+			// Sequence of animations
+			Animated.sequence([
+				// Logo fade in
+				Animated.timing(logoOpacity, {
+					toValue: 1,
+					duration: 800,
+					useNativeDriver: true,
+				}),
+				// Text fade in
+				Animated.timing(textOpacity, {
+					toValue: 1,
+					duration: 800,
+					useNativeDriver: true,
+				}),
+				// Delay for activity indicator
+				Animated.delay(800),
+				// Activity indicator fade in
+				Animated.timing(indicatorOpacity, {
+					toValue: 1,
+					duration: 500,
+					useNativeDriver: true,
+				}),
+			]).start();
+		}, [logoOpacity, textOpacity, indicatorOpacity]);
 
 	return (
 		<ImageBackground
 			source={require("../assets/images/splash-bg.jpg")}
 			style={styles.backgroundLoading}
 		>
-			<Animated.View style={[styles.logoView, isSplash && { opacity: logoOpacity }]}>
+			<Animated.View
+				style={[styles.logoView, isSplash && { opacity: logoOpacity }]}
+			>
 				<Logo width={width * 0.9} height={height * 0.9} />
 			</Animated.View>
 			{isSplash && (
-				<Animated.View style={[styles.textView, isSplash && { opacity: textOpacity }]}>
+				<Animated.View
+					style={[styles.textView, isSplash && { opacity: textOpacity }]}
+				>
 					<Text style={styles.text}>Focus on what matters</Text>
 					<Text style={styles.text}>We handle the rest.</Text>
 				</Animated.View>
 			)}
 			{isNew ? (
 				<Animated.View
-					style={[styles.buttonsView, isSplash && { opacity: indicatorOpacity }]}
+					style={[
+						styles.buttonsView,
+						isSplash && { opacity: indicatorOpacity },
+					]}
 				>
 					<TouchableOpacity style={styles.buttons} onPress={onSignup}>
 						<Text style={styles.buttonsText}>Sign up</Text>
@@ -75,7 +83,10 @@ const Loading = (props) => {
 				</Animated.View>
 			) : (
 				<Animated.View
-					style={[styles.indicatorView, isSplash && { opacity: indicatorOpacity }]}
+					style={[
+						styles.indicatorView,
+						isSplash && { opacity: indicatorOpacity },
+					]}
 				>
 					<ActivityIndicator size="large" color={myColors.white} />
 				</Animated.View>
@@ -98,27 +109,25 @@ const styles = StyleSheet.create({
 		color: "#FFFFFF",
 		fontSize: 26,
 	},
-	logoView:{
-		flex:0.3,
-		paddingBottom:"10%",
-		justifyContent:"center",
-		
+	logoView: {
+		flex: 0.3,
+		paddingBottom: "10%",
+		justifyContent: "center",
 	},
 	textView: {
-		flex:0.3,
+		flex: 0.3,
 		alignItems: "center",
-		justifyContent:"flex-start",
-		
+		justifyContent: "flex-start",
 	},
 	buttonsView: {
-		flex:0.4,
+		flex: 0.4,
 		width: "100%",
 		justifyContent: "flex-end",
 		alignItems: "center",
 		paddingHorizontal: 16,
 	},
-	indicatorView:{
-		flex:0.4,
+	indicatorView: {
+		flex: 0.4,
 		width: "100%",
 		justifyContent: "center",
 		alignItems: "center",

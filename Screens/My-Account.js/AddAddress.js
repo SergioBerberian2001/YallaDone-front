@@ -13,11 +13,11 @@ import {
 	ScrollView,
 	Alert,
 	KeyboardAvoidingView,
-	Dimensions
+	Dimensions,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Logo from "../../Components/Logo";
-import myColors from "../../utils/myColors";
+import { myColors, myDarkColors } from "../../utils/myColors";
 import { Ionicons } from "react-native-vector-icons";
 import axios from "axios";
 import { saveBearerToken, getBearerToken, logout } from "../../utils/bearer.js";
@@ -227,191 +227,194 @@ const AddAddress = ({ navigation, route }) => {
 	}
 
 	return (
-		<KeyboardAvoidingView style={styles.background1} behavior="position" >
-		<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-			<ImageBackground
-				source={require("../../assets/images/splash-bg.jpg")}
-				style={styles.background}
-			>
-				<ScrollView style={styles.scroll} showsVerticalScrollIndicator={false} >
-					<View style={styles.topViewContainer}>
-						<TouchableOpacity style={styles.topView} onPress={navigate}>
-							<Ionicons
-								name="chevron-back-outline"
-								color={myColors.white}
-								size={32}
-							/>
-							<Text style={styles.topText}>Back</Text>
-						</TouchableOpacity>
-
-						{!isCreating && (
-							<TouchableOpacity
-								style={styles.deleteButton}
-								onPress={showDeleteConfirmation}
-							>
-								<Text style={[styles.topText, { color: myColors.white }]}>
-									Delete
-								</Text>
+		<KeyboardAvoidingView style={styles.background1} behavior="position">
+			<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+				<ImageBackground
+					source={require("../../assets/images/splash-bg.jpg")}
+					style={styles.background}
+				>
+					<ScrollView
+						style={styles.scroll}
+						showsVerticalScrollIndicator={false}
+					>
+						<View style={styles.topViewContainer}>
+							<TouchableOpacity style={styles.topView} onPress={navigate}>
 								<Ionicons
-									name="trash-outline"
+									name="chevron-back-outline"
 									color={myColors.white}
-									size={20}
+									size={32}
 								/>
+								<Text style={styles.topText}>Back</Text>
 							</TouchableOpacity>
-						)}
-					</View>
 
-					<Text style={styles.title}>Add New Address</Text>
+							{!isCreating && (
+								<TouchableOpacity
+									style={styles.deleteButton}
+									onPress={showDeleteConfirmation}
+								>
+									<Text style={[styles.topText, { color: myColors.white }]}>
+										Delete
+									</Text>
+									<Ionicons
+										name="trash-outline"
+										color={myColors.white}
+										size={20}
+									/>
+								</TouchableOpacity>
+							)}
+						</View>
 
-					<View>
-						<MyMap
-							updateCoordinates={updateCoordinates}
-							initialLocation={initialLocation}
-						/>
-					</View>
+						<Text style={styles.title}>Add New Address</Text>
 
-					<View style={styles.typeContainer}>
-						<TouchableOpacity
-							style={getButtonStyle("Home")}
-							onPress={() => handlePress("Home")}
-						>
-							<Ionicons name="home-outline" color={myColors.blue} size={32} />
-							<Text style={styles.typeTitle}>Home</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
-							style={getButtonStyle("Work")}
-							onPress={() => handlePress("Work")}
-						>
-							<Ionicons
-								name="briefcase-outline"
-								color={myColors.blue}
-								size={32}
+						<View>
+							<MyMap
+								updateCoordinates={updateCoordinates}
+								initialLocation={initialLocation}
 							/>
-							<Text style={styles.typeTitle}>Work</Text>
-						</TouchableOpacity>
-						<TouchableOpacity
-							style={getButtonStyle("Other")}
-							onPress={() => handlePress("Other")}
-						>
-							<Ionicons
-								name="location-outline"
-								color={myColors.blue}
-								size={32}
+						</View>
+
+						<View style={styles.typeContainer}>
+							<TouchableOpacity
+								style={getButtonStyle("Home")}
+								onPress={() => handlePress("Home")}
+							>
+								<Ionicons name="home-outline" color={myColors.blue} size={32} />
+								<Text style={styles.typeTitle}>Home</Text>
+							</TouchableOpacity>
+							<TouchableOpacity
+								style={getButtonStyle("Work")}
+								onPress={() => handlePress("Work")}
+							>
+								<Ionicons
+									name="briefcase-outline"
+									color={myColors.blue}
+									size={32}
+								/>
+								<Text style={styles.typeTitle}>Work</Text>
+							</TouchableOpacity>
+							<TouchableOpacity
+								style={getButtonStyle("Other")}
+								onPress={() => handlePress("Other")}
+							>
+								<Ionicons
+									name="location-outline"
+									color={myColors.blue}
+									size={32}
+								/>
+								<Text style={styles.typeTitle}>Other</Text>
+							</TouchableOpacity>
+						</View>
+
+						<Text style={styles.title}>Address Details</Text>
+						<View style={styles.container}>
+							<View style={styles.titleView}>
+								<Text style={styles.inputTitle}>Name</Text>
+								{errors.name ? (
+									<Text style={styles.errorText}>{errors.name}</Text>
+								) : null}
+							</View>
+
+							<TextInput
+								style={styles.textInput}
+								placeholder="Name"
+								onChangeText={(text) => handleChange("name", text)}
+								value={locationInfo.name}
 							/>
-							<Text style={styles.typeTitle}>Other</Text>
-						</TouchableOpacity>
-					</View>
 
-					<Text style={styles.title}>Address Details</Text>
-					<View style={styles.container}>
-						<View style={styles.titleView}>
-							<Text style={styles.inputTitle}>Name</Text>
-							{errors.name ? (
-								<Text style={styles.errorText}>{errors.name}</Text>
-							) : null}
+							<View style={styles.titleView}>
+								<Text style={styles.inputTitle}>District</Text>
+								{errors.district ? (
+									<Text style={styles.errorText}>{errors.district}</Text>
+								) : null}
+							</View>
+							<TextInput
+								style={styles.textInput}
+								placeholder="District"
+								onChangeText={(text) => handleChange("district", text)}
+								value={locationInfo.district}
+							/>
+
+							<View style={styles.titleView}>
+								<Text style={styles.inputTitle}>City</Text>
+								{errors.city ? (
+									<Text style={styles.errorText}>{errors.city}</Text>
+								) : null}
+							</View>
+							<TextInput
+								style={styles.textInput}
+								placeholder="City"
+								onChangeText={(text) => handleChange("city", text)}
+								value={locationInfo.city}
+							/>
+
+							<View style={styles.titleView}>
+								<Text style={styles.inputTitle}>Street</Text>
+								{errors.street ? (
+									<Text style={styles.errorText}>{errors.street}</Text>
+								) : null}
+							</View>
+							<TextInput
+								style={styles.textInput}
+								placeholder="Street"
+								onChangeText={(text) => handleChange("street", text)}
+								value={locationInfo.street}
+							/>
+
+							<View style={styles.titleView}>
+								<Text style={styles.inputTitle}>Building</Text>
+								{errors.building ? (
+									<Text style={styles.errorText}>{errors.building}</Text>
+								) : null}
+							</View>
+							<TextInput
+								style={styles.textInput}
+								placeholder="Building"
+								onChangeText={(text) => handleChange("building", text)}
+								value={locationInfo.building}
+							/>
+
+							<View style={styles.titleView}>
+								<Text style={styles.inputTitle}>Floor</Text>
+								{errors.floor ? (
+									<Text style={styles.errorText}>{errors.floor}</Text>
+								) : null}
+							</View>
+							<TextInput
+								style={styles.textInput}
+								placeholder="Floor"
+								onChangeText={(text) => handleChange("floor", text)}
+								value={locationInfo.floor}
+							/>
+
+							<Text style={styles.inputTitle}>
+								Additional Information(Optional)
+							</Text>
+							<TextInput
+								style={styles.textInput}
+								placeholder="Additional Information"
+								onChangeText={(text) => handleChange("additional_info", text)}
+								value={locationInfo.additional_info}
+							/>
+
+							{isCreating ? (
+								<TouchableOpacity
+									style={styles.button}
+									onPress={() => handleCreateLocation(locationInfo)}
+								>
+									<Text style={styles.buttonText}>Create New Address </Text>
+								</TouchableOpacity>
+							) : (
+								<TouchableOpacity
+									style={styles.button}
+									onPress={() => handleUpdateLocation(locationInfo)}
+								>
+									<Text style={styles.buttonText}>Update Address </Text>
+								</TouchableOpacity>
+							)}
 						</View>
-
-						<TextInput
-							style={styles.textInput}
-							placeholder="Name"
-							onChangeText={(text) => handleChange("name", text)}
-							value={locationInfo.name}
-						/>
-
-						<View style={styles.titleView}>
-							<Text style={styles.inputTitle}>District</Text>
-							{errors.district ? (
-								<Text style={styles.errorText}>{errors.district}</Text>
-							) : null}
-						</View>
-						<TextInput
-							style={styles.textInput}
-							placeholder="District"
-							onChangeText={(text) => handleChange("district", text)}
-							value={locationInfo.district}
-						/>
-
-						<View style={styles.titleView}>
-							<Text style={styles.inputTitle}>City</Text>
-							{errors.city ? (
-								<Text style={styles.errorText}>{errors.city}</Text>
-							) : null}
-						</View>
-						<TextInput
-							style={styles.textInput}
-							placeholder="City"
-							onChangeText={(text) => handleChange("city", text)}
-							value={locationInfo.city}
-						/>
-
-						<View style={styles.titleView}>
-							<Text style={styles.inputTitle}>Street</Text>
-							{errors.street ? (
-								<Text style={styles.errorText}>{errors.street}</Text>
-							) : null}
-						</View>
-						<TextInput
-							style={styles.textInput}
-							placeholder="Street"
-							onChangeText={(text) => handleChange("street", text)}
-							value={locationInfo.street}
-						/>
-
-						<View style={styles.titleView}>
-							<Text style={styles.inputTitle}>Building</Text>
-							{errors.building ? (
-								<Text style={styles.errorText}>{errors.building}</Text>
-							) : null}
-						</View>
-						<TextInput
-							style={styles.textInput}
-							placeholder="Building"
-							onChangeText={(text) => handleChange("building", text)}
-							value={locationInfo.building}
-						/>
-
-						<View style={styles.titleView}>
-							<Text style={styles.inputTitle}>Floor</Text>
-							{errors.floor ? (
-								<Text style={styles.errorText}>{errors.floor}</Text>
-							) : null}
-						</View>
-						<TextInput
-							style={styles.textInput}
-							placeholder="Floor"
-							onChangeText={(text) => handleChange("floor", text)}
-							value={locationInfo.floor}
-						/>
-
-						<Text style={styles.inputTitle}>
-							Additional Information(Optional)
-						</Text>
-						<TextInput
-							style={styles.textInput}
-							placeholder="Additional Information"
-							onChangeText={(text) => handleChange("additional_info", text)}
-							value={locationInfo.additional_info}
-						/>
-
-						{isCreating ? (
-							<TouchableOpacity
-								style={styles.button}
-								onPress={() => handleCreateLocation(locationInfo)}
-							>
-								<Text style={styles.buttonText}>Create New Address </Text>
-							</TouchableOpacity>
-						) : (
-							<TouchableOpacity
-								style={styles.button}
-								onPress={() => handleUpdateLocation(locationInfo)}
-							>
-								<Text style={styles.buttonText}>Update Address </Text>
-							</TouchableOpacity>
-						)}
-					</View>
-				</ScrollView>
-			</ImageBackground>
-		</TouchableWithoutFeedback>
+					</ScrollView>
+				</ImageBackground>
+			</TouchableWithoutFeedback>
 		</KeyboardAvoidingView>
 	);
 };
@@ -419,13 +422,13 @@ const AddAddress = ({ navigation, route }) => {
 export default AddAddress;
 
 const styles = StyleSheet.create({
-	background: { 
+	background: {
 		flex: 1,
 		width: SCREEN_WIDTH,
 		opacity: 1,
 		alignItems: "center",
 	},
-	background1:{
+	background1: {
 		flex: 1,
 		width: SCREEN_WIDTH,
 		alignItems: "center",

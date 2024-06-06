@@ -13,7 +13,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import myColors from "./utils/myColors";
+import { myColors, myDarkColors } from "./utils/myColors";
 
 import Logo from "./Components/Logo";
 import Splash from "./Screens/Splash";
@@ -32,6 +32,7 @@ import AllCategories from "./Screens/AllCategories";
 import MyProfile from "./Screens/My-Account.js/MyProfile";
 import MyAddresses from "./Screens/My-Account.js/MyAddresses";
 import OrdersHistory from "./Screens/My-Account.js/OrdersHistory";
+import OrderInfo from "./Screens/My-Account.js/OrderInfo";
 import MyPoints from "./Screens/My-Account.js/MyPoints";
 import ChangePassword from "./Screens/My-Account.js/ChangePassword";
 import MySettings from "./Screens/My-Account.js/MySettings";
@@ -178,6 +179,17 @@ export default function App() {
 							component={AllCategories}
 							options={{
 								title: "AllCategories Screen",
+								headerStyle: {
+									backgroundColor: "#000000",
+								},
+								headerTintColor: "#fff",
+							}}
+						/>
+						<Stack.Screen
+							name="OrderInfo"
+							component={OrderInfo}
+							options={{
+								title: "OrderInfo Screen",
 								headerStyle: {
 									backgroundColor: "#000000",
 								},

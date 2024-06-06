@@ -15,12 +15,13 @@ import Animated, {
 	withTiming,
 	call,
 } from "react-native-reanimated";
-import myColors from "../utils/myColors";
+import { myColors, myDarkColors } from "../utils/myColors";
 import NotificationListItem from "./NotificationListItem";
 import { Ionicons } from "react-native-vector-icons";
 import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
 import { getBearerToken } from "../utils/bearer";
+import { useMyColorTheme } from "../utils/ThemeContext";
 
 const notifications = [
 	{
@@ -54,6 +55,8 @@ const notifications = [
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const MAX_TRANSLATE_Y = -SCREEN_HEIGHT + 50;
 const NotificationsSheet = (props) => {
+	const { isDarkMode } = useMyColorTheme();
+	const theme = isDarkMode ? dark : styles;
 	const { onToggle } = props;
 	const translateY = useSharedValue(0);
 
@@ -89,7 +92,7 @@ const NotificationsSheet = (props) => {
 		setTimeout(() => {
 			onToggle(); // Toggle notification sheet visibility
 		}, 1000); // Delay for 1 second (1000 milliseconds)
-	}
+	};
 
 	const gesture = Gesture.Pan().onEnd(() => {
 		if (translateY.value > -SCREEN_HEIGHT / 3) {
@@ -109,23 +112,23 @@ const NotificationsSheet = (props) => {
 
 	return (
 		<GestureDetector gesture={gesture}>
-			<Animated.View style={[styles.bottmSheetCont, rBottomSheetStyle]}>
-				<View style={styles.bg}>
-					<View style={styles.topView}>
-						<TouchableOpacity style={styles.back} onPress={toggleSheet}>
+			<Animated.View style={[theme.bottmSheetCont, rBottomSheetStyle]}>
+				<View style={theme.bg}>
+					<View style={theme.topView}>
+						<TouchableOpacity style={theme.back} onPress={toggleSheet}>
 							<Ionicons name="chevron-down" color={myColors.blue} size={28} />
-							<Text style={styles.topText}>Close</Text>
+							<Text style={theme.topText}>Close</Text>
 						</TouchableOpacity>
-						<TouchableOpacity style={styles.clear}>
-							<Text style={styles.topText}>Clear all</Text>
+						<TouchableOpacity style={theme.clear}>
+							<Text style={theme.topText}>Clear all</Text>
 						</TouchableOpacity>
 					</View>
-					<View style={styles.titleCont}>
-						<Text style={styles.title}>Notifications</Text>
+					<View style={theme.titleCont}>
+						<Text style={theme.title}>Notifications</Text>
 					</View>
 					<View>
 						<FlatList
-							style={styles.list}
+							style={theme.list}
 							showsVerticalScrollIndicator={false}
 							data={notifications}
 							keyExtractor={(item) => item.id.toString()}
@@ -187,6 +190,61 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		fontFamily: "SF-medium",
 		color: myColors.blue,
+	},
+	clear: {
+		padding: 8,
+	},
+	list: {
+		height: "70%",
+	},
+});
+
+
+const dark = StyleSheet.create({
+	bottmSheetCont: {
+		height: SCREEN_HEIGHT,
+		width: "100%",
+		backgroundColor: myDarkColors.dirtyWhite,
+		position: "absolute",
+		top: SCREEN_HEIGHT,
+		borderRadius: 25,
+	},
+	line: {
+		width: 75,
+		height: 4,
+		backgroundColor: myDarkColors.blue,
+		alignSelf: "center",
+		marginVertical: 15,
+		borderRadius: 2,
+	},
+	title: {
+		fontSize: 20,
+		fontFamily: "SF-medium",
+		color: myDarkColors.blue,
+	},
+	titleCont: {
+		paddingVertical: 4,
+		width: "100%",
+		alignItems: "center",
+		borderBottomWidth: 1,
+		borderColor: "#c1c1c1",
+	},
+	topView: {
+		flexDirection: "row",
+		width: "100%",
+		justifyContent: "space-between",
+		alignItems: "center",
+		paddingHorizontal: 10,
+	},
+	back: {
+		padding: 8,
+		flexDirection: "row",
+		alignItems: "center",
+	},
+	topText: {
+		fontSize: 16,
+		fontFamily: "SF-medium",
+		color: myDarkColors.blue,
 	},
 	clear: {
 		padding: 8,

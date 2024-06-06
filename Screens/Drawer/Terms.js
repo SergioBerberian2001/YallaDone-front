@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import React from "react";
 import splashBg from "../../assets/images/splash-bg.jpg";
-import myColors from "../../utils/myColors";
+import { myColors, myDarkColors } from "../../utils/myColors";
 
 const Terms = () => {
 	return (

@@ -14,6 +14,7 @@ import AboutUs from "./AboutUs";
 const Drawer = createDrawerNavigator();
 
 export default function App() {
+
 	return (
 		<Drawer.Navigator initialRouteName="Home" drawerContent={customContent}>
 			<Drawer.Screen

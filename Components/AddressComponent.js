@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { React, useState } from "react";
-import myColors from "../utils/myColors";
+import { myColors, myDarkColors } from "../utils/myColors";
 import { Ionicons } from "react-native-vector-icons";
 
 const AddressComponent = (props) => {

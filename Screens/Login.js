@@ -10,7 +10,7 @@ import {
 	Modal,
 } from "react-native";
 import React, { useState, useContext } from "react";
-import myColors from "../utils/myColors";
+import { myColors, myDarkColors } from "../utils/myColors";
 import axios from "axios";
 import { saveBearerToken, getBearerToken } from "../utils/bearer.js";
 import UserContext from "../utils/UserContext.js";

@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Dimensions, Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import myColors from "../utils/myColors";
+import { myColors, myDarkColors } from "../utils/myColors";
 import { Ionicons } from "react-native-vector-icons";
 
 //{"brand": "Visa",

@@ -12,11 +12,14 @@ import {
 } from "react-native";
 import React, { useState, useRef } from "react";
 import Logo from "../Components/Logo";
-import myColors from "../utils/myColors";
+import { myColors, myDarkColors } from "../utils/myColors";
 import OnBoardingContent from "../Components/OnBoardingContent";
 import Paginator from "../Components/Paginator";
+import { useMyColorTheme } from "../utils/ThemeContext";
 
 const Onboarding = ({ navigation, route }) => {
+	const { isDarkMode } = useMyColorTheme();
+	const theme = isDarkMode ? dark : styles;
 	const slidesInfo = route.params;
 	const width = 280;
 	const height = 35;
@@ -48,17 +51,17 @@ const Onboarding = ({ navigation, route }) => {
 
 	if (!slidesInfo) {
 		return (
-			<SafeAreaView style={styles.container}>
+			<SafeAreaView style={theme.container}>
 				<ActivityIndicator size="large" color="#00ff00" />
 			</SafeAreaView>
 		);
 	}
 	return (
-		<SafeAreaView style={styles.container}>
-			<View style={styles.logo}>
+		<SafeAreaView style={theme.container}>
+			<View style={theme.logo}>
 				<Logo width={width} height={height} />
 			</View>
-			<View style={styles.listView}>
+			<View style={theme.listView}>
 				<FlatList
 					data={slidesInfo}
 					renderItem={({ item }) => <OnBoardingContent item={item} />}
@@ -79,17 +82,17 @@ const Onboarding = ({ navigation, route }) => {
 
 			<Paginator data={slidesInfo} scrollX={scrollX} />
 
-			<View style={styles.bottomView}>
-				<TouchableOpacity style={styles.buttons} onPress={handleNavigation}>
-					<Text style={styles.buttonsText}>Skip</Text>
+			<View style={theme.bottomView}>
+				<TouchableOpacity style={theme.buttons} onPress={handleNavigation}>
+					<Text style={theme.buttonsText}>Skip</Text>
 				</TouchableOpacity>
 				{isLast ? (
-					<TouchableOpacity onPress={handleNavigation} style={styles.buttons}>
-						<Text style={styles.buttonsText}>Done</Text>
+					<TouchableOpacity onPress={handleNavigation} style={theme.buttons}>
+						<Text style={theme.buttonsText}>Done</Text>
 					</TouchableOpacity>
 				) : (
-					<TouchableOpacity onPress={scrollTo} style={styles.buttons}>
-						<Text style={styles.buttonsText}>Next</Text>
+					<TouchableOpacity onPress={scrollTo} style={theme.buttons}>
+						<Text style={theme.buttonsText}>Next</Text>
 					</TouchableOpacity>
 				)}
 			</View>
@@ -123,6 +126,36 @@ const styles = StyleSheet.create({
 		fontFamily: "SF-medium",
 		fontSize: 18,
 		color: myColors.blue,
+	},
+	buttons: {
+		padding: 6,
+	},
+});
+
+const dark = StyleSheet.create({
+	container: {
+		backgroundColor: myDarkColors.white,
+		flex: 1,
+		justifyContent: "space-around",
+		alignItems: "center",
+		paddingVertical: 20,
+	},
+	logo: {
+		marginVertical: 12,
+	},
+	listView: {
+		flex: 2,
+	},
+	bottomView: {
+		width: "100%",
+		flexDirection: "row",
+		justifyContent: "space-between",
+		padding: 20,
+	},
+	buttonsText: {
+		fontFamily: "SF-medium",
+		fontSize: 18,
+		color: myDarkColors.blue,
 	},
 	buttons: {
 		padding: 6,

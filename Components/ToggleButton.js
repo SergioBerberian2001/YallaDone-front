@@ -1,10 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import myColors from "../utils/myColors";
+import { myColors, myDarkColors } from "../utils/myColors";
+import { useMyColorTheme } from "../utils/ThemeContext";
 
-const ToggleButton = ({ initialValue = false, onToggle }) => {
+const ToggleButton = ({ initialValue = false, onToggle, isTheme }) => {
+	const { isDarkMode } = useMyColorTheme();
 	const [isEnabled, setIsEnabled] = useState(initialValue);
-
+	useEffect(() => {
+		if(isDarkMode && isTheme) {
+			setIsEnabled(isDarkMode)
+		}
+	},[])
 	const handleToggle = () => {
 		const newValue = !isEnabled;
 		setIsEnabled(newValue);

@@ -1,28 +1,34 @@
 import { StyleSheet, Text, View, Image, Dimensions } from "react-native";
 import React from "react";
 import { MaterialCommunityIcons } from "react-native-vector-icons";
-import myColors from "../utils/myColors";
+import { myColors, myDarkColors } from "../utils/myColors";
+import { useMyColorTheme } from "../utils/ThemeContext";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const NewsListItem = (props) => {
+	const { isDarkMode } = useMyColorTheme();
+	const theme = isDarkMode ? dark : styles;
 	const { news } = props;
 	return (
-		<View style={styles.container}>
-			<Image source={require('../assets/images/carousel.jpeg')} style={styles.image} />
-			<View style={styles.bottomContainer}>
-				<View style={styles.titleDate}>
-					<Text style={styles.title}>{news.Title}</Text>
-					<View style={styles.dateView}>
+		<View style={theme.container}>
+			<Image
+				source={require("../assets/images/carousel.jpeg")}
+				style={theme.image}
+			/>
+			<View style={theme.bottomContainer}>
+				<View style={theme.titleDate}>
+					<Text style={theme.title}>{news.Title}</Text>
+					<View style={theme.dateView}>
 						<MaterialCommunityIcons
 							name="calendar"
 							color={myColors.dirtyWhite90}
 							size={20}
 						/>
-						<Text style={styles.date}>{news.news_date}</Text>
+						<Text style={theme.date}>{news.news_date}</Text>
 					</View>
 				</View>
-				<Text style={styles.description}>{news.news_description}</Text>
+				<Text style={theme.description}>{news.news_description}</Text>
 			</View>
 		</View>
 	);
@@ -78,6 +84,59 @@ const styles = StyleSheet.create({
 	description: {
 		fontFamily: "SF",
 		color: myColors.white,
+		fontSize: 14,
+	},
+});
+
+
+const dark = StyleSheet.create({
+	container: {
+		borderRadius: 20,
+		width: SCREEN_WIDTH,
+		marginVertical: 8,
+		shadowColor: "#000000",
+		shadowOpacity: 0.5,
+		shadowRadius: 5,
+		shadowOffset: { width: 3, height: 3 },
+	},
+	image: {
+		borderTopLeftRadius: 20,
+		borderTopRightRadius: 20,
+		width: SCREEN_WIDTH,
+		height: SCREEN_WIDTH / 3,
+		objectFit: "cover",
+	},
+	bottomContainer: {
+		backgroundColor: myDarkColors.blue,
+		padding: 8,
+		borderBottomLeftRadius: 20,
+		borderBottomRightRadius: 20,
+	},
+	titleDate: {
+		width: "100%",
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		marginBottom: 12,
+	},
+	title: {
+		fontFamily: "SF-bold",
+		color: myDarkColors.white,
+		fontSize: 20,
+	},
+	dateView: {
+		flexDirection: "row",
+		alignItems: "center",
+	},
+	date: {
+		fontFamily: "SF",
+		color: myDarkColors.dirtyWhite90,
+		fontSize: 12,
+		marginLeft: 4,
+	},
+	description: {
+		fontFamily: "SF",
+		color: myDarkColors.white,
 		fontSize: 14,
 	},
 });
