@@ -6,65 +6,27 @@ import {
 	SafeAreaView,
 	Platform,
 	Image,
+	ScrollView,
+	Dimensions,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { useMyColorTheme } from "../utils/ThemeContext";
 import { Ionicons } from "react-native-vector-icons";
 import { myColors, myDarkColors } from "../utils/myColors";
 import ServiceItem from "../Components/ServiceItem";
 import { parseISO } from "date-fns";
 import { format, utcToZonedTime } from "date-fns-tz";
+import LiveTrack from "../Components/LiveTrack";
+import { useSafeAreaFrame } from "react-native-safe-area-context";
 
-// {
-//     "order_id": 1,
-//     "created_at": "2024-06-04T17:24:38.000000Z",
-//     "updated_at": "2024-06-04T17:24:38.000000Z",
-//     "user_id": 2,
-//     "Payment_id": 1,
-//     "Form_id": 1,
-//     "status": "waiting",
-//     "payment": {
-//         "payment_id": 1,
-//         "created_at": "2024-06-04T17:24:36.000000Z",
-//         "updated_at": "2024-06-04T17:24:36.000000Z",
-//         "user_id": 2,
-//         "type": "cash",
-//         "service_name": "Car Detailing",
-//         "price": 50
-//     },
-//     "service_form": {
-//         "form_id": 1,
-//         "created_at": "2024-06-04T17:24:36.000000Z",
-//         "updated_at": "2024-06-04T17:24:36.000000Z",
-//         "user_id": 2,
-//         "Service_id": 1,
-//         "service_date": "2024-06-04 20:18:00",
-//         "user_name": "Sergio",
-//         "user_lastname": "berberian",
-//         "email": "sergioberberian2001@gmail.com",
-//         "phone_number": 81384086,
-//         "location": "Home",
-//         "additional_info": null
-//     },
-//     "service": {
-//         "service_id": 1,
-//         "created_at": "2024-06-04T17:22:24.000000Z",
-//         "updated_at": "2024-06-04T17:22:24.000000Z",
-//         "image": "../assets/images/service-image.png",
-//         "category": "Car",
-//         "price": 50,
-//         "service_name": "Car Detailing",
-//         "service_description": "This service is made to help you make car detailing for your car while you are relaxed and doing your thing without worrying about it",
-//         "isEmergency": 0,
-//         "laravel_through_key": 1
-//     }
-// },
+const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
 const NotificationInfo = ({ navigation, route }) => {
 	const notification = route.params;
 	const { isDarkMode } = useMyColorTheme();
 	const theme = isDarkMode ? dark : styles;
-
-    const date = parseISO(notification.created_at);
+	const [isMaxTrack, setIsMaxTrack] = useState();
+	const date = parseISO(notification.created_at);
 
 	// // Step 2: Convert the timestamp to the desired time zone
 	// //   const zonedDate = utcToZonedTime(date, timeZone);
@@ -77,118 +39,162 @@ const NotificationInfo = ({ navigation, route }) => {
 	};
 
 	const handleTitle = () => {
-		if (notification.data[0].status === "waiting") {
+		if (notification.data[0].order_info.status === "waiting") {
 			return "Your order has been placed";
-		} else if (notification.data[0].status === "inprogress") {
+		} else if (notification.data[0].order_info.status === "inprogress") {
 			return "Your order is in Progress";
-		} else if (notification.data[0].status === "done") {
+		} else if (notification.data[0].order_info.status === "done") {
 			return "Your order is complete";
 		}
 	};
 
 	const handleType = () => {
-		if (notification.data[0].payments.type === "visa") {
+		if (notification.data[0].order_info.payments.type === "visa") {
 			return "Visa Card";
-		} else if (notification.data[0].payments.type === "cash") {
+		} else if (notification.data[0].order_info.payments.type === "cash") {
 			return "Cash On Delivery";
-		} else if (notification.data[0].payments.type === "yallacoin") {
+		} else if (notification.data[0].order_info.payments.type === "yallacoin") {
 			return "YALLACOINS";
 		}
 	};
 
 	const handleTypeIcon = () => {
-		if (notification.data[0].payments.type === "visa") {
+		if (notification.data[0].order_info.payments.type === "visa") {
 			return "card";
-		} else if (notification.data[0].payments.type === "cash") {
+		} else if (notification.data[0].order_info.payments.type === "cash") {
 			return "wallet";
 		}
 	};
+	const togglesetIsMaxTrack = () => {
+		setIsMaxTrack(!isMaxTrack);
+	};
 	return (
 		<SafeAreaView style={theme.container}>
-			<TouchableOpacity
-				style={Platform.OS === "ios" ? theme.topView : theme.topViewAndroid}
-				onPress={navigate}
-			>
-				<Ionicons
-					name="chevron-back-outline"
-					color={isDarkMode ? myDarkColors.blue : myColors.blue}
-					size={32}
-				/>
-				<Text style={theme.topText}>Back</Text>
-			</TouchableOpacity>
-			<Text style={theme.mainTitle}>{handleTitle()}</Text>
-			<Text style={theme.title}>Order Info:</Text>
-			<ServiceItem service={notification.data[0].service_forms.services} />
-			<View style={theme.row}>
-				<Text style={theme.title}>Method of payment: </Text>
-				{notification.data[0].payments.type === "yallacoin" ? (
-					<Image
-						source={require("../assets/images/YallaCoin.png")}
-						style={theme.yallacoin}
-					/>
-				) : (
-                    <View style={theme.typeIcon}>
+			<ScrollView>
+				<TouchableOpacity
+					style={Platform.OS === "ios" ? theme.topView : theme.topViewAndroid}
+					onPress={navigate}
+				>
 					<Ionicons
-						name={handleTypeIcon()}
+						name="chevron-back-outline"
 						color={isDarkMode ? myDarkColors.blue : myColors.blue}
-						size={20}
+						size={32}
 					/>
-                    </View>
-				)}
-				<Text style={theme.typeText}>{handleType()}</Text>
-			</View>
-            <Text style={theme.title}>Date: {formattedDate}</Text>
-			<Text style={theme.title}>Order Tacking</Text>
-			<View style={theme.trackRow}>
-				<View
-					style={[
-						theme.circle,
-						(notification.data[0].status === "waiting") |
-							(notification.data[0].status === "inprogress") |
-							(notification.data[0].status === "done") && {
-							backgroundColor: isDarkMode ? myDarkColors.blue : myColors.blue,
-						},
-					]}
-				></View>
-				<View
-					style={[
-						theme.circle,
-						(notification.data[0].status === "inprogress") | (notification.data[0].status === "done") && {
-							backgroundColor: isDarkMode ? myDarkColors.blue : myColors.blue,
-						},
-					]}
-				></View>
-				<View
-					style={[
-						theme.circle,
-						notification.data[0].status === "done" && {
-							backgroundColor: isDarkMode ? myDarkColors.blue : myColors.blue,
-						},
-					]}
-				></View>
-				<View
-					style={[
-						theme.rectangle,
-						(notification.data[0].status === "inprogress") | (notification.data[0].status === "done") && {
-							backgroundColor: isDarkMode ? myDarkColors.blue : myColors.blue,
-						},
-					]}
-				></View>
-				<View
-					style={[
-						theme.rectangle,
-						{ left: "50%" },
-						notification.data[0].status === "done" && {
-							backgroundColor: isDarkMode ? myDarkColors.blue : myColors.blue,
-						},
-					]}
-				></View>
-			</View>
-			<View style={theme.trackRowText}>
-				<Text style={theme.statusText}>Waiting</Text>
-				<Text style={theme.statusText}>In Progress</Text>
-				<Text style={theme.statusText}>Complete</Text>
-			</View>
+					<Text style={theme.topText}>Back</Text>
+				</TouchableOpacity>
+				<Text style={theme.mainTitle}>{handleTitle()}</Text>
+				<Text style={theme.title}>Order Info:</Text>
+				<ServiceItem service={notification.data[0].service_info} />
+				<View style={theme.row}>
+					<Text style={theme.title}>Method of payment: </Text>
+					{notification.data[0].order_info.payments.type === "yallacoin" ? (
+						<Image
+							source={require("../assets/images/YallaCoin.png")}
+							style={theme.yallacoin}
+						/>
+					) : (
+						<View style={theme.typeIcon}>
+							<Ionicons
+								name={handleTypeIcon()}
+								color={isDarkMode ? myDarkColors.blue : myColors.blue}
+								size={20}
+							/>
+						</View>
+					)}
+					<Text style={theme.typeText}>{handleType()}</Text>
+				</View>
+				<Text style={theme.title}>Date: {formattedDate}</Text>
+				<Text style={theme.title}>Order Tacking</Text>
+				<View style={theme.trackRow}>
+					<View
+						style={[
+							theme.circle,
+							(notification.data[0].order_info.status === "waiting") |
+								(notification.data[0].order_info.status === "inprogress") |
+								(notification.data[0].order_info.status === "done") && {
+								backgroundColor: isDarkMode ? myDarkColors.blue : myColors.blue,
+							},
+						]}
+					></View>
+					<View
+						style={[
+							theme.circle,
+							(notification.data[0].order_info.status === "inprogress") |
+								(notification.data[0].order_info.status === "done") && {
+								backgroundColor: isDarkMode ? myDarkColors.blue : myColors.blue,
+							},
+						]}
+					></View>
+					<View
+						style={[
+							theme.circle,
+							notification.data[0].status === "done" && {
+								backgroundColor: isDarkMode ? myDarkColors.blue : myColors.blue,
+							},
+						]}
+					></View>
+					<View
+						style={[
+							theme.rectangle,
+							(notification.data[0].order_info.status === "inprogress") |
+								(notification.data[0].order_info.status === "done") && {
+								backgroundColor: isDarkMode ? myDarkColors.blue : myColors.blue,
+							},
+						]}
+					></View>
+					<View
+						style={[
+							theme.rectangle,
+							{ left: "50%" },
+							notification.data[0].order_info.status === "done" && {
+								backgroundColor: isDarkMode ? myDarkColors.blue : myColors.blue,
+							},
+						]}
+					></View>
+				</View>
+				<View style={theme.trackRowText}>
+					<Text style={theme.statusText}>Waiting</Text>
+					<Text style={theme.statusText}>In Progress</Text>
+					<Text style={theme.statusText}>Complete</Text>
+				</View>
+				<View style={theme.mapOptions}>
+					<TouchableOpacity
+						style={theme.mapOptionsTouchable}
+						onPress={togglesetIsMaxTrack}
+					>
+						<Text style={theme.maximize}>Maximize</Text>
+						<View style={theme.arrowsCont}>
+							<View style={theme.arrowUp}>
+								<Ionicons
+									name="expand"
+									color={isDarkMode ? myDarkColors.black : myColors.white}
+									size={12}
+								/>
+							</View>
+						</View>
+					</TouchableOpacity>
+				</View>
+				<View style={theme.map}>
+					<LiveTrack userLocation={notification.data[0].address_info} />
+				</View>
+			</ScrollView>
+			{isMaxTrack && (
+				<View style={theme.darkBg}>
+					<TouchableOpacity
+						onPress={togglesetIsMaxTrack}
+						style={theme.closeMap}
+					>
+						<Ionicons
+							name="close"
+							color={isDarkMode ? myDarkColors.black : myColors.white}
+							size={30}
+						/>
+					</TouchableOpacity>
+					<View style={isMaxTrack ? theme.maxMap : theme.map}>
+						<LiveTrack userLocation={notification.data[0].address_info} />
+					</View>
+				</View>
+			)}
 		</SafeAreaView>
 	);
 };
@@ -254,29 +260,74 @@ const styles = StyleSheet.create({
 		marginHorizontal: 12,
 		justifyContent: "space-between",
 	},
-    title:{
-        margin:8,
-        fontFamily:"SF-medium",
-        color: myColors.blue,
-        fontSize:16,
-    },
-    mainTitle:{
-        margin:8,
-        fontFamily:"SF-bold",
-        color: myColors.blue,
-        fontSize:20,
-        alignSelf:"center"
-    },
-    typeIcon:{
-        marginRight:4
-    },
-    statusText:{
-        fontFamily:"SF", 
-        margin:8
-    },
-    typeText:{
-        
-    },
+	title: {
+		margin: 8,
+		fontFamily: "SF-medium",
+		color: myColors.blue,
+		fontSize: 16,
+	},
+	mainTitle: {
+		margin: 8,
+		fontFamily: "SF-bold",
+		color: myColors.blue,
+		fontSize: 20,
+		alignSelf: "center",
+	},
+	typeIcon: {
+		marginRight: 4,
+	},
+	statusText: {
+		fontFamily: "SF",
+		margin: 8,
+	},
+	typeText: {},
+	map: {
+		width: "90%",
+		aspectRatio: 2,
+		alignSelf: "center",
+	},
+	mapOptions: {
+		width: "90%",
+		justifyContent: "flex-end",
+		alignItems: "center",
+		flexDirection: "row",
+		backgroundColor: "gray",
+		alignSelf: "center",
+		borderTopLeftRadius: 10,
+		borderTopRightRadius: 10,
+	},
+	mapOptionsTouchable: {
+		flexDirection: "row",
+		alignItems: "center",
+		borderTopLeftRadius: 10,
+		borderTopRightRadius: 10,
+		padding: 8,
+	},
+	arrowUp: {},
+	arrowsCont: {},
+	maximize: {
+		fontFamily: "SF",
+		fontSize: 14,
+		marginHorizontal: 4,
+		color: myDarkColors.black,
+	},
+	maxMap: {
+		width: screenWidth,
+		height: screenHeight * 0.8,
+		zIndex: 100,
+	},
+	darkBg: {
+		backgroundColor: "rgba(0,0,0,0.5)",
+		width: screenWidth,
+		height: screenHeight,
+		position: "absolute",
+		zIndex: 10,
+		paddingVertical: "10%",
+	},
+	closeMap: {
+		marginLeft: "90%",
+		marginVertical:16
+	},
 });
 const dark = StyleSheet.create({
 	container: {
@@ -304,26 +355,26 @@ const dark = StyleSheet.create({
 	yallacoin: {
 		width: 20,
 		height: 20,
-        marginHorizontal:2,
+		marginHorizontal: 2,
 	},
-    
-    title:{
-        margin:8,
-        fontFamily:"SF-medium",
-        color: myDarkColors.blue,
-        fontSize:16,
-    },
-    mainTitle:{
-        margin:8,
-        fontFamily:"SF-bold",
-        color: myDarkColors.blue,
-        fontSize:20,
-        alignSelf:"center"
-    },
-    typeIcon:{
-        marginRight:4
-    },
-    row: {
+
+	title: {
+		margin: 8,
+		fontFamily: "SF-medium",
+		color: myDarkColors.blue,
+		fontSize: 16,
+	},
+	mainTitle: {
+		margin: 8,
+		fontFamily: "SF-bold",
+		color: myDarkColors.blue,
+		fontSize: 20,
+		alignSelf: "center",
+	},
+	typeIcon: {
+		marginRight: 4,
+	},
+	row: {
 		flexDirection: "row",
 		width: "100%",
 		alignItems: "center",
@@ -355,29 +406,75 @@ const dark = StyleSheet.create({
 		marginHorizontal: 12,
 		justifyContent: "space-between",
 	},
-    title:{
-        margin:8,
-        fontFamily:"SF-medium",
-        color: myDarkColors.blue,
-        fontSize:16,
-    },
-    mainTitle:{
-        margin:8,
-        fontFamily:"SF-bold",
-        color: myDarkColors.blue,
-        fontSize:20,
-        alignSelf:"center"
-    },
-    typeIcon:{
-        marginRight:4
-    },
-    statusText:{
-        color:myDarkColors.black,
-        fontFamily:"SF", 
-        margin:8
-    },
-    typeText:{
-        color:myDarkColors.black,
-        
-    },
+	title: {
+		margin: 8,
+		fontFamily: "SF-medium",
+		color: myDarkColors.blue,
+		fontSize: 16,
+	},
+	mainTitle: {
+		margin: 8,
+		fontFamily: "SF-bold",
+		color: myDarkColors.blue,
+		fontSize: 20,
+		alignSelf: "center",
+	},
+	typeIcon: {
+		marginRight: 4,
+	},
+	statusText: {
+		color: myDarkColors.black,
+		fontFamily: "SF",
+		margin: 8,
+	},
+	typeText: {
+		color: myDarkColors.black,
+	},
+	map: {
+		width: "90%",
+		aspectRatio: 2,
+		alignSelf: "center",
+	},
+	mapOptions: {
+		width: "90%",
+		justifyContent: "flex-end",
+		alignItems: "center",
+		flexDirection: "row",
+		backgroundColor: "gray",
+		alignSelf: "center",
+		borderTopLeftRadius: 10,
+		borderTopRightRadius: 10,
+	},
+	mapOptionsTouchable: {
+		flexDirection: "row",
+		alignItems: "center",
+		borderTopLeftRadius: 10,
+		borderTopRightRadius: 10,
+		padding: 8,
+	},
+	arrowUp: {},
+	arrowsCont: {},
+	maximize: {
+		fontFamily: "SF",
+		fontSize: 14,
+		marginHorizontal: 4,
+		color: myDarkColors.black,
+	},
+	maxMap: {
+		width: screenWidth,
+		height: screenHeight * 0.8,
+		zIndex: 100,
+	},
+	darkBg: {
+		backgroundColor: "rgba(0,0,0,0.5)",
+		width: screenWidth,
+		height: screenHeight,
+		position: "absolute",
+		zIndex: 10,
+		paddingVertical: "10%",
+	},
+	closeMap: {
+		marginLeft: "90%",
+		marginVertical:16
+	},
 });

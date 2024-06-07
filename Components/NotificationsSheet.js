@@ -6,6 +6,7 @@ import {
 	View,
 	FlatList,
 	ActivityIndicator,
+	Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -23,81 +24,7 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { getBearerToken } from "../utils/bearer";
 import { useMyColorTheme } from "../utils/ThemeContext";
-import { isLabeledStatement } from "typescript";
 
-const notifications = [
-	{
-		id: 0,
-		title: " Your order has been accepted",
-		description:
-			"Description of notification 1 that will be a breif description",
-		type: "order",
-		created_at: "2024-05-30T19:20:49.000000Z",
-		isRead: false,
-	},
-	{
-		id: 1,
-		title: " Your email has been accepted",
-		description:
-			"Description of notification 1 that will be a breif description",
-		type: "email",
-		created_at: "2024-05-30T19:20:49.000000Z",
-		isRead: false,
-	},
-	{
-		id: 2,
-		title: " Your order has been accepted",
-		description:
-			"Description of notification 1 that will be a breif description",
-		type: "order",
-		created_at: "2024-05-30T19:20:49.000000Z",
-		isRead: true,
-	},
-];
-
-// {
-// 	"id": "68141c51-51aa-4d87-bc23-638c039650ae",
-// 	"type": "App\\Notifications\\OrderNotification",
-// 	"notifiable_type": "App\\Models\\users",
-// 	"notifiable_id": 6,
-// 	"data": [
-// 		{
-// 			"user_id": 6,
-// 			"payment_id": 14,
-// 			"form_id": 14,
-// 			"status": "waiting",
-// 			"updated_at": "2024-06-06T16:08:53.000000Z",
-// 			"created_at": "2024-06-06T16:08:53.000000Z",
-// 			"order_id": 14,
-// 			"payments": {
-// 				"payment_id": 14,
-// 				"created_at": "2024-06-06T16:08:51.000000Z",
-// 				"updated_at": "2024-06-06T16:08:51.000000Z",
-// 				"user_id": 6,
-// 				"type": "cash",
-// 				"service_name": "Car Detailing",
-// 				"price": 50
-// 			},
-// 			"service_forms": {
-// 				"form_id": 14,
-// 				"created_at": "2024-06-06T16:08:51.000000Z",
-// 				"updated_at": "2024-06-06T16:08:51.000000Z",
-// 				"user_id": 6,
-// 				"Service_id": 1,
-// 				"service_date": "2024-06-06 18:58:00",
-// 				"user_name": "Sergio",
-// 				"user_lastname": "Berberian",
-// 				"email": "sergio@gmail.com",
-// 				"phone_number": 78945623,
-// 				"location": "Gggg",
-// 				"additional_info": "Ggggg"
-// 			}
-// 		}
-// 	],
-// 	"read_at": null,
-// 	"created_at": "2024-06-06T16:08:53.000000Z",
-// 	"updated_at": "2024-06-06T16:08:53.000000Z"
-// }
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const MAX_TRANSLATE_Y = -SCREEN_HEIGHT + 50;
 const NotificationsSheet = (props) => {
@@ -109,6 +36,7 @@ const NotificationsSheet = (props) => {
 	const translateY = useSharedValue(0);
 	const context = useSharedValue({ y: 0 });
 	const [isLoading, setIsLoading] = useState(true);
+	const [reload, setReload] = useState(true);
 	useFocusEffect(
 		React.useCallback(() => {
 			const fetchData = async () => {
@@ -132,7 +60,7 @@ const NotificationsSheet = (props) => {
 			};
 
 			fetchData();
-		}, [])
+		}, [reload])
 	);
 
 	const toggleSheet = () => {
@@ -162,6 +90,95 @@ const NotificationsSheet = (props) => {
 		navigation.navigate("NotificationInfo", notification);
 	};
 
+	const showDeleteConfirmation = () => {
+		Alert.alert(
+			"Delete Notifications",
+			"Are you sure you want to delete all your notifications?",
+			[
+				{ text: "Cancel", style: "cancel" },
+				{ text: "Delete", onPress: handleClearAll },
+			]
+		);
+	};
+
+	const handleClearAll = async () => {
+		try {
+			const token = await getBearerToken();
+			const response = await axios.delete(
+				"http://192.168.1.100:8000/api/DeleteUserNotification",
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+			// navigation.navigate("Splash");
+			setReload(!reload);
+		} catch (error) {
+			console.error("Error fetching data:", error);
+			if (error.response) {
+				console.error("Status:", error.response.status);
+				console.error("Data:", error.response.data);
+			}
+		}
+	};
+
+	const handleReadOneNotification = async (notId) => {
+		try {
+			const token = await getBearerToken();
+
+			const notificationId = notId; // Assuming address_id is a number
+			const url = `http://192.168.1.100:8000/api/markAsRead/${notificationId}`;
+
+			const response = await axios.get(url, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			setReload(!reload);
+		} catch (error) {
+			console.error("Error:", error);
+			throw error; // Throw the error to be caught by the caller
+		}
+	};
+
+	const handleReadAll = async () => {
+		try {
+			const token = await getBearerToken();
+			const url = `http://192.168.1.100:8000/api/ReadAllUserNotification`;
+
+			const response = await axios.get(url, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			console.log("success")
+			setReload(!reload);
+		} catch (error) {
+			console.error("Error:", error);
+			throw error; // Throw the error to be caught by the caller
+		}
+	};
+
+	const handleDeleteOne = async (notId) => {
+		try {
+			const token = await getBearerToken();
+
+			const notificationId = notId; 
+			const url = `http://192.168.1.100:8000/api/DestroyUserNotifiation/${notificationId}`;
+
+			const response = await axios.delete(url, {
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			});
+			setReload(!reload);
+		} catch (error) {
+			console.error("Error:", error);
+			throw error; // Throw the error to be caught by the caller
+		}
+	};
+
 	return (
 		<GestureDetector gesture={gesture}>
 			<Animated.View style={[theme.bottmSheetCont, rBottomSheetStyle]}>
@@ -176,10 +193,17 @@ const NotificationsSheet = (props) => {
 					<View style={theme.bg}>
 						<View style={theme.topView}>
 							<TouchableOpacity style={theme.back} onPress={toggleSheet}>
-								<Ionicons name="chevron-down" color={myColors.blue} size={28} />
+								<Ionicons
+									name="chevron-down"
+									color={isDarkMode ? myDarkColors.blue : myColors.blue}
+									size={28}
+								/>
 								<Text style={theme.topText}>Close</Text>
 							</TouchableOpacity>
-							<TouchableOpacity style={theme.clear}>
+							<TouchableOpacity
+								style={theme.clear}
+								onPress={showDeleteConfirmation}
+							>
 								<Text style={theme.topText}>Clear all</Text>
 							</TouchableOpacity>
 						</View>
@@ -196,9 +220,14 @@ const NotificationsSheet = (props) => {
 									<NotificationListItem
 										notification={item}
 										onNavigate={navigateToNotificationInfo}
+										onRead={handleReadOneNotification}
+										onDelete={handleDeleteOne}
 									/>
 								)}
 							/>
+							<TouchableOpacity style={theme.markAll} onPress={handleReadAll}>
+								<Text style={theme.markAllText}>Mark all as read</Text>
+							</TouchableOpacity>
 						</View>
 					</View>
 				)}
@@ -259,10 +288,23 @@ const styles = StyleSheet.create({
 		padding: 8,
 	},
 	list: {
-		height: "70%",
+		height: "80%",
 	},
 	indicatorView: {
 		paddingTop: "20%",
+	},
+	markAll: {
+		alignItems: "center",
+		padding: 8,
+		paddingTop: 12,
+		width: "100%",
+		borderTopColor: "#c1c1c1",
+		borderTopWidth: 1,
+	},
+	markAllText: {
+		fontSize: 18,
+		fontFamily: "SF-medium",
+		color: myColors.blue,
 	},
 });
 
@@ -293,7 +335,7 @@ const dark = StyleSheet.create({
 		width: "100%",
 		alignItems: "center",
 		borderBottomWidth: 1,
-		borderColor: "#c1c1c1",
+		borderColor: myDarkColors.black,
 	},
 	topView: {
 		flexDirection: "row",
@@ -316,9 +358,23 @@ const dark = StyleSheet.create({
 		padding: 8,
 	},
 	list: {
-		height: "70%",
+		height: "73%",
 	},
 	indicatorView: {
 		paddingTop: "20%",
 	},
+	markAll: {
+		alignItems: "center",
+		padding: 8,
+		paddingTop: 12,
+		width: "100%",
+		borderTopColor: "white",
+		borderTopWidth: 1,
+	},
+	markAllText: {
+		fontSize: 18,
+		fontFamily: "SF-medium",
+		color: myDarkColors.blue,
+	},
+	
 });

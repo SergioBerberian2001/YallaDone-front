@@ -1,5 +1,4 @@
-import { StatusBar } from "expo-status-bar";
-import { useCallback } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -8,13 +7,15 @@ import {
 	SafeAreaView,
 	useWindowDimensions,
 	Settings,
+	StatusBar,
 } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { myColors, myDarkColors } from "./utils/myColors";
-
+import { useMyColorTheme } from "./utils/ThemeContext";
+import GetIsDarkMode from "./Components/GetIsDarkMode";
 
 import Logo from "./Components/Logo";
 import Splash from "./Screens/Splash";
@@ -51,6 +52,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
 	const { width } = useWindowDimensions();
 	const height = width / 8;
+
 	const [fontsLoaded, fontError] = useFonts({
 		SF: require("./assets/fonts/SF-pro-regular.otf"),
 		"SF-bold": require("./assets/fonts/SF-pro-bold.otf"),
@@ -66,10 +68,12 @@ export default function App() {
 	if (!fontsLoaded && !fontError) {
 		return <Loading />;
 	}
+
 	return (
 		<UserProvider>
 			<ThemeProvider>
 				<NavigationContainer>
+					<GetIsDarkMode />
 					<Stack.Navigator
 						onLayout={onLayoutRootView}
 						initialRouteName="Splash"
