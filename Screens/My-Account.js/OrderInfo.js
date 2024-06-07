@@ -116,27 +116,29 @@ const OrderInfo = ({ navigation, route }) => {
 				/>
 				<Text style={theme.topText}>Back</Text>
 			</TouchableOpacity>
-			<Text>{handleTitle()}</Text>
-			<Text>Order Info:</Text>
+			<Text style={theme.mainTitle}>{handleTitle()}</Text>
+			<Text style={theme.title}>Order Info:</Text>
 			<ServiceItem service={order.service} />
 			<View style={theme.row}>
-				<Text>Method of payment: </Text>
+				<Text style={theme.title}>Method of payment: </Text>
 				{order.payment.type === "yallacoin" ? (
 					<Image
 						source={require("../../assets/images/YallaCoin.png")}
 						style={theme.yallacoin}
 					/>
 				) : (
+                    <View style={theme.typeIcon}>
 					<Ionicons
 						name={handleTypeIcon()}
 						color={isDarkMode ? myDarkColors.blue : myColors.blue}
 						size={20}
 					/>
+                    </View>
 				)}
-				<Text>{handleType()}</Text>
+				<Text style={theme.typeText}>{handleType()}</Text>
 			</View>
-            <Text>Date: {formattedDate}</Text>
-			<Text>Order Tacking</Text>
+            <Text style={theme.title}>Date: {formattedDate}</Text>
+			<Text style={theme.title}>Order Tacking</Text>
 			<View style={theme.trackRow}>
 				<View
 					style={[
@@ -183,9 +185,9 @@ const OrderInfo = ({ navigation, route }) => {
 				></View>
 			</View>
 			<View style={theme.trackRowText}>
-				<Text>Waiting</Text>
-				<Text>In Progress</Text>
-				<Text>Complete</Text>
+				<Text style={theme.statusText}>Waiting</Text>
+				<Text style={theme.statusText}>In Progress</Text>
+				<Text style={theme.statusText}>Complete</Text>
 			</View>
 		</SafeAreaView>
 	);
@@ -252,6 +254,29 @@ const styles = StyleSheet.create({
 		marginHorizontal: 12,
 		justifyContent: "space-between",
 	},
+    title:{
+        margin:8,
+        fontFamily:"SF-medium",
+        color: myColors.blue,
+        fontSize:16,
+    },
+    mainTitle:{
+        margin:8,
+        fontFamily:"SF-bold",
+        color: myColors.blue,
+        fontSize:20,
+        alignSelf:"center"
+    },
+    typeIcon:{
+        marginRight:4
+    },
+    statusText:{
+        fontFamily:"SF", 
+        margin:8
+    },
+    typeText:{
+        
+    },
 });
 const dark = StyleSheet.create({
 	container: {
@@ -279,5 +304,80 @@ const dark = StyleSheet.create({
 	yallacoin: {
 		width: 20,
 		height: 20,
+        marginHorizontal:2,
 	},
+    
+    title:{
+        margin:8,
+        fontFamily:"SF-medium",
+        color: myDarkColors.blue,
+        fontSize:16,
+    },
+    mainTitle:{
+        margin:8,
+        fontFamily:"SF-bold",
+        color: myDarkColors.blue,
+        fontSize:20,
+        alignSelf:"center"
+    },
+    typeIcon:{
+        marginRight:4
+    },
+    row: {
+		flexDirection: "row",
+		width: "100%",
+		alignItems: "center",
+	},
+	trackRow: {
+		flexDirection: "row",
+		width: "90%",
+		alignItems: "center",
+		marginHorizontal: 16,
+		justifyContent: "space-between",
+	},
+	circle: {
+		width: 45,
+		height: 45,
+		backgroundColor: myColors.grey,
+		borderRadius: "100%",
+	},
+	rectangle: {
+		width: "50%",
+		height: 15,
+		backgroundColor: myColors.grey,
+		borderRadius: "100%",
+		position: "absolute",
+		zIndex: -1,
+	},
+	trackRowText: {
+		flexDirection: "row",
+		alignItems: "center",
+		marginHorizontal: 12,
+		justifyContent: "space-between",
+	},
+    title:{
+        margin:8,
+        fontFamily:"SF-medium",
+        color: myDarkColors.blue,
+        fontSize:16,
+    },
+    mainTitle:{
+        margin:8,
+        fontFamily:"SF-bold",
+        color: myDarkColors.blue,
+        fontSize:20,
+        alignSelf:"center"
+    },
+    typeIcon:{
+        marginRight:4
+    },
+    statusText:{
+        color:myDarkColors.black,
+        fontFamily:"SF", 
+        margin:8
+    },
+    typeText:{
+        color:myDarkColors.black,
+        
+    },
 });

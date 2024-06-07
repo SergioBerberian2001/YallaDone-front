@@ -14,11 +14,13 @@ import { myColors, myDarkColors } from "../utils/myColors";
 import axios from "axios";
 import { saveBearerToken, getBearerToken } from "../utils/bearer.js";
 import UserContext from "../utils/UserContext.js";
+import { Ionicons } from "react-native-vector-icons";
 
 const Login = (props) => {
 	const { onNavigate } = props;
 	const { saveUser } = useContext(UserContext);
 	const [error, setError] = useState("");
+	const [showPassword, setShowPassword] = useState(false);
 	const [user, setUser] = useState({
 		email: "",
 		//81384086
@@ -117,6 +119,10 @@ const Login = (props) => {
 		}
 	};
 
+	const toggleShowPass = () => {
+		setShowPassword(!showPassword);
+	};
+
 	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
 			<View>
@@ -129,15 +135,23 @@ const Login = (props) => {
 						onChangeText={(value) => onUpdateField("email", value)}
 						value={user.email}
 					/>
-
-					<TextInput
-						secureTextEntry
-						placeholder="Password"
-						placeholderTextColor="rgba(60,60,67,0.3)"
-						style={styles.textInput}
-						onChangeText={(value) => onUpdateField("password", value)}
-						value={user.password}
-					/>
+					<View style={styles.view}>
+						<TextInput
+							secureTextEntry={!showPassword}
+							placeholder="Password"
+							placeholderTextColor="rgba(60,60,67,0.3)"
+							style={styles.textInput}
+							onChangeText={(value) => onUpdateField("password", value)}
+							value={user.password}
+						/>
+						<TouchableOpacity style={styles.eye} onPress={toggleShowPass}>
+							{showPassword ? (
+								<Ionicons name="eye" color="gray" size={20} />
+							) : (
+								<Ionicons name="eye-off" color="gray" size={20} />
+							)}
+						</TouchableOpacity>
+					</View>
 				</View>
 				<TouchableOpacity style={styles.signupButton} onPress={handleSignin}>
 					<Text style={styles.signupText}>Login</Text>
@@ -162,7 +176,7 @@ const styles = StyleSheet.create({
 		width: "100%",
 		fontSize: 16,
 		borderRadius: 5,
-		marginHorizontal: 8,
+		// marginHorizontal: 8,
 		marginVertical: 8,
 		padding: 14,
 		backgroundColor: myColors.dirtyWhite90,
@@ -226,4 +240,12 @@ const styles = StyleSheet.create({
 		fontFamily: "SF",
 		// fontSize:,
 	},
+	view: {
+		width: "100%",
+	},
+	eye:{
+		position:"absolute",
+		right:15,
+		top:"38%"
+	}
 });

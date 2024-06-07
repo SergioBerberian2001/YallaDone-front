@@ -41,6 +41,8 @@ const Signup = (props) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [apiResponse, setApiResponse] = useState([]);
 	const [loadingError, setLoadingError] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
+	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
 	const handleSignup = async (userInfo) => {
 		try {
@@ -184,178 +186,197 @@ const Signup = (props) => {
 		}
 	};
 
+	const toggleShowPass = () => {
+		setShowPassword(!showPassword);
+	};
+	const toggleShowConfirmPass = () => {
+		setShowConfirmPassword(!showConfirmPassword);
+	};
+
 	return (
-		
-			<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-				<View>
-					<View style={styles.formView}>
-						<Text style={styles.errorText}>{error}</Text>
+		<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+			<View>
+				<View style={styles.formView}>
+					<Text style={styles.errorText}>{error}</Text>
+					<TextInput
+						placeholder="Email"
+						placeholderTextColor="rgba(60,60,67,0.3)"
+						style={styles.textInput}
+						onChangeText={(value) => onUpdateField("email", value)}
+						value={user.email}
+					/>
+					<TextInput
+						placeholder="Phone Number"
+						placeholderTextColor="rgba(60,60,67,0.3)"
+						style={styles.textInput}
+						onChangeText={(value) => onUpdateField("phone_number", value)}
+						value={user.phone_number}
+						keyboardType="numeric"
+					/>
+					<View style={styles.view}>
 						<TextInput
-							placeholder="Email"
-							placeholderTextColor="rgba(60,60,67,0.3)"
-							style={styles.textInput}
-							onChangeText={(value) => onUpdateField("email", value)}
-							value={user.email}
-						/>
-						<TextInput
-							placeholder="Phone Number"
-							placeholderTextColor="rgba(60,60,67,0.3)"
-							style={styles.textInput}
-							onChangeText={(value) => onUpdateField("phone_number", value)}
-							value={user.phone_number}
-							keyboardType="numeric"
-						/>
-						<TextInput
-							secureTextEntry
+							secureTextEntry={!showPassword}
 							placeholder="Password"
 							placeholderTextColor="rgba(60,60,67,0.3)"
 							style={styles.textInput}
 							onChangeText={(value) => onUpdateField("password", value)}
 							value={user.password}
 						/>
+						<TouchableOpacity style={styles.eye} onPress={toggleShowPass}>
+							{showPassword ? (
+								<Ionicons name="eye" color="gray" size={20} />
+							) : (
+								<Ionicons name="eye-off" color="gray" size={20} />
+							)}
+						</TouchableOpacity>
+					</View>
+					<View style={styles.view}>
 						<TextInput
-							secureTextEntry
+							secureTextEntry={!showConfirmPassword}
 							placeholder="Confirm Password"
 							placeholderTextColor="rgba(60,60,67,0.3)"
 							style={styles.textInput}
 							onChangeText={(value) => onUpdateField("confirmPass", value)}
 							value={user.confirmPass}
 						/>
+						<TouchableOpacity style={styles.eye} onPress={toggleShowConfirmPass}>
+							{showConfirmPassword ? (
+								<Ionicons name="eye" color="gray" size={20} />
+							) : (
+								<Ionicons name="eye-off" color="gray" size={20} />
+							)}
+						</TouchableOpacity>
 					</View>
-					<TouchableOpacity
-						style={styles.signupButton}
-						onPress={handleSignupFirst}
+				</View>
+				<TouchableOpacity
+					style={styles.signupButton}
+					onPress={handleSignupFirst}
+				>
+					<Text style={styles.signupText}>Signup</Text>
+				</TouchableOpacity>
+				<View>
+					<View style={styles.radioView}>
+						<TouchableOpacity
+							style={[
+								styles.radiobutton,
+								acceptTerms && styles.radioButtonSelected,
+							]}
+							onPress={handleToggleAcceptTerms}
+						/>
+						<Text style={styles.radioText}>
+							I accept the term of service and the privacy policy
+						</Text>
+					</View>
+					<View style={styles.radioView}>
+						<TouchableOpacity
+							style={[
+								styles.radiobutton,
+								receiveEmails && styles.radioButtonSelected,
+							]}
+							onPress={handleToggleReceiveEmails}
+						/>
+						<Text style={styles.radioText}>
+							I would like to receive emails about news and events
+						</Text>
+					</View>
+					<View style={styles.loginView}>
+						<Text style={styles.loginMainText}>Already have an account? </Text>
+						<TouchableOpacity style={styles.loginTouchable}>
+							<Text style={styles.loginText}>Login</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
+				<Modal
+					animationType="slide"
+					transparent={true}
+					visible={modalVisible}
+					onRequestClose={() => {
+						Alert.alert("Modal has been closed.");
+						ToggleModal();
+					}}
+				>
+					<TouchableWithoutFeedback
+						onPress={Keyboard.dismiss}
+						accessible={false}
 					>
-						<Text style={styles.signupText}>Signup</Text>
-					</TouchableOpacity>
-					<View>
-						<View style={styles.radioView}>
-							<TouchableOpacity
-								style={[
-									styles.radiobutton,
-									acceptTerms && styles.radioButtonSelected,
-								]}
-								onPress={handleToggleAcceptTerms}
+						<View style={styles.centeredView}>
+							<TouchableOpacity style={styles.topView} onPress={ToggleModal}>
+								<Ionicons
+									name="chevron-back-outline"
+									color={myColors.blue}
+									size={24}
+								/>
+								<Text style={styles.topText}>Back</Text>
+							</TouchableOpacity>
+							<Text style={styles.modalText}>Please give us your name:</Text>
+							<TextInput
+								placeholder="First Name"
+								placeholderTextColor="rgba(60,60,67,0.3)"
+								style={styles.textInput}
+								onChangeText={(value) => onUpdateField("user_name", value)}
+								value={user.user_name}
 							/>
-							<Text style={styles.radioText}>
-								I accept the term of service and the privacy policy
-							</Text>
-						</View>
-						<View style={styles.radioView}>
-							<TouchableOpacity
-								style={[
-									styles.radiobutton,
-									receiveEmails && styles.radioButtonSelected,
-								]}
-								onPress={handleToggleReceiveEmails}
+							<TextInput
+								placeholder="Last Name"
+								placeholderTextColor="rgba(60,60,67,0.3)"
+								style={styles.textInput}
+								onChangeText={(value) => onUpdateField("user_lastname", value)}
+								value={user.user_lastname}
 							/>
-							<Text style={styles.radioText}>
-								I would like to receive emails about news and events
-							</Text>
-						</View>
-						<View style={styles.loginView}>
-							<Text style={styles.loginMainText}>
-								Already have an account?{" "}
-							</Text>
-							<TouchableOpacity style={styles.loginTouchable}>
-								<Text style={styles.loginText}>Login</Text>
+							<Text style={styles.modalText}>Date Of Birth:</Text>
+							{showPicker && (
+								<DateTimePicker
+									mode="date"
+									display="spinner"
+									value={date}
+									onChange={onDateChange}
+									style={styles.datePicker}
+									themeVariant="light"
+								/>
+							)}
+							{showPicker && Platform.OS === "ios" && (
+								<View style={styles.dateButtonsView}>
+									<TouchableOpacity
+										onPress={toggleDatePicker}
+										style={styles.dateCancelButton}
+									>
+										<Text style={styles.dateCancelText}>Cancel</Text>
+									</TouchableOpacity>
+									<TouchableOpacity
+										onPress={confirmIOSDate}
+										style={styles.dateConfirmButton}
+									>
+										<Text style={styles.dateConfirmText}>Confirm</Text>
+									</TouchableOpacity>
+								</View>
+							)}
+
+							{!showPicker && (
+								<Pressable onPress={toggleDatePicker}>
+									<TextInput
+										style={styles.textInput}
+										placeholder="Birthday"
+										value={dateOfBirth}
+										onChangeText={setDateOfBirth}
+										placeholderTextColor="rgba(60,60,67,0.3)"
+										editable={false}
+										onPressIn={toggleDatePicker}
+									></TextInput>
+								</Pressable>
+							)}
+
+							<Text style={styles.errorText}>{error}</Text>
+							<TouchableOpacity
+								style={styles.signup2Button}
+								onPress={handleSignupSecond}
+							>
+								<Text style={styles.signup2Text}>Signup</Text>
 							</TouchableOpacity>
 						</View>
-					</View>
-					<Modal
-						animationType="slide"
-						transparent={true}
-						visible={modalVisible}
-						onRequestClose={() => {
-							Alert.alert("Modal has been closed.");
-							ToggleModal();
-						}}
-					>
-						<TouchableWithoutFeedback
-							onPress={Keyboard.dismiss}
-							accessible={false}
-						>
-							<View style={styles.centeredView}>
-								<TouchableOpacity style={styles.topView} onPress={ToggleModal}>
-									<Ionicons
-										name="chevron-back-outline"
-										color={myColors.blue}
-										size={24}
-									/>
-									<Text style={styles.topText}>Back</Text>
-								</TouchableOpacity>
-								<Text style={styles.modalText}>Please give us your name:</Text>
-								<TextInput
-									placeholder="First Name"
-									placeholderTextColor="rgba(60,60,67,0.3)"
-									style={styles.textInput}
-									onChangeText={(value) => onUpdateField("user_name", value)}
-									value={user.user_name}
-								/>
-								<TextInput
-									placeholder="Last Name"
-									placeholderTextColor="rgba(60,60,67,0.3)"
-									style={styles.textInput}
-									onChangeText={(value) =>
-										onUpdateField("user_lastname", value)
-									}
-									value={user.user_lastname}
-								/>
-								<Text style={styles.modalText}>Date Of Birth:</Text>
-								{showPicker && (
-									<DateTimePicker
-										mode="date"
-										display="spinner"
-										value={date}
-										onChange={onDateChange}
-										style={styles.datePicker}
-										themeVariant="light"
-									/>
-								)}
-								{showPicker && Platform.OS === "ios" && (
-									<View style={styles.dateButtonsView}>
-										<TouchableOpacity
-											onPress={toggleDatePicker}
-											style={styles.dateCancelButton}
-										>
-											<Text style={styles.dateCancelText}>Cancel</Text>
-										</TouchableOpacity>
-										<TouchableOpacity
-											onPress={confirmIOSDate}
-											style={styles.dateConfirmButton}
-										>
-											<Text style={styles.dateConfirmText}>Confirm</Text>
-										</TouchableOpacity>
-									</View>
-								)}
-
-								{!showPicker && (
-									<Pressable onPress={toggleDatePicker}>
-										<TextInput
-											style={styles.textInput}
-											placeholder="Birthday"
-											value={dateOfBirth}
-											onChangeText={setDateOfBirth}
-											placeholderTextColor="rgba(60,60,67,0.3)"
-											editable={false}
-											onPressIn={toggleDatePicker}
-										></TextInput>
-									</Pressable>
-								)}
-
-								<Text style={styles.errorText}>{error}</Text>
-								<TouchableOpacity
-									style={styles.signup2Button}
-									onPress={handleSignupSecond}
-								>
-									<Text style={styles.signup2Text}>Signup</Text>
-								</TouchableOpacity>
-							</View>
-						</TouchableWithoutFeedback>
-					</Modal>
-				</View>
-			</TouchableWithoutFeedback>
-	
+					</TouchableWithoutFeedback>
+				</Modal>
+			</View>
+		</TouchableWithoutFeedback>
 	);
 };
 
@@ -372,7 +393,7 @@ const styles = StyleSheet.create({
 		// backgroundColor: "lightgreen",
 		fontFamily: "SF",
 	},
-	background: { 
+	background: {
 		flex: 1,
 		width: SCREEN_WIDTH,
 		opacity: 1,
@@ -547,11 +568,19 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		marginBottom: 8,
-		width:"30%"
+		width: "30%",
 	},
 	topText: {
 		fontFamily: "SF-medium",
 		fontSize: 16,
 		color: myColors.blue,
+	},
+	eye: {
+		position: "absolute",
+		right: 15,
+		top: "38%",
+	},
+	view: {
+		width: "100%",
 	},
 });
