@@ -3,12 +3,15 @@ import { StyleSheet, View, Text } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const LiveTrack = (props) => {
-	const { userLocation } = props;
+	const { userLocation, handleSendSMS } = props;
 	const [locationA, setLocationA] = useState(null);
 	const [distance, setDistance] = useState(null);
 	const [duration, setDuration] = useState(null);
+	const [messageLogged, setMessageLogged] = useState(false);
 
 	const locationB = {
 		latitude: parseFloat(userLocation.latitude),
@@ -42,6 +45,18 @@ const LiveTrack = (props) => {
 			);
 		};
 
+		const checkMessageLogged = async () => {
+			try {
+				const value = await AsyncStorage.getItem("messageLogged");
+				if (value !== null) {
+					setMessageLogged(JSON.parse(value));
+				}
+			} catch (e) {
+				console.log(e);
+			}
+		};
+
+		checkMessageLogged();
 		requestLocationPermission();
 
 		return () => {
@@ -58,6 +73,10 @@ const LiveTrack = (props) => {
 				const route = response.data.routes[0].legs[0];
 				setDistance(route.distance.text);
 				setDuration(route.duration.text);
+				if (route.distance.value <= 1000 && !messageLogged) {
+					// handleSendSMS()
+					setMessageLogged(true);
+				}
 			} else {
 				setDistance("No route found");
 				setDuration("");
@@ -75,7 +94,7 @@ const LiveTrack = (props) => {
 			</MapView>
 			<View style={styles.info}>
 				<Text>Distance: {distance}</Text>
-				<Text>Estimated Time: {duration}</Text> 
+				<Text>Estimated Time: {duration}</Text>
 			</View>
 		</View>
 	);

@@ -102,7 +102,6 @@ const NotificationListItem = (props) => {
 						onPress={() => {
 							navigate(notification);
 							onRead(notification.id);
-							onDelete(notification.id);
 						}}
 					>
 						<View style={theme.leftCont}>
@@ -136,11 +135,17 @@ const NotificationListItem = (props) => {
 export default NotificationListItem;
 
 const styles = StyleSheet.create({
+	mainCont:{
+		width:"100%"
+	},
+	listItem: {
+		backgroundColor: myColors.dirtyWhite,
+	},
 	container: {
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "center",
-		height: "100%",
+		backgroundColor: myColors.dirtyWhite,
 		width: "100%",
 	},
 	dot: {
@@ -184,6 +189,20 @@ const styles = StyleSheet.create({
 		color: "#717171",
 		alignSelf: "flex-end",
 	},
+	deleteContainer: {
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: myDarkColors.red,
+		height: "100%",
+		width:"100%",
+	},
+	markAsReadCont:{
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: myDarkColors.blue,
+		height: "100%",
+		width:"100%",
+	}
 });
 
 const dark = StyleSheet.create({

@@ -42,6 +42,8 @@ import AddAddress from "./Screens/My-Account.js/AddAddress";
 import Loading from "./Components/Loading";
 import NotificationInfo from "./Screens/NotificationInfo";
 
+import Stats from "./Screens/AdminScreens/Stats";
+
 import { UserProvider } from "./utils/UserContext";
 import { ThemeProvider } from "./utils/ThemeContext";
 
@@ -307,6 +309,17 @@ export default function App() {
 							component={AddAddress}
 							options={{
 								title: "AddAddress Screen",
+								headerStyle: {
+									backgroundColor: "#000000",
+								},
+								headerTintColor: "#fff",
+							}}
+						/>
+						<Stack.Screen
+							name="Stats"
+							component={Stats}
+							options={{
+								title: "Stats Screen",
 								headerStyle: {
 									backgroundColor: "#000000",
 								},

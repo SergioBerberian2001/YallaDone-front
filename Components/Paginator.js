@@ -7,8 +7,10 @@ import {
 } from "react-native";
 import React from "react";
 import { myColors, myDarkColors } from "../utils/myColors";
+import { useMyColorTheme } from "../utils/ThemeContext";
 
 const Paginator = ({ data, scrollX }) => {
+	const { isDarkMode } = useMyColorTheme();
 	const { width } = useWindowDimensions();
 	return (
 		<View style={styles.container}>
@@ -29,7 +31,7 @@ const Paginator = ({ data, scrollX }) => {
 
 				return (
 					<Animated.View
-						style={[styles.dot, { width: dotWidth, opacity }]}
+						style={[isDarkMode ? styles.darkDot : styles.dot, { width: dotWidth, opacity }]}
 						key={i.toString()}
 					/>
 				);
@@ -51,6 +53,12 @@ const styles = StyleSheet.create({
 		height: 10,
 		borderRadius: 5,
 		backgroundColor: myColors.blue,
+		marginHorizontal: 8,
+	},
+	darkDot: {
+		height: 10,
+		borderRadius: 5,
+		backgroundColor: myDarkColors.blue,
 		marginHorizontal: 8,
 	},
 });

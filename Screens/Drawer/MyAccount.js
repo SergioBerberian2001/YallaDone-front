@@ -5,12 +5,16 @@ import {
 	View,
 	TouchableOpacity,
 	Modal,
+	Pressable,
+	Dimensions,
 } from "react-native";
 import { useState } from "react";
 import { myColors, myDarkColors } from "../../utils/myColors";
 import MySettings from "../My-Account.js/MySettings";
 import { useMyColorTheme } from "../../utils/ThemeContext";
 
+const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
 const MyAccount = ({ navigation, route }) => {
 	const { isDarkMode } = useMyColorTheme();
 	const theme = isDarkMode ? dark : styles;
@@ -60,20 +64,20 @@ const MyAccount = ({ navigation, route }) => {
 			<TouchableOpacity style={theme.button} onPress={ToggleModal}>
 				<Text style={theme.text}>SETTINGS</Text>
 			</TouchableOpacity>
-
-			<Modal
-				animationType="slide"
-				transparent={true}
-				visible={modalVisible}
-				onRequestClose={() => {
-					Alert.alert("Modal has been closed.");
-					ToggleModal();
-				}}
-			>
-				<View style={theme.centeredView}>
-					<MySettings onToggle={ToggleModal} />
-				</View>
-			</Modal>
+					<Modal
+						animationType="slide"
+						transparent={true}
+						visible={modalVisible}
+						onRequestClose={() => {
+							Alert.alert("Modal has been closed.");
+							ToggleModal();
+						}}
+					>
+						<View style={theme.centeredView}>
+							<MySettings onToggle={ToggleModal} />
+						</View>
+					</Modal>
+				
 		</SafeAreaView>
 	);
 };
@@ -145,9 +149,9 @@ const dark = StyleSheet.create({
 		color: myDarkColors.black,
 	},
 	centeredView: {
-		height: "40%",
+		height: "100%",
 		width: "100%",
-		backgroundColor: myDarkColors.white,
+		// backgroundColor: myDarkColors.white,
 		position: "absolute",
 		bottom: 0,
 		borderTopLeftRadius: 20,
@@ -156,5 +160,5 @@ const dark = StyleSheet.create({
 		// justifyContent: "center",
 		// alignItems: "center",
 	},
+	
 });
-

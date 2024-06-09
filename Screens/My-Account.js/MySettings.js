@@ -1,5 +1,13 @@
 import React, { useState, useContext } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
+import {
+	StyleSheet,
+	Text,
+	View,
+	TouchableOpacity,
+	Alert,
+	Dimensions,
+	Pressable,
+} from "react-native";
 import { myColors, myDarkColors } from "../../utils/myColors";
 import { saveBearerToken, getBearerToken, logout } from "../../utils/bearer.js";
 import axios from "axios";
@@ -7,14 +15,16 @@ import { useNavigation } from "@react-navigation/native";
 import ToggleButton from "../../Components/ToggleButton.js";
 import Loading from "../../Components/Loading.js";
 import UserContext from "../../utils/UserContext.js";
-import { useMyColorTheme } from "../../utils/ThemeContext"; 
+import { useMyColorTheme } from "../../utils/ThemeContext";
 
+const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
 const MySettings = (props) => {
 	const { user, clearUser } = useContext(UserContext);
 	const { onToggle } = props;
 	const navigation = useNavigation();
 	const [isLoading, setIsLoading] = useState(false);
-	const { isDarkMode, toggleTheme } = useMyColorTheme(); 
+	const { isDarkMode, toggleTheme } = useMyColorTheme();
 	const theme = isDarkMode ? dark : styles;
 
 	const logoutAxios = async () => {
@@ -100,39 +110,41 @@ const MySettings = (props) => {
 	}
 
 	return (
-		<View style={theme.container}>
-			<View style={theme.topRow}>
-				<TouchableOpacity onPress={toggleModal} style={theme.closeButton}>
-					<Text style={theme.closeText}>Close</Text>
-				</TouchableOpacity>
-			</View>
+		<Pressable style={theme.bgModal} onPress={toggleModal}>
+			<View style={theme.container}>
+				<View style={theme.topRow}>
+					<TouchableOpacity onPress={toggleModal} style={theme.closeButton}>
+						<Text style={theme.closeText}>Close</Text>
+					</TouchableOpacity>
+				</View>
 
-			<View style={theme.row}>
-				<Text style={theme.text}>Turn Off Notifications</Text>
-				<ToggleButton
-					label="Turn Off Notifications"
-					onToggle={(value) => console.log('hello')}
-				/>
+				<View style={theme.row}>
+					<Text style={theme.text}>Turn Off Notifications</Text>
+					<ToggleButton
+						label="Turn Off Notifications"
+						onToggle={(value) => console.log("hello")}
+					/>
+				</View>
+				<View style={theme.row}>
+					<Text style={theme.text}>Switch Theme</Text>
+					<ToggleButton
+						label="Switch Theme"
+						onToggle={switchTheme} // Call switchTheme function
+						isTheme={true}
+					/>
+				</View>
+				<View style={theme.row}>
+					<TouchableOpacity onPress={handleLogout}>
+						<Text style={theme.text}>Log Out</Text>
+					</TouchableOpacity>
+				</View>
+				<View style={theme.BottomRow}>
+					<TouchableOpacity onPress={showDeleteConfirmation}>
+						<Text style={[theme.text, { color: "red" }]}>Delete account</Text>
+					</TouchableOpacity>
+				</View>
 			</View>
-			<View style={theme.row}>
-				<Text style={theme.text}>Switch Theme</Text>
-				<ToggleButton
-					label="Switch Theme"
-					onToggle={switchTheme} // Call switchTheme function
-					isTheme={true}
-				/>
-			</View>
-			<View style={theme.row}>
-				<TouchableOpacity onPress={handleLogout}>
-					<Text style={theme.text}>Log Out</Text>
-				</TouchableOpacity>
-			</View>
-			<View style={theme.BottomRow}>
-				<TouchableOpacity onPress={showDeleteConfirmation}>
-					<Text style={[theme.text, { color: "red" }]}>Delete account</Text>
-				</TouchableOpacity>
-			</View>
-		</View>
+		</Pressable>
 	);
 };
 
@@ -142,6 +154,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		width: "100%",
+		
 		alignItems: "flex-start",
 		backgroundColor: myColors.dirtyWhite,
 		borderTopLeftRadius: 20,
@@ -177,27 +190,35 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		color: myColors.blue,
 	},
-	closeText:{
+	closeText: {
 		fontFamily: "SF-medium",
 		fontSize: 18,
 		color: myColors.blue,
 	},
-	closeButton:{
-		padding:4
+	closeButton: {
+		padding: 4,
+	},
+	bgModal: {
+		width: screenWidth,
+		height: screenHeight,
+		position:"absolute",
+		backgroundColor:"rgba(0,0,0,0.4)"
 	},
 });
 
 const dark = StyleSheet.create({
 	container: {
-		flex: 1,
+		position:"absolute",
+		bottom:0,
 		width: "100%",
+		height:"40%",
 		alignItems: "flex-start",
 		backgroundColor: myDarkColors.dirtyWhite,
 		borderTopLeftRadius: 20,
 		borderTopRightRadius: 20,
 	},
-	closeButton:{
-		padding:4
+	closeButton: {
+		padding: 4,
 	},
 	topRow: {
 		flexDirection: "row",
@@ -229,9 +250,15 @@ const dark = StyleSheet.create({
 		fontSize: 16,
 		color: myDarkColors.black,
 	},
-	closeText:{
+	closeText: {
 		fontFamily: "SF-medium",
 		fontSize: 18,
 		color: myDarkColors.blue,
-	}
+	},
+	bgModal: {
+		width: screenWidth,
+		height: screenHeight,
+		position:"absolute",
+		backgroundColor:"rgba(0,0,0,0.4)"
+	},
 });
