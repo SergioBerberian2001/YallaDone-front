@@ -26,6 +26,7 @@ import { getBearerToken } from "../utils/bearer";
 import { useMyColorTheme } from "../utils/ThemeContext";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+const screenWidth = Dimensions.get("window").width;
 const MAX_TRANSLATE_Y = -SCREEN_HEIGHT + 50;
 const NotificationsSheet = (props) => {
 	const { isDarkMode } = useMyColorTheme();
@@ -228,7 +229,7 @@ const NotificationsSheet = (props) => {
 							<TouchableOpacity style={theme.markAll} onPress={handleReadAll}>
 								<Text style={theme.markAllText}>Mark all as read</Text>
 							</TouchableOpacity>
-						</View>
+						</View> 
 					</View>
 				)}
 			</Animated.View>

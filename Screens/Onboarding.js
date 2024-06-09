@@ -59,12 +59,12 @@ const Onboarding = ({ navigation, route }) => {
 	return (
 		<SafeAreaView style={theme.container}>
 			<View style={theme.logo}>
-				<Logo width={width} height={height} />
+			{isDarkMode ? <Logo width={width} height={height} color="#FFFFFF"/> : <Logo width={width} height={height}/>}
 			</View>
 			<View style={theme.listView}>
 				<FlatList
 					data={slidesInfo}
-					renderItem={({ item }) => <OnBoardingContent item={item} />}
+					renderItem={({ item }) => <OnBoardingContent item={item} />} 
 					horizontal
 					showsHorizontalScrollIndicator={false}
 					pagingEnabled

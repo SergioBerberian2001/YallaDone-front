@@ -18,6 +18,8 @@ import { parseISO } from "date-fns";
 import { format, utcToZonedTime } from "date-fns-tz";
 import LiveTrack from "../Components/LiveTrack";
 import { useSafeAreaFrame } from "react-native-safe-area-context";
+import { getBearerToken } from "../utils/bearer";
+import axios from "axios";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -67,6 +69,30 @@ const NotificationInfo = ({ navigation, route }) => {
 	};
 	const togglesetIsMaxTrack = () => {
 		setIsMaxTrack(!isMaxTrack);
+	};
+
+	const handleSendSMS = async (feed) => {
+		try {
+			const token = await getBearerToken();
+			const userData = {
+				order_id: notification.data[0].order_info.order_id,
+			};
+			console.log(feed);
+			const response = await axios.post(
+				"http://192.168.1.100:8000/api/send-sms",
+				userData,
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
+				}
+			);
+
+			console.log("Response:", response.data);
+		} catch (error) {
+			console.error("Error:", error);
+			throw error; // Throw the error to be caught by the caller
+		}
 	};
 	return (
 		<SafeAreaView style={theme.container}>
@@ -175,7 +201,7 @@ const NotificationInfo = ({ navigation, route }) => {
 					</TouchableOpacity>
 				</View>
 				<View style={theme.map}>
-					<LiveTrack userLocation={notification.data[0].address_info} />
+					<LiveTrack userLocation={notification.data[0].address_info} handleSendSMS={handleSendSMS} />
 				</View>
 			</ScrollView>
 			{isMaxTrack && (

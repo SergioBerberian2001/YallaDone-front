@@ -56,6 +56,7 @@ const OtpScreen = ({ navigation, route }) => {
 	const handleOTPSending = async () => {
 		if (resendAttempts >= 3) {
 			await deleteUnverified();
+			stopTimer();
 			navigation.navigate("Splash");
 			return;
 		}
@@ -92,6 +93,10 @@ const OtpScreen = ({ navigation, route }) => {
 		}, 1000);
 	};
 
+	const stopTimer = () => {
+		clearInterval(intervalRef.current);
+	};
+
 	const startFiveMinuteTimer = () => {
 		const fiveMinutes = 5 * 60 * 1000; // 5 minutes in milliseconds
 
@@ -125,6 +130,7 @@ const OtpScreen = ({ navigation, route }) => {
 			);
 			await saveUser(user);
 			await saveBearerToken(token);
+			stopTimer(); // Stop the timer after successful verification
 			navigateToOnboarding();
 		} catch (error) {
 			showPopup("OTPError");
