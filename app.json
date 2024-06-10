@@ -1,8 +1,7 @@
 {
   "expo": {
-    
     "name": "YallaDone-frontend",
-    "slug": "YallaDone-frontend",
+    "slug": "yalladone-front",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -37,9 +36,17 @@
       [
         "expo-font",
         {
-          "fonts": ["./assets/fonts/SF-pro-regular.OTF"]
+          "fonts": [
+            "./assets/fonts/SF-pro-regular.OTF"
+          ]
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "a115f182-c197-497d-b323-0b7ea74b00ae"
+      }
+    },
+    "owner": "sergioberberian"
   }
 }
