@@ -23,7 +23,7 @@ const NewsListItem = (props) => {
 						<MaterialCommunityIcons
 							name="calendar"
 							color={myColors.dirtyWhite90}
-							size={20}
+							size={14}
 						/>
 						<Text style={theme.date}>{news.news_date}</Text>
 					</View>
@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		alignItems: "center",
 		marginBottom: 12,
+		paddingVertical:6
 	},
 	title: {
 		fontFamily: "SF-bold",
@@ -78,13 +79,15 @@ const styles = StyleSheet.create({
 	date: {
 		fontFamily: "SF",
 		color: myColors.dirtyWhite90,
-		fontSize: 12,
+		fontSize: 10,
 		marginLeft: 4,
 	},
 	description: {
 		fontFamily: "SF",
 		color: myColors.white,
-		fontSize: 14,
+		fontSize: 16,
+		lineHeight:20,
+		margin:4
 	},
 });
 
@@ -118,10 +121,11 @@ const dark = StyleSheet.create({
 		justifyContent: "space-between",
 		alignItems: "center",
 		marginBottom: 12,
+		paddingVertical:6
 	},
 	title: {
 		fontFamily: "SF-bold",
-		color: myDarkColors.white,
+		color: myColors.white,
 		fontSize: 20,
 	},
 	dateView: {
@@ -130,13 +134,15 @@ const dark = StyleSheet.create({
 	},
 	date: {
 		fontFamily: "SF",
-		color: myDarkColors.dirtyWhite90,
-		fontSize: 12,
+		color: myColors.dirtyWhite90,
+		fontSize: 10,
 		marginLeft: 4,
 	},
 	description: {
 		fontFamily: "SF",
-		color: myDarkColors.white,
-		fontSize: 14,
+		color: myColors.white,
+		fontSize: 16,
+		lineHeight:20,
+		margin:4
 	},
 });

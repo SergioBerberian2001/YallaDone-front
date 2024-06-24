@@ -10,6 +10,8 @@ import { useMyColorTheme } from "../utils/ThemeContext";
 import { ListItem } from "@rneui/themed";
 import { MaterialCommunityIcons } from "react-native-vector-icons";
 
+// {"data":{"address_info":{"address_id":1,"created_at":"2024-06-09T18:39:26.000000Z","updated_at":"2024-06-09T18:39:26.000000Z","user_id":2,"longitude":"35.915616845014","latitude":"33.843179450645","location_type":"Home","name":"Sergio home","district":"Yhgg","city":"Vvvv","street":"Cvvv","building":"Cvvv","floor":"Bvvv","additional_info":null},"service_info":null,"order_info":{"user_id":2,"payment_id":10,"form_id":10,"status":"waiting","updated_at":"2024-06-10T17:42:50.000000Z","created_at":"2024-06-10T17:42:50.000000Z","order_id":10,"payments":{"payment_id":10,"created_at":"2024-06-10T17:42:49.000000Z","updated_at":"2024-06-10T17:42:49.000000Z","user_id":2,"type":"cash","service_name":"Car Detailing","price":50},"service_forms":{"form_id":10,"created_at":"2024-06-10T17:42:49.000000Z","updated_at":"2024-06-10T17:42:49.000000Z","user_id":2,"Service_id":1,"service_date":"2024-06-10 20:30:00","user_name":"Sergio","user_lastname":"berberian","email":"sergioberberian2001@gmail.com","phone_number":81384086,"location":"Sergio home","additional_info":null,"service":null}}}}
+
 const NotificationListItem = (props) => {
 	const { isDarkMode } = useMyColorTheme();
 	const theme = isDarkMode ? dark : styles;
@@ -32,13 +34,13 @@ const NotificationListItem = (props) => {
 		}
 	};
 	const handleTitle = () => {
-		if (notification.type === "App\\Notifications\\OrderNotification") {
+		if (notification.type === "App\\Notifications\\OrderNotification") { 
 			if (notification.data[0].order_info.status === "waiting") {
 				return (
 					"Order for " +
 					notification.data[0].service_info.service_name +
 					" placed"
-				);
+				); 
 			} else if (notification.data[0].order_info.status === "inprogress") {
 				return (
 					"Order for " +

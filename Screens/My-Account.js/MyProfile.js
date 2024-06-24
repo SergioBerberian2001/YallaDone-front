@@ -283,6 +283,7 @@ const MyProfile = ({ navigation, route }) => {
 							onChangeText={(text) => handleChange("countryCode", text)}
 							value={user.countryCode}
 							keyboardType="numeric"
+							editable={false}
 						/>
 						<TextInput
 							style={styles.numberInput}

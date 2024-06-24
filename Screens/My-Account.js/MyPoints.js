@@ -9,6 +9,7 @@ import {
 	TouchableOpacity,
 	useWindowDimensions,
 	Alert,
+	ActivityIndicator,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import Logo from "../../Components/Logo";
@@ -24,7 +25,7 @@ const MyPoints = ({ navigation }) => {
 	const { width } = useWindowDimensions();
 	const height = width / 8;
 	const [isLoading, setIsLoading] = useState(false);
-	const [userPoints, setUserPoints] = useState(0);
+	const [userPoints, setUserPoints] = useState(null);
 	const [popupVisible, setPopupVisible] = useState(false);
 	const [popupContent, setPopupContent] = useState({
 		title: "",
@@ -90,6 +91,10 @@ const MyPoints = ({ navigation }) => {
 		navigation.navigate("AllCategories");
 	};
 
+	const navigateToOrderHistory = () => {
+		navigation.navigate("OrdersHistory");
+	};
+
 	if (isLoading) {
 		return <Loading />;
 	}
@@ -115,12 +120,16 @@ const MyPoints = ({ navigation }) => {
 				<View style={styles.container}>
 					<View style={styles.section}>
 						<Text style={styles.midText}>You Have</Text>
-						<Text style={styles.midText}>{userPoints}</Text>
+						{userPoints ? (
+							<Text style={styles.midText}>{userPoints}</Text>
+						) : (
+							<ActivityIndicator size="large" color={myColors.white} />
+						)}
 						<Text style={styles.midText}>YALLACOINS</Text>
 					</View>
 					<View>
 						<Text style={styles.midText}>
-							order new services so you can get points to be redeemed with a
+							Order new services to can get points that can be redeemed with a
 							service of your choice
 						</Text>
 					</View>
@@ -133,7 +142,7 @@ const MyPoints = ({ navigation }) => {
 						</TouchableOpacity>
 						<TouchableOpacity
 							style={styles.buttonWhite}
-							onPress={() => navigate()}
+							onPress={() => navigateToOrderHistory()}
 						>
 							<Text style={styles.buttonTextWhite}>Order History</Text>
 						</TouchableOpacity>

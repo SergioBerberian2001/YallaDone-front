@@ -16,6 +16,7 @@ import ToggleButton from "../../Components/ToggleButton.js";
 import Loading from "../../Components/Loading.js";
 import UserContext from "../../utils/UserContext.js";
 import { useMyColorTheme } from "../../utils/ThemeContext";
+import { useNotificationSettings } from "../../utils/NotificationContext.js";
 
 const screenWidth = Dimensions.get("window").width;
 const screenHeight = Dimensions.get("window").height;
@@ -25,8 +26,8 @@ const MySettings = (props) => {
 	const navigation = useNavigation();
 	const [isLoading, setIsLoading] = useState(false);
 	const { isDarkMode, toggleTheme } = useMyColorTheme();
+	const { notificationsEnabled, toggleNotifications } = useNotificationSettings();
 	const theme = isDarkMode ? dark : styles;
-
 	const logoutAxios = async () => {
 		try {
 			const token = await getBearerToken();
@@ -100,6 +101,8 @@ const MySettings = (props) => {
 		);
 	};
 
+
+
 	const switchTheme = () => {
 		toggleTheme(); // Toggle theme
 		// console.log("Current theme:", isDarkMode ? "dark" : "light"); // Log current theme
@@ -122,7 +125,8 @@ const MySettings = (props) => {
 					<Text style={theme.text}>Turn Off Notifications</Text>
 					<ToggleButton
 						label="Turn Off Notifications"
-						onToggle={(value) => console.log("hello")}
+						onToggle={toggleNotifications}
+						isNotification={true}
 					/>
 				</View>
 				<View style={theme.row}>

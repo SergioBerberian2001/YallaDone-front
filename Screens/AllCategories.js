@@ -46,7 +46,7 @@ const AllCategories = ({ navigation, route }) => {
 				style={Platform.OS === "ios" ? theme.topView : theme.topViewAndroid}
 				onPress={navigate}
 			>
-				<Ionicons name="chevron-back-outline" color={myColors.blue} size={32} />
+				<Ionicons name="chevron-back-outline" color={isDarkMode? myDarkColors.blue : myColors.blue} size={32} />
 				<Text style={theme.topText}>Back</Text>
 			</TouchableOpacity>
 			<Text style={theme.title}>All Categories</Text>
@@ -56,7 +56,11 @@ const AllCategories = ({ navigation, route }) => {
 					navigateToCategory("Car Services");
 				}}
 			>
-				<Category />
+				<Text style={theme.titleCategory}>Car Services</Text>
+				<Text style={theme.description}>
+					From routine maintenance to emergency repairs, our Car Services ensure
+					your vehicle remains in top condition. 
+				</Text>
 			</TouchableOpacity>
 			<TouchableOpacity
 				style={theme.category}
@@ -64,7 +68,11 @@ const AllCategories = ({ navigation, route }) => {
 					navigateToCategory("Transportation Services");
 				}}
 			>
-				<Category />
+				<Text style={theme.titleCategory}>Transportation Services</Text>
+				<Text style={theme.description}>
+					Need a ride? Our Transportation Services offer reliable taxi and
+					personal driver options for all your travel needs. 
+				</Text>
 			</TouchableOpacity>
 			<TouchableOpacity
 				style={theme.category}
@@ -72,7 +80,10 @@ const AllCategories = ({ navigation, route }) => {
 					navigateToCategory("Paperwork Services");
 				}}
 			>
-				<Category />
+				<Text style={theme.titleCategory}>Paperwork Services</Text>
+				<Text style={theme.description}>
+					Simplify your administrative tasks with our Paperwork Services.
+				</Text>
 			</TouchableOpacity>
 			<TouchableOpacity
 				style={theme.category}
@@ -80,7 +91,10 @@ const AllCategories = ({ navigation, route }) => {
 					navigateToCategory("Delivery Services");
 				}}
 			>
-				<Category />
+				<Text style={theme.titleCategory}>Delivery Services</Text>
+				<Text style={theme.description}>
+					Our Delivery Services are designed to handle your items with care.
+				</Text>
 			</TouchableOpacity>
 			<View style={theme.ServiceContainer}></View>
 		</SafeAreaView>
@@ -128,13 +142,29 @@ const styles = StyleSheet.create({
 		flex: 0.2,
 		backgroundColor: myColors.blue,
 		margin: 16,
+		alignItems: "center",
+		justifyContent: "space-evenly",
+		borderRadius:20,
+		
+	},
+	titleCategory: {
+		fontFamily: "SF-bold",
+		color: myColors.dirtyWhite,
+		fontSize: 20,
+	},
+	description: {
+		fontFamily: "SF-medium",
+		color: myColors.dirtyWhite,
+		fontSize: 14,
+		paddingHorizontal:16,
+		textAlign:"center"
 	},
 });
 
 const dark = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: myDarkColors.white,
+		backgroundColor: myDarkColors.dirtyWhite,
 	},
 	title: {
 		fontFamily: "SF-medium",
@@ -166,9 +196,26 @@ const dark = StyleSheet.create({
 		fontSize: 16,
 		color: myDarkColors.blue,
 	},
+
 	category: {
 		flex: 0.2,
 		backgroundColor: myDarkColors.blue,
 		margin: 16,
+		alignItems: "center",
+		justifyContent: "space-evenly",
+		borderRadius:20,
+		
+	},
+	titleCategory: {
+		fontFamily: "SF-bold",
+		color: myDarkColors.black,
+		fontSize: 20,
+	},
+	description: {
+		fontFamily: "SF-medium",
+		color: myDarkColors.black,
+		fontSize: 14,
+		paddingHorizontal:16,
+		textAlign:"center"
 	},
 });

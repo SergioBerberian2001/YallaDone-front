@@ -106,6 +106,23 @@ const OrderListItem = (props) => {
 		}
 	};
 
+	const handleDescription = () => {
+			if (notification.status === "waiting") {
+				const description =
+					"Your order was placed successfully, Please wait for it to be accepted";
+				return description;
+			} else if (notification.status === "inprogress") {
+				const description =
+					"Your order is in Progress, Click to track the driver";
+				return description;
+			} else if (notification.status === "done") {
+				const description =
+					"Your order is Complete";
+				return description;
+			}
+		
+	};
+
 	return (
 		<TouchableOpacity
 			style={theme.container}
@@ -123,7 +140,7 @@ const OrderListItem = (props) => {
 						style={[styles.dot, { backgroundColor: handleDotColor() }]}
 					></View>
 				</View>
-				<Text style={theme.description}>"hello world description"</Text>
+				<Text style={theme.description}>{handleDescription()}</Text>
 				<Text style={theme.date}>{formattedDate}</Text>
 			</View>
 		</TouchableOpacity>
