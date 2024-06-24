@@ -17,7 +17,7 @@ const AddressComponent = (props) => {
 
 	const handleNavigation = () => {
 		onNavigate(item);
-	};
+	}
 
 	return (
 		<View style={styles.textInput}>

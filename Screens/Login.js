@@ -8,6 +8,7 @@ import {
 	Keyboard,
 	TouchableOpacity,
 	Modal,
+	ActivityIndicator,
 } from "react-native";
 import React, { useState, useContext } from "react";
 import { myColors, myDarkColors } from "../utils/myColors";
@@ -15,17 +16,28 @@ import axios from "axios";
 import { saveBearerToken, getBearerToken } from "../utils/bearer.js";
 import UserContext from "../utils/UserContext.js";
 import { Ionicons } from "react-native-vector-icons";
+import Popup from "../Components/Popup";
+import popupModes from "../utils/PopupModes.js";
 
 const Login = (props) => {
-	const { onNavigate } = props;
+	const { onNavigate, navigateSignup } = props;
 	const { saveUser } = useContext(UserContext);
 	const [error, setError] = useState("");
+	const [loading, setLoading] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 	const [user, setUser] = useState({
 		email: "",
 		//81384086
 		password: "",
 		// /Qwerty1234
+	});
+	const [popupVisible, setPopupVisible] = useState(false);
+	const [popupContent, setPopupContent] = useState({
+		title: "",
+		message: "",
+		icon: "",
+		iconColor: "",
+		type: "",
 	});
 
 	const onUpdateField = (fieldName, value) => {
@@ -36,6 +48,7 @@ const Login = (props) => {
 	};
 
 	const handlePost = async (userInfo) => {
+		setLoading(true);
 		try {
 			const userData = {
 				identifier: userInfo.email,
@@ -53,9 +66,19 @@ const Login = (props) => {
 
 			await saveBearerToken(response.data.token);
 			await fetchData();
-		} catch (error) {
-			console.error("Error:", error);
-			throw error; // Throw the error to be caught by the caller
+		} catch (err) {
+			if (err.response) {
+				errorPopup(err.response.data.message);
+				// console.error('Error response:', err.response.data);
+			} else if (err.request) {
+				errorPopup("No response received from the server. Please try again");
+				// console.error('Error request:', err.request);
+			} else {
+				errorPopup("Error in setting up the request. Please try again");
+				// console.error('Error message:', err.message);
+			}
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -85,7 +108,7 @@ const Login = (props) => {
 				console.error("Status:", error.response.status);
 				console.error("Data:", error.response.data);
 			}
-		}
+		} 
 	};
 
 	const handleError = (userError) => {
@@ -103,6 +126,19 @@ const Login = (props) => {
 		return message;
 	};
 
+	const errorPopup = (errorMessage) => {
+		setPopupContent({
+			title: "Error",
+			message: errorMessage,
+			icon: "alert-circle",
+			iconColor: myColors.red,
+			type: "error",
+		});
+		setPopupVisible(true);
+	};
+
+
+
 	const handleSignin = async () => {
 		if (handleError(user) === "") {
 			try {
@@ -114,7 +150,7 @@ const Login = (props) => {
 				handlePost(user);
 			} catch (error) {
 				// Handle errors from handleSignup if needed
-				console.error("Error occurred during signup:", error);
+				console.error("Error occurred during login:", error);
 			}
 		}
 	};
@@ -122,6 +158,10 @@ const Login = (props) => {
 	const toggleShowPass = () => {
 		setShowPassword(!showPassword);
 	};
+
+	const navigateToSignup = () => {
+		navigation.navigate() 
+	}
 
 	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -153,17 +193,31 @@ const Login = (props) => {
 						</TouchableOpacity>
 					</View>
 				</View>
-				<TouchableOpacity style={styles.signupButton} onPress={handleSignin}>
-					<Text style={styles.signupText}>Login</Text>
-				</TouchableOpacity>
+				{loading ? (
+					<ActivityIndicator size="large" color={myColors.white} />
+				) : (
+					<TouchableOpacity style={styles.signupButton} onPress={handleSignin}>
+						<Text style={styles.signupText}>Login</Text>
+					</TouchableOpacity>
+				)}
+
 				<View>
 					<View style={styles.loginView}>
 						<Text style={styles.loginMainText}>Don't have an account? </Text>
-						<TouchableOpacity style={styles.loginTouchable}>
+						<TouchableOpacity style={styles.loginTouchable}onPress={navigateSignup} >
 							<Text style={styles.loginText}>Signup</Text>
 						</TouchableOpacity>
 					</View>
 				</View>
+				<Popup
+					visible={popupVisible}
+					onClose={() => setPopupVisible(false)}
+					title={popupContent.title}
+					message={popupContent.message}
+					icon={popupContent.icon}
+					iconColor={popupContent.iconColor}
+					type={popupContent.type}
+				/>
 			</View>
 		</TouchableWithoutFeedback>
 	);
@@ -243,9 +297,9 @@ const styles = StyleSheet.create({
 	view: {
 		width: "100%",
 	},
-	eye:{
-		position:"absolute",
-		right:15,
-		top:"38%"
-	}
+	eye: {
+		position: "absolute",
+		right: 15,
+		top: "38%",
+	},
 });

@@ -4,7 +4,7 @@ import {
 	Text,
 	View,
 	TouchableOpacity,
-	Modal,
+	Modal, 
 	Pressable,
 	Dimensions,
 } from "react-native";
@@ -110,9 +110,9 @@ const styles = StyleSheet.create({
 		color: myColors.white,
 	},
 	centeredView: {
-		height: "40%",
+		height: "100%",
 		width: "100%",
-		backgroundColor: myColors.white,
+		// backgroundColor: myDarkColors.white,
 		position: "absolute",
 		bottom: 0,
 		borderTopLeftRadius: 20,

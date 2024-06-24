@@ -62,6 +62,7 @@ const StripeApp = (props) => {
 		const billingDetails = {
 			email: email,
 		};
+		
 		try {
 			const { clientSecret, error } = await fetchPaymentIntentClientSecret();
 			if (error) {

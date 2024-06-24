@@ -109,7 +109,7 @@ const MySettings = (props) => {
 		return <Loading />;
 	}
 
-	return (
+	return ( 
 		<Pressable style={theme.bgModal} onPress={toggleModal}>
 			<View style={theme.container}>
 				<View style={theme.topRow}>
@@ -152,9 +152,10 @@ export default MySettings;
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
+		position:"absolute",
+		bottom:0,
 		width: "100%",
-		
+		height:"40%",
 		alignItems: "flex-start",
 		backgroundColor: myColors.dirtyWhite,
 		borderTopLeftRadius: 20,

@@ -48,6 +48,7 @@ const Form = ({ navigation, route }) => {
 		navigation.navigate("DrawerScreen");
 	};
 
+
 	return (
 		<KeyboardAvoidingView style={styles.background1} behavior="padding">
 			<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -91,9 +92,9 @@ const Form = ({ navigation, route }) => {
 							</View>
 						)}
 						{isSigningUp ? (
-							<Signup onNavigate={navigateToOTP} />
+							<Signup onNavigate={navigateToOTP} navigateLogin={handleIsSigningIn} />
 						) : (
-							<Login onNavigate={navigateToHome} />
+							<Login onNavigate={navigateToHome} navigateSignup={handleIsSigningUp} />
 						)}
 					</View>
 				</ImageBackground>

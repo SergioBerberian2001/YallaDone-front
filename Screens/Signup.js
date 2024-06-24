@@ -11,6 +11,7 @@ import {
 	Platform,
 	KeyboardAvoidingView,
 	Dimensions,
+	ActivityIndicator,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -18,10 +19,14 @@ import { myColors, myDarkColors } from "../utils/myColors";
 import axios from "axios";
 import { saveBearerToken, getBearerToken, logout } from "../utils/bearer.js";
 import { Ionicons } from "react-native-vector-icons";
+import Popup from "../Components/Popup";
+
 // import { differenceInYears } from 'date-fns';
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const maxDate = new Date();
 const Signup = (props) => {
-	const { onNavigate } = props;
+	const { onNavigate, navigateLogin } = props;
+	const [loading, setLoading] = useState(false);
 	const [dateOfBirth, setDateOfBirth] = useState("");
 	const [date, setDate] = useState(new Date());
 	const [showPicker, setShowPicker] = useState(false);
@@ -43,8 +48,29 @@ const Signup = (props) => {
 	const [loadingError, setLoadingError] = useState(false);
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+	const [popupVisible, setPopupVisible] = useState(false);
+	const [popupContent, setPopupContent] = useState({
+		title: "",
+		message: "",
+		icon: "",
+		iconColor: "",
+		type: "",
+	});
+	
+
+	const errorPopup = (errorMessage) => {
+		setPopupContent({
+			title: "Error",
+			message: errorMessage,
+			icon: "alert-circle",
+			iconColor: myColors.red,
+			type: "error",
+		});
+		setPopupVisible(true);
+	};
 
 	const handleSignup = async (userInfo) => {
+		setLoading(true);
 		try {
 			const userData = {
 				user_name: userInfo.user_name,
@@ -62,9 +88,29 @@ const Signup = (props) => {
 
 			// Handle success response here
 			await saveBearerToken(response.data.token);
-		} catch (error) {
-			console.error("Error:", error);
-			throw error; // Throw the error to be caught by the caller
+			newToken = await getBearerToken();
+			onNavigate(user, newToken);
+		} catch (err) {
+			if (err.response) {
+				// setError(err.response.data.message);
+				if (err.response.data.errors.email) {
+					errorPopup(err.response.data.errors.email);
+				} else if (err.response.data.errors.phone_number) {
+					errorPopup(err.response.data.errors.phone_number);
+				}
+				console.error("Error response:", err.response.data);
+			} else if (err.request) {
+				// Request was made but no response was received
+				// setError("No response received from the server.");
+				errorPopup("No response received from the server. Please try again");
+				// console.error("Error request:", err.request);
+			} else {
+				// setError("Error in setting up the request.");
+				errorPopup("Error in setting up the request. Please try again");
+				// console.error("Error message:", err.message);
+			}
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -166,17 +212,14 @@ const Signup = (props) => {
 			try {
 				// Assuming handleSignup is an async function
 				await handleSignup(user);
-				newToken = await getBearerToken();
-				onNavigate(user, newToken);
-				console.log(user);
-				setUser({
-					id: "",
-					email: "",
-					password: "",
-					confirmPass: "",
-					user_name: "",
-					user_lastname: "",
-				});
+				// setUser({
+				// 	id: "",
+				// 	email: "",
+				// 	password: "",
+				// 	confirmPass: "",
+				// 	user_name: "",
+				// 	user_lastname: "",
+				// });
 				setError("");
 				ToggleModal();
 			} catch (error) {
@@ -239,7 +282,10 @@ const Signup = (props) => {
 							onChangeText={(value) => onUpdateField("confirmPass", value)}
 							value={user.confirmPass}
 						/>
-						<TouchableOpacity style={styles.eye} onPress={toggleShowConfirmPass}>
+						<TouchableOpacity
+							style={styles.eye}
+							onPress={toggleShowConfirmPass}
+						>
 							{showConfirmPassword ? (
 								<Ionicons name="eye" color="gray" size={20} />
 							) : (
@@ -281,7 +327,7 @@ const Signup = (props) => {
 					</View>
 					<View style={styles.loginView}>
 						<Text style={styles.loginMainText}>Already have an account? </Text>
-						<TouchableOpacity style={styles.loginTouchable}>
+						<TouchableOpacity style={styles.loginTouchable} onPress={navigateLogin}>
 							<Text style={styles.loginText}>Login</Text>
 						</TouchableOpacity>
 					</View>
@@ -332,6 +378,7 @@ const Signup = (props) => {
 									onChange={onDateChange}
 									style={styles.datePicker}
 									themeVariant="light"
+									maximumDate={maxDate}
 								/>
 							)}
 							{showPicker && Platform.OS === "ios" && (
@@ -366,15 +413,28 @@ const Signup = (props) => {
 							)}
 
 							<Text style={styles.errorText}>{error}</Text>
-							<TouchableOpacity
-								style={styles.signup2Button}
-								onPress={handleSignupSecond}
-							>
-								<Text style={styles.signup2Text}>Signup</Text>
-							</TouchableOpacity>
+							{loading ? (
+								<ActivityIndicator size="large" color={myColors.white} />
+							) : (
+								<TouchableOpacity
+									style={styles.signup2Button}
+									onPress={handleSignupSecond}
+								>
+									<Text style={styles.signup2Text}>Signup</Text>
+								</TouchableOpacity>
+							)}
 						</View>
 					</TouchableWithoutFeedback>
 				</Modal>
+				<Popup
+					visible={popupVisible}
+					onClose={() => setPopupVisible(false)}
+					title={popupContent.title}
+					message={popupContent.message}
+					icon={popupContent.icon}
+					iconColor={popupContent.iconColor}
+					type={popupContent.type}
+				/>
 			</View>
 		</TouchableWithoutFeedback>
 	);
