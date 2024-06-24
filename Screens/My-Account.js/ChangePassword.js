@@ -7,7 +7,7 @@ import {
 	TouchableWithoutFeedback,
 	Keyboard,
 	TouchableOpacity,
-	useWindowDimensions,
+	useWindowDimensions, 
 	Alert,
 } from "react-native";
 import React, { useState } from "react";

@@ -25,6 +25,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { useMyColorTheme } from "../utils/ThemeContext";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const minDate = new Date(Date.now() + 30 * 60 * 1000);
 const OrderForm = ({ navigation, route }) => {
 	const { isDarkMode } = useMyColorTheme();
 	const theme = isDarkMode ? dark : styles;
@@ -237,6 +238,7 @@ const OrderForm = ({ navigation, route }) => {
 							themeVariant="light"
 							is24Hour={true} // Use false for 12-hour format (optional)
 							display="spinner" // Choose 'spinner' or 'calendar' for display style (optional)
+							minimumDate={minDate}
 						/>
 					</View>
 
