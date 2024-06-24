@@ -59,6 +59,7 @@ const AddAddress = ({ navigation, route }) => {
 		building: "",
 		floor: "",
 		additional_info: "",
+		type: "",
 	});
 
 	const validateInputs = () => {
@@ -69,6 +70,7 @@ const AddAddress = ({ navigation, route }) => {
 		if (!locationInfo.street) newErrors.street = "Street is required";
 		if (!locationInfo.building) newErrors.building = "Building is required";
 		if (!locationInfo.floor) newErrors.floor = "Floor is required";
+		if (!selectedType) newErrors.type = "Type of Address is required";
 		setErrors(newErrors);
 		return Object.keys(newErrors).length === 0;
 	};
@@ -272,7 +274,7 @@ const AddAddress = ({ navigation, route }) => {
 								initialLocation={initialLocation}
 							/>
 						</View>
-
+						
 						<View style={styles.typeContainer}>
 							<TouchableOpacity
 								style={getButtonStyle("Home")}
@@ -304,7 +306,9 @@ const AddAddress = ({ navigation, route }) => {
 								<Text style={styles.typeTitle}>Other</Text>
 							</TouchableOpacity>
 						</View>
-
+						{errors.type ? (
+							<Text style={[styles.errorText, {alignSelf:"center", backgroundColor:"rgba(255,255,255,0.5)", padding:4, margin:4}]}>{errors.type}</Text>
+						) : null}
 						<Text style={styles.title}>Address Details</Text>
 						<View style={styles.container}>
 							<View style={styles.titleView}>
@@ -559,6 +563,7 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		color: "rgba(255,80,80,1)",
 		height: "100%",
+		maxHeight: 25,
 	},
 	titleView: {
 		flexDirection: "row",

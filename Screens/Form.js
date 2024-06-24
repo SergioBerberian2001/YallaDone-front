@@ -16,6 +16,7 @@ import Signup from "./Signup";
 import Login from "./Login";
 import { myColors, myDarkColors } from "../utils/myColors";
 import slides from "../assets/data/slides";
+import { CommonActions } from '@react-navigation/native';
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const Form = ({ navigation, route }) => {
@@ -45,7 +46,15 @@ const Form = ({ navigation, route }) => {
 	const navigateToHome = () => {
 		// setIsSigningUp(true),
 		// navigation.navigate("Form");
-		navigation.navigate("DrawerScreen");
+	
+		navigation.dispatch(
+			CommonActions.reset({
+			  index: 0,
+			  routes: [
+				{ name: 'DrawerScreen' },
+			  ],
+			})
+		  );
 	};
 
 

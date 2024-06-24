@@ -80,9 +80,11 @@ const MySettings = (props) => {
 			clearUser();
 			logoutAxios();
 			handleLogoutFront();
+			toggleModal();
 		} catch (error) {
 			clearUser();
 			handleLogoutFront();
+			toggleModal();
 		}
 	};
 
