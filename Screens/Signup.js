@@ -56,7 +56,6 @@ const Signup = (props) => {
 		iconColor: "",
 		type: "",
 	});
-	
 
 	const errorPopup = (errorMessage) => {
 		setPopupContent({
@@ -327,7 +326,10 @@ const Signup = (props) => {
 					</View>
 					<View style={styles.loginView}>
 						<Text style={styles.loginMainText}>Already have an account? </Text>
-						<TouchableOpacity style={styles.loginTouchable} onPress={navigateLogin}>
+						<TouchableOpacity
+							style={styles.loginTouchable}
+							onPress={navigateLogin}
+						>
 							<Text style={styles.loginText}>Login</Text>
 						</TouchableOpacity>
 					</View>
@@ -414,7 +416,7 @@ const Signup = (props) => {
 
 							<Text style={styles.errorText}>{error}</Text>
 							{loading ? (
-								<ActivityIndicator size="large" color={myColors.white} />
+								<ActivityIndicator size="large" color={myColors.blue} />
 							) : (
 								<TouchableOpacity
 									style={styles.signup2Button}

@@ -15,6 +15,7 @@ import { Ionicons } from "react-native-vector-icons";
 import axios from "axios";
 import { getBearerToken } from "../../utils/bearer";
 import { useMyColorTheme } from "../../utils/ThemeContext";
+import Loading from "../../Components/Loading";
 
 const OrdersHistory = ({ navigation, route }) => {
 	const { isDarkMode } = useMyColorTheme();
@@ -23,6 +24,7 @@ const OrdersHistory = ({ navigation, route }) => {
 		navigation.goBack();
 	};
 	const [ordersHistory, setOrdersHistory] = useState([]);
+	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -46,6 +48,7 @@ const OrdersHistory = ({ navigation, route }) => {
 				);
 
 				setOrdersHistory(fetchedOrders);
+				setIsLoading(false);
 			} catch (error) {
 				console.error("Error fetching data:", error);
 				if (error.response) {
@@ -61,6 +64,10 @@ const OrdersHistory = ({ navigation, route }) => {
 	const navigateToOrder = (order) => {
 		navigation.navigate("OrderInfo", order);
 	};
+
+	if (isLoading) {
+		return <Loading />;
+	}
 
 	return (
 		<SafeAreaView style={theme.container}>

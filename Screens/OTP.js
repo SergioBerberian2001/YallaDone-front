@@ -33,7 +33,6 @@ const OtpScreen = ({ navigation, route }) => {
 	const [attempts, setAttempts] = useState(0);
 	const [loading, setLoading] = useState(false);
 	const intervalRef = useRef(null);
-	const fiveMinuteTimerRef = useRef(null); // Ref to store the five-minute timer
 	const [popupVisible, setPopupVisible] = useState(false);
 	const [popupData, setPopupData] = useState({});
 
@@ -50,7 +49,7 @@ const OtpScreen = ({ navigation, route }) => {
 		try {
 			await axios.delete("http://192.168.1.100:8000/api/unverified-users");
 		} catch (error) {
-			// console.error("Error deleting unverified users:", error);
+			console.error("Error deleting unverified users:", error);
 		}
 	};
 
@@ -100,25 +99,17 @@ const OtpScreen = ({ navigation, route }) => {
 
 	const startFiveMinuteTimer = () => {
 		const fiveMinutes = 5 * 60 * 1000; // 5 minutes in milliseconds
-		fiveMinuteTimerRef.current = setTimeout(() => {
+
+		setTimeout(() => {
 			deleteUnverified();
 			navigation.navigate("Splash");
 		}, fiveMinutes);
-	};
-
-	const clearFiveMinuteTimer = () => {
-		if (fiveMinuteTimerRef.current) {
-			clearTimeout(fiveMinuteTimerRef.current);
-		}
 	};
 
 	useEffect(() => {
 		handleOTPSending();
 		startFiveMinuteTimer();
 		logout();
-		return () => {
-			clearFiveMinuteTimer(); // Clear the timer when the component unmounts
-		};
 	}, []);
 
 	const handleVerifyOTP = async (otp) => {
@@ -139,12 +130,11 @@ const OtpScreen = ({ navigation, route }) => {
 			);
 			await saveUser(user);
 			await saveBearerToken(token);
-			clearFiveMinuteTimer(); // Clear the timer after successful verification
-			stopTimer(); // Stop the resend timer
+			stopTimer(); // Stop the timer after successful verification
 			navigateToOnboarding();
 		} catch (error) {
 			showPopup("OTPError");
-			// console.error("Error verifying OTP:", error);
+			console.error("Error verifying OTP:", error);
 		} finally {
 			setLoading(false);
 		}

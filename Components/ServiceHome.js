@@ -16,6 +16,7 @@ const ServiceHome = (props) => {
 	const { isDarkMode } = useMyColorTheme();
 	const theme = isDarkMode ? dark : styles;
 	const { service, onToggleFavorite, onOrder, showFav } = props;
+	const imageUrl = 'http://192.168.1.100:8000/storage/' + service.image;
 
 	const handleToggleFavorite = () => {
 		onToggleFavorite(service.service_id, !service.isFavorite);
@@ -33,7 +34,7 @@ const ServiceHome = (props) => {
 
 	const truncatedDescription = truncateDescription(
 		service.service_description,
-		120
+		108
 	); // Adjust maxLength for desired line count (assuming ~20 characters per line)
 
 	return (
@@ -41,7 +42,7 @@ const ServiceHome = (props) => {
 			<View style={theme.main}>
 				<View style={theme.imageView}>
 					<Image
-						source={require("../assets/images/service-image.png")}
+						source={{ uri: imageUrl }}
 						style={theme.image}
 					/>
 				</View>
@@ -133,6 +134,7 @@ const styles = StyleSheet.create({
 	title: {
 		fontFamily: "SF-bold",
 		fontSize: 16,
+		
 	},
 	price: {
 		fontFamily: "SF-medium",
@@ -198,7 +200,8 @@ const dark = StyleSheet.create({
 	title: {
 		fontFamily: "SF-bold",
 		fontSize: 16,
-		color:myDarkColors.black
+		color:myDarkColors.black,
+		maxWidth:"85%",
 	},
 	price: {
 		fontFamily: "SF-medium",

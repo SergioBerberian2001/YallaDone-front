@@ -15,6 +15,8 @@ import axios from "axios";
 import { saveBearerToken, getBearerToken, logout } from "../utils/bearer.js";
 import Loading from "../Components/Loading.js";
 import { useMyColorTheme } from "../utils/ThemeContext.js";
+import { CommonActions } from "@react-navigation/native";
+
 const Splash = ({ navigation, route }) => {
 	const { isDarkMode } = useMyColorTheme();
 	const theme = isDarkMode ? dark : styles;
@@ -35,7 +37,12 @@ const Splash = ({ navigation, route }) => {
 			const [token] = await Promise.all([tokenPromise, delayPromise]);
 
 			if (token) {
-				navigation.navigate("DrawerScreen");
+				navigation.dispatch(
+					CommonActions.reset({
+						index: 0,
+						routes: [{ name: "DrawerScreen" }],
+					})
+				);
 			}
 			setIsLoading(false);
 		};

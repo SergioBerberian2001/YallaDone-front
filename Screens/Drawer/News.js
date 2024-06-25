@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import { StyleSheet, Text, View, FlatList, ActivityIndicator  } from "react-native";
 import React, { useState, useEffect } from "react";
 import { myColors, myDarkColors } from "../../utils/myColors";
 import NewsListItem from "../../Components/NewsListItem";
@@ -43,7 +43,7 @@ const News = () => {
 	if (isLoading) {
 		return (
 			<View style={theme.loadingContainer}>
-				<Text style={theme.loadingText}>Loading...</Text>
+				<ActivityIndicator size="large" color={myDarkColors.blue} />
 			</View>
 		);
 	}

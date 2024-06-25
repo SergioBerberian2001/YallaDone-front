@@ -25,10 +25,12 @@ import { RadioButton, Provider as PaperProvider } from "react-native-paper";
 import StripeApp from "../Components/Stripe";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import { useMyColorTheme } from "../utils/ThemeContext.js";
+import { useNotificationSettings } from "../utils/NotificationContext.js";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const Checkout = ({ navigation, route }) => {
 	const { isDarkMode } = useMyColorTheme();
+	const { notificationsEnabled } = useNotificationSettings();
 	const theme = isDarkMode ? dark : styles;
 	const { order, locationId, serviceDate, additionalInfo } = route.params;
 	const [loadingPayment, setLoadingPayment] = useState(false);
@@ -38,6 +40,24 @@ const Checkout = ({ navigation, route }) => {
 
 	const navigateToHome = () => {
 		navigation.navigate("DrawerScreen");
+	};
+
+	const handleSendNotification = async () => {
+		try {
+			const userData = {
+				appId: 22079,
+				appToken: "0SHDEOFDqVbkGIJv1q31GU",
+				title: "Order Successful",
+				body: "You successfully ordered " + order.service_name,
+				dateSent: Date.now(),
+			};
+			const response = await axios.post(
+				"https://app.nativenotify.com/api/notification",
+				userData
+			);
+		} catch (error) {
+			console.error("Error:", error);
+		}
 	};
 
 	const HandleServiceForm = async () => {
@@ -67,6 +87,10 @@ const Checkout = ({ navigation, route }) => {
 			const paymentid = await storePayment(); // Return payment ID from storePayment
 			await storeOrder(formid, paymentid); // Pass IDs directly
 			Alert.alert("Order Successful");
+			if (notificationsEnabled) {
+				await handleSendNotification();
+			}
+
 			navigateToHome();
 		} catch (error) {
 			console.error("Error:", error);
@@ -177,7 +201,7 @@ const Checkout = ({ navigation, route }) => {
 						>
 							<Ionicons
 								name="chevron-back-outline"
-								color={isDarkMode? myDarkColors.blue : myColors.blue}
+								color={isDarkMode ? myDarkColors.blue : myColors.blue}
 								size={32}
 							/>
 							<Text style={theme.topText}>Back</Text>

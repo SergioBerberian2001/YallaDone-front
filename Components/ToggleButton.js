@@ -2,14 +2,24 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { myColors, myDarkColors } from "../utils/myColors";
 import { useMyColorTheme } from "../utils/ThemeContext";
+import { useNotificationSettings } from "../utils/NotificationContext.js";
 import { Ionicons } from "react-native-vector-icons";
 
-const ToggleButton = ({ initialValue = false, onToggle, isTheme }) => {
+const ToggleButton = ({
+	initialValue = false,
+	onToggle,
+	isTheme,
+	isNotification,
+}) => {
 	const { isDarkMode } = useMyColorTheme();
+	const { notificationsEnabled } = useNotificationSettings();
 	const [isEnabled, setIsEnabled] = useState(initialValue);
 	useEffect(() => {
 		if (isDarkMode && isTheme) {
 			setIsEnabled(isDarkMode);
+		}
+		if (notificationsEnabled && isNotification) {
+			setIsEnabled(notificationsEnabled);
 		}
 	}, []);
 	const handleToggle = () => {
@@ -41,6 +51,14 @@ const ToggleButton = ({ initialValue = false, onToggle, isTheme }) => {
 					<Ionicons
 						name={isDarkMode ? "moon" : "sunny"}
 						color={isDarkMode ? "gray" : "white"}
+						size={16}
+					/>
+				)}
+
+				{isNotification && (
+					<Ionicons
+						name={notificationsEnabled ? "notifications" : "notifications-off"}
+						color={notificationsEnabled ? "gray" : "white"}
 						size={16}
 					/>
 				)}

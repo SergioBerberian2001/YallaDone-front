@@ -16,13 +16,14 @@ const ServiceItem = (props) => {
 	const { isDarkMode } = useMyColorTheme();
 	const theme = isDarkMode ? dark : styles;
 	const { service } = props;
+	const imageUrl = 'http://192.168.1.100:8000/storage/' + service.image;
 
 	return (
 		<View style={theme.shadowView}>
 			<View style={theme.main}>
 				<View style={theme.imageView}>
 					<Image
-						source={require("../assets/images/service-image.png")}
+						source={{ uri: imageUrl }}
 						style={theme.image}
 					/>
 				</View>
