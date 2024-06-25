@@ -7,12 +7,13 @@ const ServiceForm = (props) => {
 	const { isDarkMode } = useMyColorTheme();
 	const theme = isDarkMode ? dark : styles;
 	const { order } = props;
+	const imageUrl = 'http://192.168.1.100:8000/storage/' + order.image;
 
 	return (
 		<View style={theme.container}>
 			<View style={theme.imageCont}>
 				<Image
-					source={require("../assets/images/service-image.png")}
+					source={{ uri: imageUrl }}
 					style={theme.image}
 				/>
 			</View>
