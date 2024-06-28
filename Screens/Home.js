@@ -25,6 +25,7 @@ import UserContext from "../utils/UserContext";
 import { getBearerToken } from "../utils/bearer";
 import { useFocusEffect } from "@react-navigation/native";
 import { useMyColorTheme } from "../utils/ThemeContext";
+import CarouselListItem from "../Components/CarouselListItem";
 
 const windowWidth = Dimensions.get("window").width;
 const Home = ({ navigation, route }) => {
@@ -37,11 +38,12 @@ const Home = ({ navigation, route }) => {
 	const [services, setServices] = useState();
 	const navigations = useNavigation();
 	const [reload, setReload] = useState(true);
+	const [newsItems, setNewsItems] = useState([]);
 	const [activeItemIndex, setActiveItemIndex] = useState(0);
 	const carousel = [
-		{ id: 0, image: require("../assets/images/carousel.jpeg") },
+		{ id: 0, image: require("../assets/images/detailing-wash.jpg") },
 		{ id: 1, image: require("../assets/images/carousel.jpeg") },
-		{ id: 2, image: require("../assets/images/splash-bg.jpg") },
+		{ id: 2, image: require("../assets/images/detailing-wash.jpg") },
 	];
 	const [popupVisible, setPopupVisible] = useState(false);
 	const [popupData, setPopupData] = useState({});
@@ -135,10 +137,11 @@ const Home = ({ navigation, route }) => {
 				setServices(mergedServices);
 				setIsLoading(false);
 			};
-
 			fetchData();
 		}, [])
 	);
+
+
 
 	function filterByCategory(data, category) {
 		return data.filter((item) => item.category === category);
@@ -196,6 +199,9 @@ const Home = ({ navigation, route }) => {
 		});
 	};
 
+	const navigateToNews = () => {
+		navigation.navigate("News");
+	}
 	if (isLoading) {
 		return <Loading />;
 	}
@@ -210,7 +216,7 @@ const Home = ({ navigation, route }) => {
 						keyExtractor={(item) => item.id.toString()}
 						renderItem={({ item }) => (
 							<View style={theme.carouselImageView}>
-								<Image source={item.image} style={theme.carouselImage} />
+								<CarouselListItem item={item} onNavigate={navigateToNews}/>
 							</View>
 						)}
 						snapToInterval={windowWidth} // Replace with actual item width

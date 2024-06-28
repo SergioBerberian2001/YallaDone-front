@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
 	title: {
 		fontFamily: "SF-bold",
 		fontSize: 16,
-		
+		maxWidth:"85%",
 	},
 	price: {
 		fontFamily: "SF-medium",

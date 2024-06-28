@@ -41,7 +41,21 @@ const StripeApp = (props) => {
 					service_id: 1,
 				}),
 			});
+	
+			// Check if response is OK (status 200-299)
+			if (!response.ok) {
+				const text = await response.text();
+				console.error(`HTTP error! status: ${response.status}, body: ${text}`);
+				throw new Error(`HTTP error! status: ${response.status}, body: ${text}`);
+			}
+	
 			const data = await response.json();
+	
+			// Ensure data contains clientSecret
+			if (!data.clientSecret) {
+				throw new Error('clientSecret is missing in response');
+			}
+	
 			return { clientSecret: data.clientSecret, error: data.error };
 		} catch (error) {
 			console.error("Error fetching payment intent client secret:", error);

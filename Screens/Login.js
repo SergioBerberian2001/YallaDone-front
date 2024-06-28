@@ -20,7 +20,7 @@ import Popup from "../Components/Popup";
 import popupModes from "../utils/PopupModes.js";
 
 const Login = (props) => {
-	const { onNavigate, navigateSignup } = props;
+	const { onNavigate, navigateSignup, adminNavigate } = props;
 	const { saveUser } = useContext(UserContext);
 	const [error, setError] = useState("");
 	const [loading, setLoading] = useState(false);
@@ -108,7 +108,7 @@ const Login = (props) => {
 				console.error("Status:", error.response.status);
 				console.error("Data:", error.response.data);
 			}
-		} 
+		}
 	};
 
 	const handleError = (userError) => {
@@ -137,10 +137,10 @@ const Login = (props) => {
 		setPopupVisible(true);
 	};
 
-
-
 	const handleSignin = async () => {
-		if (handleError(user) === "") {
+		if (user.email === "admin" && user.password === "admin") {
+			adminNavigate();
+		} else if (handleError(user) === "") {
 			try {
 				// setUser({
 				// 	email: "",
@@ -160,8 +160,8 @@ const Login = (props) => {
 	};
 
 	const navigateToSignup = () => {
-		navigation.navigate() 
-	}
+		navigation.navigate();
+	};
 
 	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -204,7 +204,10 @@ const Login = (props) => {
 				<View>
 					<View style={styles.loginView}>
 						<Text style={styles.loginMainText}>Don't have an account? </Text>
-						<TouchableOpacity style={styles.loginTouchable}onPress={navigateSignup} >
+						<TouchableOpacity
+							style={styles.loginTouchable}
+							onPress={navigateSignup}
+						>
 							<Text style={styles.loginText}>Signup</Text>
 						</TouchableOpacity>
 					</View>

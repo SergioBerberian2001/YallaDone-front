@@ -57,6 +57,10 @@ const Form = ({ navigation, route }) => {
 		  );
 	};
 
+	const adminNavigate = () => {
+		navigation.navigate("Stats");
+	}
+
 
 	return (
 		<KeyboardAvoidingView style={styles.background1} behavior="padding">
@@ -103,7 +107,7 @@ const Form = ({ navigation, route }) => {
 						{isSigningUp ? (
 							<Signup onNavigate={navigateToOTP} navigateLogin={handleIsSigningIn} />
 						) : (
-							<Login onNavigate={navigateToHome} navigateSignup={handleIsSigningUp} />
+							<Login onNavigate={navigateToHome} navigateSignup={handleIsSigningUp} adminNavigate={adminNavigate} />
 						)}
 					</View>
 				</ImageBackground>

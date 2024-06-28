@@ -211,7 +211,7 @@ const NotificationsSheet = (props) => {
 						<View style={theme.titleCont}>
 							<Text style={theme.title}>Notifications</Text>
 						</View>
-						<View>
+						<View style={theme.newView}>
 							<FlatList
 								style={theme.list}
 								showsVerticalScrollIndicator={false}
@@ -247,6 +247,7 @@ const styles = StyleSheet.create({
 		position: "absolute",
 		top: SCREEN_HEIGHT,
 		borderRadius: 25,
+		paddingBottom:20
 	},
 	line: {
 		width: 75,
@@ -274,6 +275,7 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		alignItems: "center",
 		paddingHorizontal: 10,
+		
 	},
 	back: {
 		padding: 8,
@@ -289,24 +291,30 @@ const styles = StyleSheet.create({
 		padding: 8,
 	},
 	list: {
-		height: "80%",
+		
 	},
 	indicatorView: {
 		paddingTop: "20%",
 	},
 	markAll: {
 		alignItems: "center",
-		padding: 8,
-		paddingTop: 12,
 		width: "100%",
-		borderTopColor: "#c1c1c1",
+		borderTopColor: "white",
 		borderTopWidth: 1,
+		position:"absolute",
+		bottom:0,
+		backgroundColor:myColors.dirtyWhite,
+		padding:16,
+		paddingBottom:26,
 	},
 	markAllText: {
 		fontSize: 18,
 		fontFamily: "SF-medium",
 		color: myColors.blue,
 	},
+	newView:{
+		marginBottom:20
+	}
 });
 
 const dark = StyleSheet.create({

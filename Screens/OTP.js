@@ -57,6 +57,7 @@ const OtpScreen = ({ navigation, route }) => {
 		if (resendAttempts >= 3) {
 			await deleteUnverified();
 			stopTimer();
+			logout();
 			navigation.navigate("Splash");
 			return;
 		}
@@ -102,6 +103,7 @@ const OtpScreen = ({ navigation, route }) => {
 
 		setTimeout(() => {
 			deleteUnverified();
+			logout();
 			navigation.navigate("Splash");
 		}, fiveMinutes);
 	};
@@ -109,7 +111,7 @@ const OtpScreen = ({ navigation, route }) => {
 	useEffect(() => {
 		handleOTPSending();
 		startFiveMinuteTimer();
-		logout();
+		
 	}, []);
 
 	const handleVerifyOTP = async (otp) => {

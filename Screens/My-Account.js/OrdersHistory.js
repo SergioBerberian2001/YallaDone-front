@@ -23,7 +23,7 @@ const OrdersHistory = ({ navigation, route }) => {
 	const navigateBack = () => {
 		navigation.goBack();
 	};
-	const [ordersHistory, setOrdersHistory] = useState([]);
+	const [ordersHistory, setOrdersHistory] = useState(null);
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
@@ -83,6 +83,7 @@ const OrdersHistory = ({ navigation, route }) => {
 				<Text style={theme.title}>Orders History</Text>
 			</View>
 			<View>
+				{ordersHistory == null && <Text>You don't have any orders yet</Text>}
 				<FlatList
 					style={theme.list}
 					showsVerticalScrollIndicator={false}
@@ -92,6 +93,7 @@ const OrdersHistory = ({ navigation, route }) => {
 						<OrderListItem notification={item} onNavigate={navigateToOrder} />
 					)}
 				/>
+				
 			</View>
 		</SafeAreaView>
 	);

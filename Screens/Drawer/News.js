@@ -12,7 +12,7 @@ const News = () => {
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
-		const fetchData = async () => {
+		const fetchNews = async () => {
 			try {
 				const response = await axios.get(
 					"http://192.168.1.100:8000/api/getNews"
@@ -37,7 +37,7 @@ const News = () => {
 			}
 		};
 
-		fetchData();
+		fetchNews();
 	}, []);
 
 	if (isLoading) {

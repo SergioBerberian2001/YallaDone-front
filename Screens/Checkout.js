@@ -179,9 +179,29 @@ const Checkout = ({ navigation, route }) => {
 			console.log("payed with yallacoins");
 			await HandleServiceForm();
 		} catch (error) {
-			console.error("Error:", error);
-			throw error;
-		}
+			if (error.response) {
+			  // The request was made and the server responded with a status code
+			  // that falls out of the range of 2xx
+			  const { status, data } = error.response;
+			  if (status === 422) {
+				Alert.alert('Validation Error', data.message);
+			  } else if (status === 401) {
+				Alert.alert('Unauthorized', data.message);
+			  } else if (status === 404) {
+				Alert.alert('Not Found', data.message);
+			  } else if (status === 400) {
+				Alert.alert('Bad Request', data.message);
+			  } else {
+				Alert.alert('Error', data.message);
+			  }
+			} else if (error.request) {
+			  // The request was made but no response was received
+			  Alert.alert('Network Error', 'No response received from the server');
+			} else {
+			  // Something happened in setting up the request that triggered an Error
+			  Alert.alert('Error', error.message);
+			}
+		  }
 	};
 
 	const navigate = () => {
@@ -189,7 +209,7 @@ const Checkout = ({ navigation, route }) => {
 	};
 
 	return (
-		<StripeProvider publishableKey="pk_test_51PMAhL07mb77Stj1OD3V96xsfMLd8bmWXNx8InMbwE1hcTkWjTTSHck6OqOVSlgOuOSPh3RhtxOP2s4hm1kDWuby00L073BzaE">
+		<StripeProvider publishableKey="pk_test_51PVWxJIIhqyY2Uj3fbLW6kyejBNz3zcicKM3moffBvUWOdfMpKr2YNJE5qFx9HMItDDIPuY7e75Y1aIk6FfyFBha001e0COZsC">
 			<KeyboardAvoidingView style={theme.background1} behavior="position">
 				<SafeAreaView style={theme.container}>
 					<ScrollView style={theme.scroll}>

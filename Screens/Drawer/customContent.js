@@ -54,7 +54,7 @@ const customContent = (props) => {
 					<Text style={theme.titles}>My Account</Text>
 					<Text style={theme.descriptions}>
 						{" "}
-						Here you can see you info and edit{" "}
+						Here you can see your profile info and edit{" "}
 					</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
@@ -64,7 +64,7 @@ const customContent = (props) => {
 					<Text style={theme.titles}>News</Text>
 					<Text style={theme.descriptions}>
 						{" "}
-						Here you can see you info and edit{" "}
+						Check out our latest news here!{" "}
 					</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
@@ -74,7 +74,7 @@ const customContent = (props) => {
 					<Text style={theme.titles}>Terms & Conditions</Text>
 					<Text style={theme.descriptions}>
 						{" "}
-						Here you can see you info and edit{" "}
+						See the full Terms & Conditions of our app{" "}
 					</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
@@ -84,7 +84,7 @@ const customContent = (props) => {
 					<Text style={theme.titles}>About Us</Text>
 					<Text style={theme.descriptions}>
 						{" "}
-						Here you can see you info and edit{" "}
+						Who is YALLADONE & What do they do?{" "}
 					</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
@@ -94,7 +94,7 @@ const customContent = (props) => {
 					<Text style={theme.titles}>Contact Us</Text>
 					<Text style={theme.descriptions}>
 						{" "}
-						Here you can see you info and edit{" "}
+						Check out our location and contact information{" "}
 					</Text>
 				</TouchableOpacity>
 			</View>

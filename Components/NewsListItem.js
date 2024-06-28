@@ -8,12 +8,14 @@ const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const NewsListItem = (props) => {
 	const { isDarkMode } = useMyColorTheme();
+	
 	const theme = isDarkMode ? dark : styles;
 	const { news } = props;
+	const imageUrl = 'http://192.168.1.100:8000/storage/' + news.image_path;
 	return (
 		<View style={theme.container}>
 			<Image
-				source={require("../assets/images/carousel.jpeg")}
+				source={{ uri: imageUrl }}
 				style={theme.image}
 			/>
 			<View style={theme.bottomContainer}>
@@ -45,6 +47,7 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.5,
 		shadowRadius: 5,
 		shadowOffset: { width: 3, height: 3 },
+		marginVertical:40
 	},
 	image: {
 		borderTopLeftRadius: 20,

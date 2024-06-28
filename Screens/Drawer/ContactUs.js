@@ -7,6 +7,7 @@ import {
 	TouchableOpacity,
 	TextInput,
 	Alert,
+	ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import splashBg from "../../assets/images/splash-bg.jpg";
@@ -17,9 +18,11 @@ import axios from "axios";
 
 const ContactUs = () => {
 	const [feedback, setFeedback] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
 
 	const handleSubmit = async (feed) => {
 		try {
+			setIsLoading(true);
 			const token = await getBearerToken();
 			const userData = {
 				body: feed,
@@ -40,6 +43,8 @@ const ContactUs = () => {
 		} catch (error) {
 			console.error("Error:", error);
 			throw error; // Throw the error to be caught by the caller
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -93,12 +98,17 @@ const ContactUs = () => {
 					onChangeText={setFeedback}
 					multiline
 				/>
-				<TouchableOpacity
-					style={styles.submitButton}
-					onPress={() => handleSubmit(feedback)}
-				>
-					<Text style={styles.submitButtonText}>Submit Feedback</Text>
-				</TouchableOpacity>
+				{isLoading ? (
+					<View style={styles.submitButton}>
+					<ActivityIndicator color={myColors.white} size={"large"} /></View>
+				) : (
+					<TouchableOpacity
+						style={styles.submitButton}
+						onPress={() => handleSubmit(feedback)}
+					>
+						<Text style={styles.submitButtonText}>Submit Feedback</Text>
+					</TouchableOpacity>
+				)}
 			</ScrollView>
 		</ImageBackground>
 	);
